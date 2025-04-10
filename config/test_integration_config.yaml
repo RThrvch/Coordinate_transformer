@@ -1,0 +1,50 @@
+# @file test_integration_config.yaml
+# @brief Configuration file defining transforms and boundaries for integration tests.
+#
+# @author Ruslan Mukhametsafin
+# @date   2025-04-10
+
+transforms:
+  # Identity transform from frame_a to target_map
+  - parent_frame: target_map
+    child_frame: frame_a
+    translation:
+      x: 0.0
+      y: 0.0
+      z: 0.0
+    rotation:
+      x: 0.0
+      y: 0.0
+      z: 0.0
+      w: 1.0
+
+  # Simple translation from frame_b to target_map
+  - parent_frame: target_map
+    child_frame: frame_b
+    translation:
+      x: 10.0 # Example offset
+      y: 5.0
+      z: 0.0
+    rotation:
+      x: 0.0
+      y: 0.0
+      z: 0.0
+      w: 1.0
+
+boundaries:
+  target_map:
+    min:
+      x: -50.0
+      y: -50.0
+      z: -10.0
+    max:
+      x: 50.0
+      y: 50.0
+      z: 10.0
+
+  # Optional: Add boundaries for other frames if needed
+  # frame_a:
+  #   min:
+  #     x: ...
+  #   max:
+  #     x: ... 

@@ -1,0 +1,56 @@
+\doxysection{test\+\_\+full\+\_\+transform Namespace Reference}
+\hypertarget{namespacetest__full__transform}{}\label{namespacetest__full__transform}\index{test\_full\_transform@{test\_full\_transform}}
+\doxysubsubsection*{Classes}
+\begin{DoxyCompactItemize}
+\item 
+class \mbox{\hyperlink{classtest__full__transform_1_1TestCoordinateTransformerActive}{Test\+Coordinate\+Transformer\+Active}}
+\item 
+class \mbox{\hyperlink{classtest__full__transform_1_1TestProcessExitCodes}{Test\+Process\+Exit\+Codes}}
+\end{DoxyCompactItemize}
+\doxysubsubsection*{Functions}
+\begin{DoxyCompactItemize}
+\item 
+\mbox{\hyperlink{namespacetest__full__transform_a14efe0d58151c15c7823140beadfe5c1}{generate\+\_\+test\+\_\+description}} ()
+\end{DoxyCompactItemize}
+\doxysubsubsection*{Variables}
+\begin{DoxyCompactItemize}
+\item 
+str \mbox{\hyperlink{namespacetest__full__transform_a6acd658a0647f74c21ec5ab7b8e63459}{PACKAGE\+\_\+\+NAME}} = \textquotesingle{}coordinate\+\_\+transformer\textquotesingle{}
+\end{DoxyCompactItemize}
+
+
+\doxysubsection{Detailed Description}
+\begin{DoxyVerb}@file test_full_transform.py
+@brief Integration tests для CoordinateTransformer node, используя launch_testing.
+
+@author Ruslan Mukhametsafin
+@date   2025-04-10
+\end{DoxyVerb}
+ 
+
+\doxysubsection{Function Documentation}
+\Hypertarget{namespacetest__full__transform_a14efe0d58151c15c7823140beadfe5c1}\label{namespacetest__full__transform_a14efe0d58151c15c7823140beadfe5c1} 
+\index{test\_full\_transform@{test\_full\_transform}!generate\_test\_description@{generate\_test\_description}}
+\index{generate\_test\_description@{generate\_test\_description}!test\_full\_transform@{test\_full\_transform}}
+\doxysubsubsection{\texorpdfstring{generate\_test\_description()}{generate\_test\_description()}}
+{\footnotesize\ttfamily test\+\_\+full\+\_\+transform.\+generate\+\_\+test\+\_\+description (\begin{DoxyParamCaption}{ }\end{DoxyParamCaption})}
+
+\begin{DoxyVerb}@brief Генерирует описание запуска для интеграционного теста.
+
+Запускает узел 'test_transformer_node' с тестовой конфигурацией.
+Последовательно публикует три тестовые позы на топик '/test/input_pose':
+    1. Успешное преобразование.
+    2. Преобразование, выходящее за границы.
+    3. Преобразование с неизвестной исходной системой координат.
+
+@return tuple: Кортеж, содержащий объект LaunchDescription и словарь контекста теста.
+\end{DoxyVerb}
+ 
+
+\doxysubsection{Variable Documentation}
+\Hypertarget{namespacetest__full__transform_a6acd658a0647f74c21ec5ab7b8e63459}\label{namespacetest__full__transform_a6acd658a0647f74c21ec5ab7b8e63459} 
+\index{test\_full\_transform@{test\_full\_transform}!PACKAGE\_NAME@{PACKAGE\_NAME}}
+\index{PACKAGE\_NAME@{PACKAGE\_NAME}!test\_full\_transform@{test\_full\_transform}}
+\doxysubsubsection{\texorpdfstring{PACKAGE\_NAME}{PACKAGE\_NAME}}
+{\footnotesize\ttfamily str test\+\_\+full\+\_\+transform.\+PACKAGE\+\_\+\+NAME = \textquotesingle{}coordinate\+\_\+transformer\textquotesingle{}}
+

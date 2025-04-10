@@ -1,0 +1,113 @@
+\chapter{coordinate\+\_\+transformer}
+\hypertarget{index}{}\label{index}\index{coordinate\_transformer@{coordinate\_transformer}}
+\label{index_md_README}%
+\Hypertarget{index_md_README}%
+ Библиотека C++ и node для преобразования координат с проверкой границ для ROS 2.\hypertarget{index_autotoc_md1}{}\doxysection{\texorpdfstring{Обзор}{Обзор}}\label{index_autotoc_md1}
+Этот пакет предоставляет функциональность для управления и запроса преобразований координат (tf) между различными системами координат (фреймами), в первую очередь предназначенную для использования в среде ROS 2. Он позволяет определять статические преобразования и проверять, попадают ли определенные точки или позы в предопределенные границы для заданных систем координат.\hypertarget{index_autotoc_md2}{}\doxysection{\texorpdfstring{Зависимости}{Зависимости}}\label{index_autotoc_md2}
+Этот пакет зависит от следующих пакетов и библиотек ROS 2\+:
+\begin{DoxyItemize}
+\item {\ttfamily rclcpp}
+\item {\ttfamily tf2}
+\item {\ttfamily tf2\+\_\+ros}
+\item {\ttfamily tf2\+\_\+geometry\+\_\+msgs}
+\item {\ttfamily geometry\+\_\+msgs}
+\item {\ttfamily yaml-\/cpp}
+\item {\ttfamily std\+\_\+msgs}
+\end{DoxyItemize}\hypertarget{index_autotoc_md3}{}\doxysection{\texorpdfstring{Установка}{Установка}}\label{index_autotoc_md3}
+
+\begin{DoxyEnumerate}
+\item Перейдите в директорию {\ttfamily src} вашей рабочей области ROS 2\+: {\ttfamily bash cd \texorpdfstring{$\sim$}{\string~}/ros2\+\_\+ws/src }
+\item Клонируйте этот репозиторий (если вы еще этого не сделали)\+: {\ttfamily bash @section autotoc\+\_\+md4 git clone \texorpdfstring{$<$}{<}repository\+\_\+url\texorpdfstring{$>$}{>} }
+\item Соберите пакет\+: {\ttfamily bash cd \texorpdfstring{$\sim$}{\string~}/ros2\+\_\+ws colcon build -\/-\/packages-\/select \doxylink{namespacecoordinate__transformer}{coordinate\+\_\+transformer} }
+\item Активируйте рабочую область\+: {\ttfamily bash source install/setup.\+bash }
+\end{DoxyEnumerate}\hypertarget{index_autotoc_md5}{}\doxysubsection{\texorpdfstring{Использование}{Использование}}\label{index_autotoc_md5}
+Этот пакет собирает библиотеку и пример исполняемого узла {\ttfamily test\+\_\+transformer\+\_\+node}.
+
+Для запуска примера узла обычно требуется предоставить файл конфигурации, определяющий преобразования и границы.
+
+
+\begin{DoxyEnumerate}
+\item {\bfseries{Подготовьте файл конфигурации (YAML)\+:}} Используйте {\ttfamily \doxylink{sample__config_8yaml}{config/sample\+\_\+config.\+yaml}} в качестве шаблона или создайте свой собственный. Подробности см. в разделе {\bfseries{Параметры конфигурации}} ниже.
+\item {\bfseries{Запустите узел\+:}} {\ttfamily bash ros2 run \doxylink{namespacecoordinate__transformer}{coordinate\+\_\+transformer} test\+\_\+transformer\+\_\+node -\/-\/ros-\/args -\/-\/params-\/file /path/to/your/config.yaml } Замените {\ttfamily /path/to/your/config.yaml} на фактический путь к вашему файлу конфигурации.
+
+{\itshape Примечание\+:} Основное предназначение может заключаться в использовании библиотеки {\ttfamily \doxylink{namespacecoordinate__transformer}{coordinate\+\_\+transformer}} в других узлах C++. Обратитесь к заголовочным файлам в директории {\ttfamily include/} для получения информации об API.
+\end{DoxyEnumerate}\hypertarget{index_autotoc_md6}{}\doxysubsection{\texorpdfstring{Параметры конфигурации ($<$tt$>$config.\+yaml$<$/tt$>$)}{Параметры конфигурации (<tt>config.yaml</tt>)}}\label{index_autotoc_md6}
+Узел требует файл конфигурации YAML, указанный с помощью аргумента {\ttfamily -\/-\/params-\/file}.
+
+Файл конфигурации имеет два основных раздела\+: {\ttfamily transforms} и {\ttfamily boundaries}.\hypertarget{index_autotoc_md7}{}\doxysubsubsection{\texorpdfstring{$<$tt$>$transforms$<$/tt$>$}{<tt>transforms</tt>}}\label{index_autotoc_md7}
+Этот раздел определяет список статических преобразований для публикации. Каждая запись преобразования требует\+:
+
+
+\begin{DoxyItemize}
+\item {\ttfamily parent\+\_\+frame}\+: (string) Имя родительской системы координат.
+\item {\ttfamily child\+\_\+frame}\+: (string) Имя дочерней системы координат.
+\item {\ttfamily translation}\+: (object) Компонент смещения преобразования.
+\begin{DoxyItemize}
+\item {\ttfamily x}\+: (double) Смещение по оси x.
+\item {\ttfamily y}\+: (double) Смещение по оси y.
+\item {\ttfamily z}\+: (double) Смещение по оси z.
+\end{DoxyItemize}
+\item {\ttfamily rotation}\+: (object) Компонент вращения преобразования, представленный кватернионом.
+\begin{DoxyItemize}
+\item {\ttfamily x}\+: (double) Компонент x кватерниона.
+\item {\ttfamily y}\+: (double) Компонент y кватерниона.
+\item {\ttfamily z}\+: (double) Компонент z кватерниона.
+\item {\ttfamily w}\+: (double) Компонент w кватерниона.
+\end{DoxyItemize}
+\end{DoxyItemize}
+
+{\bfseries{Пример\+:}}
+
+
+\begin{DoxyCode}{0}
+\DoxyCodeLine{transforms:}
+\DoxyCodeLine{\ \ -\/\ parent\_frame:\ "{}map"{}}
+\DoxyCodeLine{\ \ \ \ child\_frame:\ "{}odom"{}}
+\DoxyCodeLine{\ \ \ \ translation:\ \{\ x:\ 0.0,\ y:\ 0.0,\ z:\ 0.0\ \}}
+\DoxyCodeLine{\ \ \ \ rotation:\ \{\ x:\ 0.0,\ y:\ 0.0,\ z:\ 0.0,\ w:\ 1.0\ \}}
+\DoxyCodeLine{}
+\DoxyCodeLine{\ \ -\/\ parent\_frame:\ "{}odom"{}}
+\DoxyCodeLine{\ \ \ \ child\_frame:\ "{}base\_link"{}}
+\DoxyCodeLine{\ \ \ \ translation:\ \{\ x:\ 1.0,\ y:\ 0.5,\ z:\ 0.1\ \}}
+\DoxyCodeLine{\ \ \ \ rotation:\ \{\ x:\ 0.0,\ y:\ 0.0,\ z:\ 0.707,\ w:\ 0.707\ \}\ \#\ Поворот\ на\ 90\ градусов\ вокруг\ Z}
+
+\end{DoxyCode}
+\hypertarget{index_autotoc_md8}{}\doxysubsubsection{\texorpdfstring{$<$tt$>$boundaries$<$/tt$>$}{<tt>boundaries</tt>}}\label{index_autotoc_md8}
+Этот раздел определяет именованные границы, связанные с конкретными системами координат. Каждая граница определяется своими минимальной и максимальной угловыми точками.
+
+
+\begin{DoxyItemize}
+\item {\ttfamily \texorpdfstring{$<$}{<}frame\+\_\+name\texorpdfstring{$>$}{>}}\+: (string) Имя системы координат, к которой применяется граница (например, {\ttfamily map}, {\ttfamily robot\+\_\+workspace}). Должно совпадать с системой координат, определенной в вашей системе (либо через раздел {\ttfamily transforms}, либо иным образом).
+\begin{DoxyItemize}
+\item {\ttfamily min}\+: (object) Минимальный угол ограничивающего параллелепипеда, выровненного по осям.
+\begin{DoxyItemize}
+\item {\ttfamily x}\+: (double) Минимальная координата x.
+\item {\ttfamily y}\+: (double) Минимальная координата y.
+\item {\ttfamily z}\+: (double) Минимальная координата z.
+\end{DoxyItemize}
+\item {\ttfamily max}\+: (object) Максимальный угол ограничивающего параллелепипеда, выровненного по осям.
+\begin{DoxyItemize}
+\item {\ttfamily x}\+: (double) Максимальная координата x.
+\item {\ttfamily y}\+: (double) Максимальная координата y.
+\item {\ttfamily z}\+: (double) Максимальная координата z.
+\end{DoxyItemize}
+\end{DoxyItemize}
+\end{DoxyItemize}
+
+{\bfseries{Пример\+:}}
+
+
+\begin{DoxyCode}{0}
+\DoxyCodeLine{boundaries:}
+\DoxyCodeLine{\ \ map:\ \#\ Граница\ для\ системы\ координат\ 'map'}
+\DoxyCodeLine{\ \ \ \ min:\ \{\ x:\ -\/50.0,\ y:\ -\/50.0,\ z:\ -\/1.0\ \}}
+\DoxyCodeLine{\ \ \ \ max:\ \{\ x:\ 50.0,\ y:\ 50.0,\ z:\ 5.0\ \}}
+\DoxyCodeLine{}
+\DoxyCodeLine{\ \ robot\_workspace:\ \#\ Граница\ для\ гипотетической\ системы\ координат\ 'robot\_workspace'}
+\DoxyCodeLine{\ \ \ \ \ min:\ \{\ x:\ -\/1.0,\ y:\ -\/1.0,\ z:\ 0.0\ \}}
+\DoxyCodeLine{\ \ \ \ \ max:\ \{\ x:\ 1.0,\ y:\ 1.0,\ z:\ 1.5\ \}}
+
+\end{DoxyCode}
+
+
+Это позволяет библиотеке/узлу {\ttfamily \doxylink{namespacecoordinate__transformer}{coordinate\+\_\+transformer}} проверять, находятся ли точки или позы в пределах определенных пространственных ограничений для конкретных систем координат. 

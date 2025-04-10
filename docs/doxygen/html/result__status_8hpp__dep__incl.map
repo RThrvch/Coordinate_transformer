@@ -1,0 +1,12 @@
+<map id="include/coordinate_transformer/result_status.hpp" name="include/coordinate_transformer/result_status.hpp">
+<area shape="rect" id="Node000001" title="Определяет перечисление ResultStatus, используемое для указания результата операций преобразования." alt="" coords="355,5,501,60"/>
+<area shape="rect" id="Node000002" href="$coordinate__transformer_8hpp.html" title="Заголовочный файл для класса CoordinateTransformer, отвечающего за преобразования координат и управле..." alt="" coords="276,108,455,163"/>
+<area shape="poly" id="edge1_Node000001_Node000002" title=" " alt="" coords="407,73,384,109,379,106,402,70"/>
+<area shape="rect" id="Node000005" href="$test__transformer__logic_8cpp.html" title="Unit tests для валидации логики класса CoordinateTransformer, используя GTest." alt="" coords="432,211,621,251"/>
+<area shape="poly" id="edge5_Node000001_Node000005" title=" " alt="" coords="451,71,469,107,520,209,515,212,464,109,446,73"/>
+<area shape="rect" id="Node000003" href="$coordinate__transformer_8cpp.html" title="Файл реализации для класса CoordinateTransformer." alt="" coords="5,218,229,243"/>
+<area shape="poly" id="edge2_Node000002_Node000003" title=" " alt="" coords="284,170,149,220,147,215,282,165"/>
+<area shape="rect" id="Node000004" href="$test__transformer__node_8cpp.html" title="Реализация ROS 2 node для тестирования класса CoordinateTransformer через Topic`и" alt="" coords="253,211,408,251"/>
+<area shape="poly" id="edge3_Node000002_Node000004" title=" " alt="" coords="353,177,340,212,335,210,348,175"/>
+<area shape="poly" id="edge4_Node000002_Node000005" title=" " alt="" coords="424,167,495,208,493,213,422,172"/>
+</map>

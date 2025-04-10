@@ -1,0 +1,33 @@
+# ROS 2 build artifacts
+build/
+install/
+log/
+
+# Python artifacts
+*.pyc
+__pycache__/
+*.egg-info/
+dist/
+*.egg
+
+# OS generated files
+.DS_Store
+Thumbs.db
+
+# IDE files
+.vscode/
+.idea/
+*.swp
+*.swo
+*~
+
+# Other common ignores
+*.bak
+*.orig
+*.*~
+*.#*#
+*.stackdump
+
+# Specific package build files (adjust if needed)
+**/CMakeLists.txt.user
+**/Makefile.user 

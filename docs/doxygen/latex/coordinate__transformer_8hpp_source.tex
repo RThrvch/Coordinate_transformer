@@ -1,0 +1,96 @@
+\doxysection{coordinate\+\_\+transformer.\+hpp}
+\hypertarget{coordinate__transformer_8hpp_source}{}\label{coordinate__transformer_8hpp_source}\index{include/coordinate\_transformer/coordinate\_transformer.hpp@{include/coordinate\_transformer/coordinate\_transformer.hpp}}
+\mbox{\hyperlink{coordinate__transformer_8hpp}{Go to the documentation of this file.}}
+\begin{DoxyCode}{0}
+\DoxyCodeLine{00001\ }
+\DoxyCodeLine{00008\ \textcolor{preprocessor}{\#pragma\ once}}
+\DoxyCodeLine{00009\ }
+\DoxyCodeLine{00010\ \textcolor{preprocessor}{\#include\ <rclcpp/rclcpp.hpp>}}
+\DoxyCodeLine{00011\ \textcolor{preprocessor}{\#include\ <tf2\_ros/buffer.h>}}
+\DoxyCodeLine{00012\ \textcolor{preprocessor}{\#include\ <tf2\_ros/transform\_listener.h>}}
+\DoxyCodeLine{00013\ \textcolor{preprocessor}{\#include\ <tf2\_ros/static\_transform\_broadcaster.h>}}
+\DoxyCodeLine{00014\ \textcolor{preprocessor}{\#include\ <geometry\_msgs/msg/pose\_stamped.hpp>}}
+\DoxyCodeLine{00015\ \textcolor{preprocessor}{\#include\ <geometry\_msgs/msg/transform\_stamped.hpp>}}
+\DoxyCodeLine{00016\ \textcolor{preprocessor}{\#include\ <geometry\_msgs/msg/point.hpp>}}
+\DoxyCodeLine{00017\ \textcolor{preprocessor}{\#include\ <rcl\_interfaces/msg/set\_parameters\_result.hpp>}}
+\DoxyCodeLine{00018\ }
+\DoxyCodeLine{00019\ \textcolor{preprocessor}{\#include\ <string>}}
+\DoxyCodeLine{00020\ \textcolor{preprocessor}{\#include\ <vector>}}
+\DoxyCodeLine{00021\ \textcolor{preprocessor}{\#include\ <map>}}
+\DoxyCodeLine{00022\ \textcolor{preprocessor}{\#include\ <memory>}}
+\DoxyCodeLine{00023\ \textcolor{preprocessor}{\#include\ <mutex>}}
+\DoxyCodeLine{00024\ }
+\DoxyCodeLine{00025\ \textcolor{preprocessor}{\#include\ "{}\mbox{\hyperlink{result__status_8hpp}{coordinate\_transformer/result\_status.hpp}}"{}}\ }
+\DoxyCodeLine{00026\ }
+\DoxyCodeLine{00027\ }
+\DoxyCodeLine{00028\ \textcolor{keyword}{class\ }\mbox{\hyperlink{classTestCoordinateTransformer}{TestCoordinateTransformer}};}
+\DoxyCodeLine{00029\ }
+\DoxyCodeLine{00030\ \textcolor{keyword}{namespace\ }\mbox{\hyperlink{namespacecoordinate__transformer}{coordinate\_transformer}}}
+\DoxyCodeLine{00031\ \{}
+\DoxyCodeLine{00032\ }
+\DoxyCodeLine{00033\ \textcolor{keyword}{struct\ }\mbox{\hyperlink{structcoordinate__transformer_1_1Bounds}{Bounds}}}
+\DoxyCodeLine{00034\ \{}
+\DoxyCodeLine{00035\ \ \ geometry\_msgs::msg::Point\ \mbox{\hyperlink{structcoordinate__transformer_1_1Bounds_a3fccae3152bf8325687356dafe0705e3}{min}};}
+\DoxyCodeLine{00036\ \ \ geometry\_msgs::msg::Point\ \mbox{\hyperlink{structcoordinate__transformer_1_1Bounds_a74787ef0d85743b83f1841cb454beb8f}{max}};}
+\DoxyCodeLine{00037\ \};}
+\DoxyCodeLine{00038\ }
+\DoxyCodeLine{00039\ }
+\DoxyCodeLine{00040\ \textcolor{keyword}{class\ }\mbox{\hyperlink{classcoordinate__transformer_1_1CoordinateTransformer}{CoordinateTransformer}}}
+\DoxyCodeLine{00041\ \{}
+\DoxyCodeLine{00042\ \ \ \textcolor{keyword}{friend}\ class\ ::TestCoordinateTransformer;\ }
+\DoxyCodeLine{00043\ }
+\DoxyCodeLine{00044\ \textcolor{keyword}{public}:}
+\DoxyCodeLine{00052\ \ \ \textcolor{keyword}{explicit}\ \mbox{\hyperlink{classcoordinate__transformer_1_1CoordinateTransformer}{CoordinateTransformer}}(rclcpp::Node::SharedPtr\ node);}
+\DoxyCodeLine{00053\ }
+\DoxyCodeLine{00062\ \ \ \mbox{\hyperlink{classcoordinate__transformer_1_1CoordinateTransformer}{CoordinateTransformer}}(}
+\DoxyCodeLine{00063\ \ \ \ \ rclcpp::Node::SharedPtr\ node,}
+\DoxyCodeLine{00064\ \ \ \ \ std::shared\_ptr<tf2\_ros::Buffer>\ tf\_buffer);}
+\DoxyCodeLine{00065\ }
+\DoxyCodeLine{00074\ \ \ \mbox{\hyperlink{namespacecoordinate__transformer_a13795b8dd04726424a3ead73c6f551c1}{ResultStatus}}\ \mbox{\hyperlink{classcoordinate__transformer_1_1CoordinateTransformer_a272e9aa4347ef50ebee0bdcb0889c76d}{loadConfig}}(\textcolor{keyword}{const}\ std::string\&\ yaml\_path);}
+\DoxyCodeLine{00075\ }
+\DoxyCodeLine{00081\ \ \ \textcolor{keywordtype}{void}\ \mbox{\hyperlink{classcoordinate__transformer_1_1CoordinateTransformer_a62277306a6b9230b9b6fd196a00a5ace}{addTransform}}(\textcolor{keyword}{const}\ geometry\_msgs::msg::TransformStamped\&\ transform);}
+\DoxyCodeLine{00082\ }
+\DoxyCodeLine{00092\ \ \ \textcolor{keywordtype}{void}\ \mbox{\hyperlink{classcoordinate__transformer_1_1CoordinateTransformer_a1be44e4fc4907e30a681df867caf3f14}{setBounds}}(}
+\DoxyCodeLine{00093\ \ \ \ \ \textcolor{keyword}{const}\ std::string\&\ frame\_id,}
+\DoxyCodeLine{00094\ \ \ \ \ \textcolor{keyword}{const}\ geometry\_msgs::msg::Point\&\ min,}
+\DoxyCodeLine{00095\ \ \ \ \ \textcolor{keyword}{const}\ geometry\_msgs::msg::Point\&\ max);}
+\DoxyCodeLine{00096\ }
+\DoxyCodeLine{00103\ \ \ \textcolor{keywordtype}{void}\ \mbox{\hyperlink{classcoordinate__transformer_1_1CoordinateTransformer_aee50996de8804216a710b7a33d747f28}{removeBounds}}(\textcolor{keyword}{const}\ std::string\&\ frame\_id);}
+\DoxyCodeLine{00104\ }
+\DoxyCodeLine{00114\ \ \ \mbox{\hyperlink{namespacecoordinate__transformer_a13795b8dd04726424a3ead73c6f551c1}{ResultStatus}}\ \mbox{\hyperlink{classcoordinate__transformer_1_1CoordinateTransformer_a0ad6d96036bfeb2f286f56b575644036}{convert}}(}
+\DoxyCodeLine{00115\ \ \ \ \ \textcolor{keyword}{const}\ geometry\_msgs::msg::PoseStamped\&\ input,}
+\DoxyCodeLine{00116\ \ \ \ \ geometry\_msgs::msg::PoseStamped\&\ output,}
+\DoxyCodeLine{00117\ \ \ \ \ \textcolor{keyword}{const}\ std::string\&\ target\_frame)\ \textcolor{keyword}{const};\ }
+\DoxyCodeLine{00118\ }
+\DoxyCodeLine{00128\ \ \ \mbox{\hyperlink{namespacecoordinate__transformer_a13795b8dd04726424a3ead73c6f551c1}{ResultStatus}}\ \mbox{\hyperlink{classcoordinate__transformer_1_1CoordinateTransformer_a77dfc46da3caee10087a273633c9e8cb}{inverseConvert}}(}
+\DoxyCodeLine{00129\ \ \ \ \ \textcolor{keyword}{const}\ geometry\_msgs::msg::PoseStamped\&\ input,}
+\DoxyCodeLine{00130\ \ \ \ \ geometry\_msgs::msg::PoseStamped\&\ output,}
+\DoxyCodeLine{00131\ \ \ \ \ \textcolor{keyword}{const}\ std::string\&\ source\_frame)\ \textcolor{keyword}{const};\ }
+\DoxyCodeLine{00132\ }
+\DoxyCodeLine{00138\ \ \ \textcolor{keyword}{const}\ rclcpp::Logger\ \&\ \mbox{\hyperlink{classcoordinate__transformer_1_1CoordinateTransformer_a6b20c24d57829307e69b30c58983bbab}{getLogger}}()\ \textcolor{keyword}{const};\ }
+\DoxyCodeLine{00139\ }
+\DoxyCodeLine{00140\ \textcolor{keyword}{private}:}
+\DoxyCodeLine{00147\ \ \ \textcolor{keywordtype}{void}\ initialize(std::shared\_ptr<tf2\_ros::Buffer>\ tf\_buffer);}
+\DoxyCodeLine{00148\ }
+\DoxyCodeLine{00158\ \ \ \textcolor{keywordtype}{bool}\ checkBounds(\textcolor{keyword}{const}\ geometry\_msgs::msg::Point\&\ point,\ \textcolor{keyword}{const}\ std::string\&\ frame\_id)\ \textcolor{keyword}{const};\ }
+\DoxyCodeLine{00159\ }
+\DoxyCodeLine{00167\ \ \ rcl\_interfaces::msg::SetParametersResult\ parametersCallback(}
+\DoxyCodeLine{00168\ \ \ \ \ \textcolor{keyword}{const}\ std::vector<rclcpp::Parameter>\&\ parameters);}
+\DoxyCodeLine{00169\ }
+\DoxyCodeLine{00170\ \ \ rclcpp::Node::SharedPtr\ node\_;\ }
+\DoxyCodeLine{00171\ \ \ rclcpp::Logger\ logger\_;\ \ \ \ \ \ }
+\DoxyCodeLine{00172\ \ \ std::shared\_ptr<tf2\_ros::Buffer>\ tf\_buffer\_;\ }
+\DoxyCodeLine{00173\ \ \ std::shared\_ptr<tf2\_ros::TransformListener>\ tf\_listener\_;\ }
+\DoxyCodeLine{00174\ \ \ std::shared\_ptr<tf2\_ros::StaticTransformBroadcaster>\ static\_tf\_broadcaster\_;\ }
+\DoxyCodeLine{00175\ }
+\DoxyCodeLine{00176\ \ \ std::map<std::string,\ Bounds>\ bounds\_;}
+\DoxyCodeLine{00177\ \ \ }
+\DoxyCodeLine{00178\ \ \ \textcolor{keyword}{mutable}\ std::mutex\ bounds\_mutex\_;\ }
+\DoxyCodeLine{00179\ }
+\DoxyCodeLine{00180\ \ \ rclcpp::node\_interfaces::OnSetParametersCallbackHandle::SharedPtr\ param\_callback\_handle\_;}
+\DoxyCodeLine{00181\ }
+\DoxyCodeLine{00182\ \};\ \textcolor{comment}{//\ class\ CoordinateTransformer}}
+\DoxyCodeLine{00183\ }
+\DoxyCodeLine{00184\ \}\ \textcolor{comment}{//\ namespace\ coordinate\_transformer}}
+
+\end{DoxyCode}

@@ -1,0 +1,9 @@
+<map id="include/coordinate_transformer/coordinate_transformer.hpp" name="include/coordinate_transformer/coordinate_transformer.hpp">
+<area shape="rect" id="Node000001" title="Заголовочный файл для класса CoordinateTransformer, отвечающего за преобразования координат и управле..." alt="" coords="241,5,420,60"/>
+<area shape="rect" id="Node000002" href="$coordinate__transformer_8cpp.html" title="Файл реализации для класса CoordinateTransformer." alt="" coords="5,115,229,141"/>
+<area shape="poly" id="edge1_Node000001_Node000002" title=" " alt="" coords="259,68,144,118,142,113,257,63"/>
+<area shape="rect" id="Node000003" href="$test__transformer__node_8cpp.html" title="Реализация ROS 2 node для тестирования класса CoordinateTransformer через Topic`и" alt="" coords="253,108,408,148"/>
+<area shape="poly" id="edge2_Node000001_Node000003" title=" " alt="" coords="333,74,333,108,328,108,328,74"/>
+<area shape="rect" id="Node000004" href="$test__transformer__logic_8cpp.html" title="Unit tests для валидации логики класса CoordinateTransformer, используя GTest." alt="" coords="432,108,621,148"/>
+<area shape="poly" id="edge3_Node000001_Node000004" title=" " alt="" coords="399,64,488,105,486,110,397,68"/>
+</map>

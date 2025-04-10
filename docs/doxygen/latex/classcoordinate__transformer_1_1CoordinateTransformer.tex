@@ -1,0 +1,219 @@
+\doxysection{coordinate\+\_\+transformer\+::Coordinate\+Transformer Class Reference}
+\hypertarget{classcoordinate__transformer_1_1CoordinateTransformer}{}\label{classcoordinate__transformer_1_1CoordinateTransformer}\index{coordinate\_transformer::CoordinateTransformer@{coordinate\_transformer::CoordinateTransformer}}
+
+
+{\ttfamily \#include $<$coordinate\+\_\+transformer.\+hpp$>$}
+
+\doxysubsubsection*{Public Member Functions}
+\begin{DoxyCompactItemize}
+\item 
+\mbox{\hyperlink{classcoordinate__transformer_1_1CoordinateTransformer_ae783321a526f9b45f784ea4ee2203fd7}{Coordinate\+Transformer}} (rclcpp\+::\+Node\+::\+Shared\+Ptr node)
+\begin{DoxyCompactList}\small\item\em Конструктор по умолчанию. \end{DoxyCompactList}\item 
+\mbox{\hyperlink{classcoordinate__transformer_1_1CoordinateTransformer_a54de011a1217998f7628de81e0338b51}{Coordinate\+Transformer}} (rclcpp\+::\+Node\+::\+Shared\+Ptr node, std\+::shared\+\_\+ptr$<$ tf2\+\_\+ros\+::\+Buffer $>$ tf\+\_\+buffer)
+\begin{DoxyCompactList}\small\item\em Конструктор для юнит-\/тестирования с инъекцией зависимостей. \end{DoxyCompactList}\item 
+\mbox{\hyperlink{namespacecoordinate__transformer_a13795b8dd04726424a3ead73c6f551c1}{Result\+Status}} \mbox{\hyperlink{classcoordinate__transformer_1_1CoordinateTransformer_a272e9aa4347ef50ebee0bdcb0889c76d}{load\+Config}} (const std\+::string \&yaml\+\_\+path)
+\begin{DoxyCompactList}\small\item\em Загружает конфигурацию из YAML-\/файла. \end{DoxyCompactList}\item 
+void \mbox{\hyperlink{classcoordinate__transformer_1_1CoordinateTransformer_a62277306a6b9230b9b6fd196a00a5ace}{add\+Transform}} (const geometry\+\_\+msgs\+::msg\+::\+Transform\+Stamped \&transform)
+\begin{DoxyCompactList}\small\item\em Добавляет и публикует единичную статическую трансформацию. \end{DoxyCompactList}\item 
+void \mbox{\hyperlink{classcoordinate__transformer_1_1CoordinateTransformer_a1be44e4fc4907e30a681df867caf3f14}{set\+Bounds}} (const std\+::string \&frame\+\_\+id, const geometry\+\_\+msgs\+::msg\+::\+Point \&min, const geometry\+\_\+msgs\+::msg\+::\+Point \&max)
+\begin{DoxyCompactList}\small\item\em Устанавливает или обновляет границы для заданной системы координат. \end{DoxyCompactList}\item 
+void \mbox{\hyperlink{classcoordinate__transformer_1_1CoordinateTransformer_aee50996de8804216a710b7a33d747f28}{remove\+Bounds}} (const std\+::string \&frame\+\_\+id)
+\begin{DoxyCompactList}\small\item\em Удаляет ранее установленные границы для указанной системы координат. \end{DoxyCompactList}\item 
+\mbox{\hyperlink{namespacecoordinate__transformer_a13795b8dd04726424a3ead73c6f551c1}{Result\+Status}} \mbox{\hyperlink{classcoordinate__transformer_1_1CoordinateTransformer_a0ad6d96036bfeb2f286f56b575644036}{convert}} (const geometry\+\_\+msgs\+::msg\+::\+Pose\+Stamped \&input, geometry\+\_\+msgs\+::msg\+::\+Pose\+Stamped \&output, const std\+::string \&target\+\_\+frame) const
+\begin{DoxyCompactList}\small\item\em Преобразует позу из исходной системы координат в целевую. \end{DoxyCompactList}\item 
+\mbox{\hyperlink{namespacecoordinate__transformer_a13795b8dd04726424a3ead73c6f551c1}{Result\+Status}} \mbox{\hyperlink{classcoordinate__transformer_1_1CoordinateTransformer_a77dfc46da3caee10087a273633c9e8cb}{inverse\+Convert}} (const geometry\+\_\+msgs\+::msg\+::\+Pose\+Stamped \&input, geometry\+\_\+msgs\+::msg\+::\+Pose\+Stamped \&output, const std\+::string \&source\+\_\+frame) const
+\begin{DoxyCompactList}\small\item\em Преобразует позу из текущей системы координат в заданную исходную систему. \end{DoxyCompactList}\item 
+const rclcpp\+::\+Logger \& \mbox{\hyperlink{classcoordinate__transformer_1_1CoordinateTransformer_a6b20c24d57829307e69b30c58983bbab}{get\+Logger}} () const
+\begin{DoxyCompactList}\small\item\em Возвращает логгер узла. \end{DoxyCompactList}\end{DoxyCompactItemize}
+\doxysubsubsection*{Friends}
+\begin{DoxyCompactItemize}
+\item 
+class \mbox{\hyperlink{classcoordinate__transformer_1_1CoordinateTransformer_a1069f851b255b6c6a2646824a9b52dda}{\+::\+Test\+Coordinate\+Transformer}}
+\end{DoxyCompactItemize}
+
+
+\doxysubsection{Constructor \& Destructor Documentation}
+\Hypertarget{classcoordinate__transformer_1_1CoordinateTransformer_ae783321a526f9b45f784ea4ee2203fd7}\label{classcoordinate__transformer_1_1CoordinateTransformer_ae783321a526f9b45f784ea4ee2203fd7} 
+\index{coordinate\_transformer::CoordinateTransformer@{coordinate\_transformer::CoordinateTransformer}!CoordinateTransformer@{CoordinateTransformer}}
+\index{CoordinateTransformer@{CoordinateTransformer}!coordinate\_transformer::CoordinateTransformer@{coordinate\_transformer::CoordinateTransformer}}
+\doxysubsubsection{\texorpdfstring{CoordinateTransformer()}{CoordinateTransformer()}\hspace{0.1cm}{\footnotesize\ttfamily [1/2]}}
+{\footnotesize\ttfamily coordinate\+\_\+transformer\+::\+Coordinate\+Transformer\+::\+Coordinate\+Transformer (\begin{DoxyParamCaption}\item[{rclcpp\+::\+Node\+::\+Shared\+Ptr}]{node }\end{DoxyParamCaption})\hspace{0.3cm}{\ttfamily [explicit]}}
+
+
+
+Конструктор по умолчанию. 
+
+Инициализирует \doxylink{classcoordinate__transformer_1_1CoordinateTransformer}{Coordinate\+Transformer}, используя переданный узел ROS 2. Создает внутренний буфер TF2 и слушатель трансформаций. 
+\begin{DoxyParams}{Parameters}
+{\em node} & Умный указатель на узел ROS 2. Не должен быть nullptr. \\
+\hline
+\end{DoxyParams}
+
+\begin{DoxyExceptions}{Exceptions}
+{\em std\+::invalid\+\_\+argument} & если node равен nullptr. \\
+\hline
+\end{DoxyExceptions}
+\Hypertarget{classcoordinate__transformer_1_1CoordinateTransformer_a54de011a1217998f7628de81e0338b51}\label{classcoordinate__transformer_1_1CoordinateTransformer_a54de011a1217998f7628de81e0338b51} 
+\index{coordinate\_transformer::CoordinateTransformer@{coordinate\_transformer::CoordinateTransformer}!CoordinateTransformer@{CoordinateTransformer}}
+\index{CoordinateTransformer@{CoordinateTransformer}!coordinate\_transformer::CoordinateTransformer@{coordinate\_transformer::CoordinateTransformer}}
+\doxysubsubsection{\texorpdfstring{CoordinateTransformer()}{CoordinateTransformer()}\hspace{0.1cm}{\footnotesize\ttfamily [2/2]}}
+{\footnotesize\ttfamily coordinate\+\_\+transformer\+::\+Coordinate\+Transformer\+::\+Coordinate\+Transformer (\begin{DoxyParamCaption}\item[{rclcpp\+::\+Node\+::\+Shared\+Ptr}]{node,  }\item[{std\+::shared\+\_\+ptr$<$ tf2\+\_\+ros\+::\+Buffer $>$}]{tf\+\_\+buffer }\end{DoxyParamCaption})}
+
+
+
+Конструктор для юнит-\/тестирования с инъекцией зависимостей. 
+
+Инициализирует \doxylink{classcoordinate__transformer_1_1CoordinateTransformer}{Coordinate\+Transformer}, используя переданный узел ROS 2 и предоставленный буфер TF2. Не создает внутреннего слушателя TF2. 
+\begin{DoxyParams}{Parameters}
+{\em node} & Умный указатель на узел ROS 2. Не должен быть nullptr. \\
+\hline
+{\em tf\+\_\+buffer} & Умный указатель на буфер TF2 (например, мок-\/объект). Не должен быть nullptr. \\
+\hline
+\end{DoxyParams}
+
+\begin{DoxyExceptions}{Exceptions}
+{\em std\+::invalid\+\_\+argument} & если node или tf\+\_\+buffer равны nullptr. \\
+\hline
+\end{DoxyExceptions}
+
+
+\doxysubsection{Member Function Documentation}
+\Hypertarget{classcoordinate__transformer_1_1CoordinateTransformer_a62277306a6b9230b9b6fd196a00a5ace}\label{classcoordinate__transformer_1_1CoordinateTransformer_a62277306a6b9230b9b6fd196a00a5ace} 
+\index{coordinate\_transformer::CoordinateTransformer@{coordinate\_transformer::CoordinateTransformer}!addTransform@{addTransform}}
+\index{addTransform@{addTransform}!coordinate\_transformer::CoordinateTransformer@{coordinate\_transformer::CoordinateTransformer}}
+\doxysubsubsection{\texorpdfstring{addTransform()}{addTransform()}}
+{\footnotesize\ttfamily void coordinate\+\_\+transformer\+::\+Coordinate\+Transformer\+::add\+Transform (\begin{DoxyParamCaption}\item[{const geometry\+\_\+msgs\+::msg\+::\+Transform\+Stamped \&}]{transform }\end{DoxyParamCaption})}
+
+
+
+Добавляет и публикует единичную статическую трансформацию. 
+
+Публикует переданную трансформацию через Static\+Transform\+Broadcaster. 
+\begin{DoxyParams}{Parameters}
+{\em transform} & Сообщение geometry\+\_\+msgs\+::msg\+::\+Transform\+Stamped, содержащее трансформацию. \\
+\hline
+\end{DoxyParams}
+\Hypertarget{classcoordinate__transformer_1_1CoordinateTransformer_a0ad6d96036bfeb2f286f56b575644036}\label{classcoordinate__transformer_1_1CoordinateTransformer_a0ad6d96036bfeb2f286f56b575644036} 
+\index{coordinate\_transformer::CoordinateTransformer@{coordinate\_transformer::CoordinateTransformer}!convert@{convert}}
+\index{convert@{convert}!coordinate\_transformer::CoordinateTransformer@{coordinate\_transformer::CoordinateTransformer}}
+\doxysubsubsection{\texorpdfstring{convert()}{convert()}}
+{\footnotesize\ttfamily \mbox{\hyperlink{namespacecoordinate__transformer_a13795b8dd04726424a3ead73c6f551c1}{Result\+Status}} coordinate\+\_\+transformer\+::\+Coordinate\+Transformer\+::convert (\begin{DoxyParamCaption}\item[{const geometry\+\_\+msgs\+::msg\+::\+Pose\+Stamped \&}]{input,  }\item[{geometry\+\_\+msgs\+::msg\+::\+Pose\+Stamped \&}]{output,  }\item[{const std\+::string \&}]{target\+\_\+frame }\end{DoxyParamCaption}) const}
+
+
+
+Преобразует позу из исходной системы координат в целевую. 
+
+Использует буфер TF2 для выполнения преобразования. Проверяет, находится ли результирующая точка в пределах границ, установленных для target\+\_\+frame. 
+\begin{DoxyParams}{Parameters}
+{\em input} & Входная поза (Pose\+Stamped), frame\+\_\+id которой указывает исходную систему координат. \\
+\hline
+{\em output} & Выходная поза (Pose\+Stamped), в которую будет записан результат преобразования в системе target\+\_\+frame. \\
+\hline
+{\em target\+\_\+frame} & Идентификатор целевой системы координат (TF frame ID). \\
+\hline
+\end{DoxyParams}
+\begin{DoxyReturn}{Returns}
+Статус операции\+: SUCCESS, OUT\+\_\+\+OF\+\_\+\+BOUNDS, TRANSFORM\+\_\+\+NOT\+\_\+\+FOUND, INVALID\+\_\+\+INPUT или CONFIGURATION\+\_\+\+ERROR. 
+\end{DoxyReturn}
+\Hypertarget{classcoordinate__transformer_1_1CoordinateTransformer_a6b20c24d57829307e69b30c58983bbab}\label{classcoordinate__transformer_1_1CoordinateTransformer_a6b20c24d57829307e69b30c58983bbab} 
+\index{coordinate\_transformer::CoordinateTransformer@{coordinate\_transformer::CoordinateTransformer}!getLogger@{getLogger}}
+\index{getLogger@{getLogger}!coordinate\_transformer::CoordinateTransformer@{coordinate\_transformer::CoordinateTransformer}}
+\doxysubsubsection{\texorpdfstring{getLogger()}{getLogger()}}
+{\footnotesize\ttfamily const rclcpp\+::\+Logger \& coordinate\+\_\+transformer\+::\+Coordinate\+Transformer\+::get\+Logger (\begin{DoxyParamCaption}{ }\end{DoxyParamCaption}) const}
+
+
+
+Возвращает логгер узла. 
+
+Предоставляет доступ к логгеру, используемому объектом \doxylink{classcoordinate__transformer_1_1CoordinateTransformer}{Coordinate\+Transformer}, для вывода сообщений. \begin{DoxyReturn}{Returns}
+Константная ссылка на объект rclcpp\+::\+Logger. 
+\end{DoxyReturn}
+\Hypertarget{classcoordinate__transformer_1_1CoordinateTransformer_a77dfc46da3caee10087a273633c9e8cb}\label{classcoordinate__transformer_1_1CoordinateTransformer_a77dfc46da3caee10087a273633c9e8cb} 
+\index{coordinate\_transformer::CoordinateTransformer@{coordinate\_transformer::CoordinateTransformer}!inverseConvert@{inverseConvert}}
+\index{inverseConvert@{inverseConvert}!coordinate\_transformer::CoordinateTransformer@{coordinate\_transformer::CoordinateTransformer}}
+\doxysubsubsection{\texorpdfstring{inverseConvert()}{inverseConvert()}}
+{\footnotesize\ttfamily \mbox{\hyperlink{namespacecoordinate__transformer_a13795b8dd04726424a3ead73c6f551c1}{Result\+Status}} coordinate\+\_\+transformer\+::\+Coordinate\+Transformer\+::inverse\+Convert (\begin{DoxyParamCaption}\item[{const geometry\+\_\+msgs\+::msg\+::\+Pose\+Stamped \&}]{input,  }\item[{geometry\+\_\+msgs\+::msg\+::\+Pose\+Stamped \&}]{output,  }\item[{const std\+::string \&}]{source\+\_\+frame }\end{DoxyParamCaption}) const}
+
+
+
+Преобразует позу из текущей системы координат в заданную исходную систему. 
+
+Использует буфер TF2 для выполнения преобразования из input.\+header.\+frame\+\_\+id в source\+\_\+frame. Проверяет, находится ли результирующая точка в пределах границ, установленных для source\+\_\+frame. 
+\begin{DoxyParams}{Parameters}
+{\em input} & Входная поза (Pose\+Stamped) в некоторой системе координат. \\
+\hline
+{\em output} & Выходная поза (Pose\+Stamped), в которую будет записан результат преобразования в системе source\+\_\+frame. \\
+\hline
+{\em source\+\_\+frame} & Идентификатор системы координат (TF frame ID), в которую нужно преобразовать. \\
+\hline
+\end{DoxyParams}
+\begin{DoxyReturn}{Returns}
+Статус операции\+: SUCCESS, OUT\+\_\+\+OF\+\_\+\+BOUNDS, TRANSFORM\+\_\+\+NOT\+\_\+\+FOUND, INVALID\+\_\+\+INPUT или CONFIGURATION\+\_\+\+ERROR. 
+\end{DoxyReturn}
+\Hypertarget{classcoordinate__transformer_1_1CoordinateTransformer_a272e9aa4347ef50ebee0bdcb0889c76d}\label{classcoordinate__transformer_1_1CoordinateTransformer_a272e9aa4347ef50ebee0bdcb0889c76d} 
+\index{coordinate\_transformer::CoordinateTransformer@{coordinate\_transformer::CoordinateTransformer}!loadConfig@{loadConfig}}
+\index{loadConfig@{loadConfig}!coordinate\_transformer::CoordinateTransformer@{coordinate\_transformer::CoordinateTransformer}}
+\doxysubsubsection{\texorpdfstring{loadConfig()}{loadConfig()}}
+{\footnotesize\ttfamily \mbox{\hyperlink{namespacecoordinate__transformer_a13795b8dd04726424a3ead73c6f551c1}{Result\+Status}} coordinate\+\_\+transformer\+::\+Coordinate\+Transformer\+::load\+Config (\begin{DoxyParamCaption}\item[{const std\+::string \&}]{yaml\+\_\+path }\end{DoxyParamCaption})}
+
+
+
+Загружает конфигурацию из YAML-\/файла. 
+
+Загружает статические трансформации и определения границ из указанного файла. Загруженные статические трансформации публикуются через Static\+Transform\+Broadcaster. Загруженные границы сохраняются внутри объекта и объявляются/устанавливаются как ROS-\/параметры. 
+\begin{DoxyParams}{Parameters}
+{\em yaml\+\_\+path} & Путь к файлу конфигурации в формате YAML. \\
+\hline
+\end{DoxyParams}
+\begin{DoxyReturn}{Returns}
+Статус операции\+: SUCCESS в случае успеха, CONFIGURATION\+\_\+\+ERROR при ошибке. 
+\end{DoxyReturn}
+\Hypertarget{classcoordinate__transformer_1_1CoordinateTransformer_aee50996de8804216a710b7a33d747f28}\label{classcoordinate__transformer_1_1CoordinateTransformer_aee50996de8804216a710b7a33d747f28} 
+\index{coordinate\_transformer::CoordinateTransformer@{coordinate\_transformer::CoordinateTransformer}!removeBounds@{removeBounds}}
+\index{removeBounds@{removeBounds}!coordinate\_transformer::CoordinateTransformer@{coordinate\_transformer::CoordinateTransformer}}
+\doxysubsubsection{\texorpdfstring{removeBounds()}{removeBounds()}}
+{\footnotesize\ttfamily void coordinate\+\_\+transformer\+::\+Coordinate\+Transformer\+::remove\+Bounds (\begin{DoxyParamCaption}\item[{const std\+::string \&}]{frame\+\_\+id }\end{DoxyParamCaption})}
+
+
+
+Удаляет ранее установленные границы для указанной системы координат. 
+
+Если для frame\+\_\+id были установлены границы, они удаляются из внутреннего хранилища. Соответствующие ROS-\/параметры не удаляются, но и не используются после вызова этого метода. 
+\begin{DoxyParams}{Parameters}
+{\em frame\+\_\+id} & Идентификатор системы координат (TF frame ID), для которой удаляются границы. \\
+\hline
+\end{DoxyParams}
+\Hypertarget{classcoordinate__transformer_1_1CoordinateTransformer_a1be44e4fc4907e30a681df867caf3f14}\label{classcoordinate__transformer_1_1CoordinateTransformer_a1be44e4fc4907e30a681df867caf3f14} 
+\index{coordinate\_transformer::CoordinateTransformer@{coordinate\_transformer::CoordinateTransformer}!setBounds@{setBounds}}
+\index{setBounds@{setBounds}!coordinate\_transformer::CoordinateTransformer@{coordinate\_transformer::CoordinateTransformer}}
+\doxysubsubsection{\texorpdfstring{setBounds()}{setBounds()}}
+{\footnotesize\ttfamily void coordinate\+\_\+transformer\+::\+Coordinate\+Transformer\+::set\+Bounds (\begin{DoxyParamCaption}\item[{const std\+::string \&}]{frame\+\_\+id,  }\item[{const geometry\+\_\+msgs\+::msg\+::\+Point \&}]{min,  }\item[{const geometry\+\_\+msgs\+::msg\+::\+Point \&}]{max }\end{DoxyParamCaption})}
+
+
+
+Устанавливает или обновляет границы для заданной системы координат. 
+
+Сохраняет переданные минимальные и максимальные координаты для указанного frame\+\_\+id. Также объявляет и устанавливает соответствующие ROS-\/параметры для динамического управления. Если min \texorpdfstring{$>$}{>} max по любой оси, границы не устанавливаются и выводится ошибка. 
+\begin{DoxyParams}{Parameters}
+{\em frame\+\_\+id} & Идентификатор системы координат (TF frame ID). \\
+\hline
+{\em min} & Структура geometry\+\_\+msgs\+::msg\+::\+Point, содержащая минимальные координаты (x, y, z). \\
+\hline
+{\em max} & Структура geometry\+\_\+msgs\+::msg\+::\+Point, содержащая максимальные координаты (x, y, z). \\
+\hline
+\end{DoxyParams}
+
+
+\doxysubsection{Friends And Related Symbol Documentation}
+\Hypertarget{classcoordinate__transformer_1_1CoordinateTransformer_a1069f851b255b6c6a2646824a9b52dda}\label{classcoordinate__transformer_1_1CoordinateTransformer_a1069f851b255b6c6a2646824a9b52dda} 
+\index{coordinate\_transformer::CoordinateTransformer@{coordinate\_transformer::CoordinateTransformer}!::TestCoordinateTransformer@{::TestCoordinateTransformer}}
+\index{::TestCoordinateTransformer@{::TestCoordinateTransformer}!coordinate\_transformer::CoordinateTransformer@{coordinate\_transformer::CoordinateTransformer}}
+\doxysubsubsection{\texorpdfstring{::TestCoordinateTransformer}{::TestCoordinateTransformer}}
+{\footnotesize\ttfamily friend class \mbox{\hyperlink{classTestCoordinateTransformer}{\+::\+Test\+Coordinate\+Transformer}}\hspace{0.3cm}{\ttfamily [friend]}}
+
+
+
+The documentation for this class was generated from the following files\+:\begin{DoxyCompactItemize}
+\item 
+include/coordinate\+\_\+transformer/\mbox{\hyperlink{coordinate__transformer_8hpp}{coordinate\+\_\+transformer.\+hpp}}\item 
+src/\mbox{\hyperlink{coordinate__transformer_8cpp}{coordinate\+\_\+transformer.\+cpp}}\end{DoxyCompactItemize}

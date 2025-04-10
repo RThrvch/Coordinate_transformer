@@ -1,0 +1,58 @@
+\doxysection{coordinate\+\_\+transformer Namespace Reference}
+\hypertarget{namespacecoordinate__transformer}{}\label{namespacecoordinate__transformer}\index{coordinate\_transformer@{coordinate\_transformer}}
+\doxysubsubsection*{Classes}
+\begin{DoxyCompactItemize}
+\item 
+struct \mbox{\hyperlink{structcoordinate__transformer_1_1Bounds}{Bounds}}
+\item 
+class \mbox{\hyperlink{classcoordinate__transformer_1_1CoordinateTransformer}{Coordinate\+Transformer}}
+\item 
+class \mbox{\hyperlink{classcoordinate__transformer_1_1TestTransformerNode}{Test\+Transformer\+Node}}
+\end{DoxyCompactItemize}
+\doxysubsubsection*{Enumerations}
+\begin{DoxyCompactItemize}
+\item 
+enum class \mbox{\hyperlink{namespacecoordinate__transformer_a13795b8dd04726424a3ead73c6f551c1}{Result\+Status}} \{ \newline
+\mbox{\hyperlink{namespacecoordinate__transformer_a13795b8dd04726424a3ead73c6f551c1ad0749aaba8b833466dfcbb0428e4f89c}{SUCCESS}}
+, \mbox{\hyperlink{namespacecoordinate__transformer_a13795b8dd04726424a3ead73c6f551c1a71e5e8b8caeedea08ea1f0e75143e047}{OUT\+\_\+\+OF\+\_\+\+BOUNDS}}
+, \mbox{\hyperlink{namespacecoordinate__transformer_a13795b8dd04726424a3ead73c6f551c1af9f23aefae27579a1e7483d6c23899d0}{TRANSFORM\+\_\+\+NOT\+\_\+\+FOUND}}
+, \mbox{\hyperlink{namespacecoordinate__transformer_a13795b8dd04726424a3ead73c6f551c1ac063281d4adc16ebccfec66aa885b4dd}{INVALID\+\_\+\+INPUT}}
+, \newline
+\mbox{\hyperlink{namespacecoordinate__transformer_a13795b8dd04726424a3ead73c6f551c1aaa595e66a778dba96326c52f53662bb6}{CONFIGURATION\+\_\+\+ERROR}}
+ \}
+\begin{DoxyCompactList}\small\item\em Перечисление, представляющее статус результата операции преобразования координат. \end{DoxyCompactList}\end{DoxyCompactItemize}
+
+
+\doxysubsection{Enumeration Type Documentation}
+\Hypertarget{namespacecoordinate__transformer_a13795b8dd04726424a3ead73c6f551c1}\label{namespacecoordinate__transformer_a13795b8dd04726424a3ead73c6f551c1} 
+\index{coordinate\_transformer@{coordinate\_transformer}!ResultStatus@{ResultStatus}}
+\index{ResultStatus@{ResultStatus}!coordinate\_transformer@{coordinate\_transformer}}
+\doxysubsubsection{\texorpdfstring{ResultStatus}{ResultStatus}}
+{\footnotesize\ttfamily enum class \mbox{\hyperlink{namespacecoordinate__transformer_a13795b8dd04726424a3ead73c6f551c1}{coordinate\+\_\+transformer\+::\+Result\+Status}}\hspace{0.3cm}{\ttfamily [strong]}}
+
+
+
+Перечисление, представляющее статус результата операции преобразования координат. 
+
+\begin{DoxyEnumFields}{Enumerator}
+\raisebox{\heightof{T}}[0pt][0pt]{\index{SUCCESS@{SUCCESS}!coordinate\_transformer@{coordinate\_transformer}}\index{coordinate\_transformer@{coordinate\_transformer}!SUCCESS@{SUCCESS}}}\Hypertarget{namespacecoordinate__transformer_a13795b8dd04726424a3ead73c6f551c1ad0749aaba8b833466dfcbb0428e4f89c}\label{namespacecoordinate__transformer_a13795b8dd04726424a3ead73c6f551c1ad0749aaba8b833466dfcbb0428e4f89c} 
+SUCCESS&Операция успешно завершена. \\
+\hline
+
+\raisebox{\heightof{T}}[0pt][0pt]{\index{OUT\_OF\_BOUNDS@{OUT\_OF\_BOUNDS}!coordinate\_transformer@{coordinate\_transformer}}\index{coordinate\_transformer@{coordinate\_transformer}!OUT\_OF\_BOUNDS@{OUT\_OF\_BOUNDS}}}\Hypertarget{namespacecoordinate__transformer_a13795b8dd04726424a3ead73c6f551c1a71e5e8b8caeedea08ea1f0e75143e047}\label{namespacecoordinate__transformer_a13795b8dd04726424a3ead73c6f551c1a71e5e8b8caeedea08ea1f0e75143e047} 
+OUT\+\_\+\+OF\+\_\+\+BOUNDS&Результат преобразования вышел за установленные границы. \\
+\hline
+
+\raisebox{\heightof{T}}[0pt][0pt]{\index{TRANSFORM\_NOT\_FOUND@{TRANSFORM\_NOT\_FOUND}!coordinate\_transformer@{coordinate\_transformer}}\index{coordinate\_transformer@{coordinate\_transformer}!TRANSFORM\_NOT\_FOUND@{TRANSFORM\_NOT\_FOUND}}}\Hypertarget{namespacecoordinate__transformer_a13795b8dd04726424a3ead73c6f551c1af9f23aefae27579a1e7483d6c23899d0}\label{namespacecoordinate__transformer_a13795b8dd04726424a3ead73c6f551c1af9f23aefae27579a1e7483d6c23899d0} 
+TRANSFORM\+\_\+\+NOT\+\_\+\+FOUND&Необходимая трансформация между системами координат не найдена. \\
+\hline
+
+\raisebox{\heightof{T}}[0pt][0pt]{\index{INVALID\_INPUT@{INVALID\_INPUT}!coordinate\_transformer@{coordinate\_transformer}}\index{coordinate\_transformer@{coordinate\_transformer}!INVALID\_INPUT@{INVALID\_INPUT}}}\Hypertarget{namespacecoordinate__transformer_a13795b8dd04726424a3ead73c6f551c1ac063281d4adc16ebccfec66aa885b4dd}\label{namespacecoordinate__transformer_a13795b8dd04726424a3ead73c6f551c1ac063281d4adc16ebccfec66aa885b4dd} 
+INVALID\+\_\+\+INPUT&Входные данные (например, Pose\+Stamped) некорректны. \\
+\hline
+
+\raisebox{\heightof{T}}[0pt][0pt]{\index{CONFIGURATION\_ERROR@{CONFIGURATION\_ERROR}!coordinate\_transformer@{coordinate\_transformer}}\index{coordinate\_transformer@{coordinate\_transformer}!CONFIGURATION\_ERROR@{CONFIGURATION\_ERROR}}}\Hypertarget{namespacecoordinate__transformer_a13795b8dd04726424a3ead73c6f551c1aaa595e66a778dba96326c52f53662bb6}\label{namespacecoordinate__transformer_a13795b8dd04726424a3ead73c6f551c1aaa595e66a778dba96326c52f53662bb6} 
+CONFIGURATION\+\_\+\+ERROR&Ошибка в конфигурации (например, при загрузке YAML). \\
+\hline
+
+\end{DoxyEnumFields}

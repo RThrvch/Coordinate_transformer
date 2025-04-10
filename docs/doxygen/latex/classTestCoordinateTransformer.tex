@@ -1,0 +1,294 @@
+\doxysection{Test\+Coordinate\+Transformer Class Reference}
+\hypertarget{classTestCoordinateTransformer}{}\label{classTestCoordinateTransformer}\index{TestCoordinateTransformer@{TestCoordinateTransformer}}
+
+
+Тестовый класс для Coordinate\+Transformer.  
+
+
+
+
+Inheritance diagram for Test\+Coordinate\+Transformer\+:\nopagebreak
+\begin{figure}[H]
+\begin{center}
+\leavevmode
+\includegraphics[width=228pt]{classTestCoordinateTransformer__inherit__graph}
+\end{center}
+\end{figure}
+
+
+Collaboration diagram for Test\+Coordinate\+Transformer\+:\nopagebreak
+\begin{figure}[H]
+\begin{center}
+\leavevmode
+\includegraphics[width=228pt]{classTestCoordinateTransformer__coll__graph}
+\end{center}
+\end{figure}
+\doxysubsubsection*{Protected Member Functions}
+\begin{DoxyCompactItemize}
+\item 
+void \mbox{\hyperlink{classTestCoordinateTransformer_a7eeb01ed3cf4ca1a1a34a9c53b31006f}{Initialize\+Transformer}} (bool provide\+\_\+external\+\_\+buffer)
+\begin{DoxyCompactList}\small\item\em Инициализирует ресурсы для теста. \end{DoxyCompactList}\item 
+void \mbox{\hyperlink{classTestCoordinateTransformer_ab452bab016415e7e713427b4cd4c735e}{Set\+Up}} () override
+\begin{DoxyCompactList}\small\item\em Метод настройки, выполняемый перед каждым тестом GTest. \end{DoxyCompactList}\item 
+void \mbox{\hyperlink{classTestCoordinateTransformer_ad791a254eed8f6337606787dfc08b70b}{Tear\+Down}} () override
+\begin{DoxyCompactList}\small\item\em Метод очистки, выполняемый после каждого теста GTest. \end{DoxyCompactList}\item 
+void \mbox{\hyperlink{classTestCoordinateTransformer_a4b339f8fca1c7b9c4b79f429cd471e45}{add\+\_\+tf\+\_\+to\+\_\+buffer\+\_\+direct}} (const std\+::string \&parent, const std\+::string \&child, double x, double y, double z, double qx=0, double qy=0, double qz=0, double qw=1, bool is\+\_\+static=false)
+\begin{DoxyCompactList}\small\item\em Добавляет трансформацию непосредственно в тестовый буфер TF2. \end{DoxyCompactList}\item 
+void \mbox{\hyperlink{classTestCoordinateTransformer_a9b07a33aec690377a6e996f9c14d63ec}{publish\+\_\+static\+\_\+tf}} (const std\+::string \&parent, const std\+::string \&child, double x, double y, double z, double qx=0, double qy=0, double qz=0, double qw=1)
+\begin{DoxyCompactList}\small\item\em Публикует статическую трансформацию с использованием Static\+Transform\+Broadcaster. \end{DoxyCompactList}\item 
+void \mbox{\hyperlink{classTestCoordinateTransformer_a664487d7eb3d63b47e0bb0d565280622}{check\+\_\+conversion\+\_\+status}} (const std\+::string \&source\+\_\+frame, const geometry\+\_\+msgs\+::msg\+::\+Point \&source\+\_\+point, const std\+::string \&target\+\_\+frame, \mbox{\hyperlink{namespacecoordinate__transformer_a13795b8dd04726424a3ead73c6f551c1}{coordinate\+\_\+transformer\+::\+Result\+Status}} expected\+\_\+status, const std\+::string \&message="{}"{})
+\begin{DoxyCompactList}\small\item\em Проверяет результат операции преобразования координат. \end{DoxyCompactList}\item 
+void \mbox{\hyperlink{classTestCoordinateTransformer_af91f9f6995d8c35dacb9d080a30bedb2}{add\+\_\+identity\+\_\+tf}} (const std\+::string \&frame\+\_\+id, bool use\+\_\+publisher=false)
+\begin{DoxyCompactList}\small\item\em Добавляет единичную трансформацию (фрейм в самого себя) в буфер TF2. \end{DoxyCompactList}\item 
+std\+::shared\+\_\+ptr$<$ tf2\+\_\+ros\+::\+Static\+Transform\+Broadcaster $>$ \mbox{\hyperlink{classTestCoordinateTransformer_a3422eeb5a18658afd7561091192dbef6}{add\+\_\+static\+\_\+tf\+\_\+helper}} (const geometry\+\_\+msgs\+::msg\+::\+Transform\+Stamped \&tf)
+\begin{DoxyCompactList}\small\item\em Вспомогательная функция для добавления статической трансформации через Static\+Transform\+Broadcaster. \end{DoxyCompactList}\end{DoxyCompactItemize}
+\doxysubsubsection*{Protected Attributes}
+\begin{DoxyCompactItemize}
+\item 
+rclcpp\+::\+Node\+::\+Shared\+Ptr \mbox{\hyperlink{classTestCoordinateTransformer_a508bb458b61cdcb2314aa62b147526f7}{node}}
+\begin{DoxyCompactList}\small\item\em Указатель на тестовый узел ROS2. \end{DoxyCompactList}\item 
+std\+::shared\+\_\+ptr$<$ tf2\+\_\+ros\+::\+Buffer $>$ \mbox{\hyperlink{classTestCoordinateTransformer_aaffea925d5218b54dc7f546299921438}{tf\+\_\+buffer}}
+\begin{DoxyCompactList}\small\item\em Буфер TF2, используемый для {\itshape тестирования}. \end{DoxyCompactList}\item 
+std\+::unique\+\_\+ptr$<$ \mbox{\hyperlink{classcoordinate__transformer_1_1CoordinateTransformer}{coordinate\+\_\+transformer\+::\+Coordinate\+Transformer}} $>$ \mbox{\hyperlink{classTestCoordinateTransformer_a63cd23aa2b7bb2aead8dbf3e004bf0d9}{transformer}}
+\begin{DoxyCompactList}\small\item\em Экземпляр тестируемого класса. \end{DoxyCompactList}\item 
+std\+::shared\+\_\+ptr$<$ tf2\+\_\+ros\+::\+Transform\+Listener $>$ \mbox{\hyperlink{classTestCoordinateTransformer_abbbc4168a5f7782428d3cf458218505b}{test\+\_\+tf\+\_\+listener\+\_\+}}
+\begin{DoxyCompactList}\small\item\em Слушатель TF для {\itshape тестового} буфера. \end{DoxyCompactList}\item 
+std\+::filesystem\+::path \mbox{\hyperlink{classTestCoordinateTransformer_ac4131de1196f4f83750055c37ffbeb4b}{test\+\_\+dir}}
+\begin{DoxyCompactList}\small\item\em Путь к временной директории для тестов. \end{DoxyCompactList}\item 
+bool \mbox{\hyperlink{classTestCoordinateTransformer_a0f5fdaae3dcf47d323c8eaf3005ba5e3}{external\+\_\+buffer\+\_\+provided}} = false
+\begin{DoxyCompactList}\small\item\em Флаг, указывающий, был ли предоставлен внешний буфер. \end{DoxyCompactList}\end{DoxyCompactItemize}
+
+
+\doxysubsection{Detailed Description}
+Тестовый класс для Coordinate\+Transformer. 
+
+Этот класс содержит набор тестов для проверки функциональности класса Coordinate\+Transformer, включая инициализацию, настройку границ, загрузку конфигурации и преобразование координат. 
+
+\doxysubsection{Member Function Documentation}
+\Hypertarget{classTestCoordinateTransformer_af91f9f6995d8c35dacb9d080a30bedb2}\label{classTestCoordinateTransformer_af91f9f6995d8c35dacb9d080a30bedb2} 
+\index{TestCoordinateTransformer@{TestCoordinateTransformer}!add\_identity\_tf@{add\_identity\_tf}}
+\index{add\_identity\_tf@{add\_identity\_tf}!TestCoordinateTransformer@{TestCoordinateTransformer}}
+\doxysubsubsection{\texorpdfstring{add\_identity\_tf()}{add\_identity\_tf()}}
+{\footnotesize\ttfamily void Test\+Coordinate\+Transformer\+::add\+\_\+identity\+\_\+tf (\begin{DoxyParamCaption}\item[{const std\+::string \&}]{frame\+\_\+id,  }\item[{bool}]{use\+\_\+publisher = {\ttfamily false} }\end{DoxyParamCaption})\hspace{0.3cm}{\ttfamily [inline]}, {\ttfamily [protected]}}
+
+
+
+Добавляет единичную трансформацию (фрейм в самого себя) в буфер TF2. 
+
+
+\begin{DoxyParams}{Parameters}
+{\em frame\+\_\+id} & Идентификатор системы координат. \\
+\hline
+{\em use\+\_\+publisher} & Если true, использует {\ttfamily publish\+\_\+static\+\_\+tf}, иначе {\ttfamily add\+\_\+tf\+\_\+to\+\_\+buffer\+\_\+direct}. \\
+\hline
+\end{DoxyParams}
+\Hypertarget{classTestCoordinateTransformer_a3422eeb5a18658afd7561091192dbef6}\label{classTestCoordinateTransformer_a3422eeb5a18658afd7561091192dbef6} 
+\index{TestCoordinateTransformer@{TestCoordinateTransformer}!add\_static\_tf\_helper@{add\_static\_tf\_helper}}
+\index{add\_static\_tf\_helper@{add\_static\_tf\_helper}!TestCoordinateTransformer@{TestCoordinateTransformer}}
+\doxysubsubsection{\texorpdfstring{add\_static\_tf\_helper()}{add\_static\_tf\_helper()}}
+{\footnotesize\ttfamily std\+::shared\+\_\+ptr$<$ tf2\+\_\+ros\+::\+Static\+Transform\+Broadcaster $>$ Test\+Coordinate\+Transformer\+::add\+\_\+static\+\_\+tf\+\_\+helper (\begin{DoxyParamCaption}\item[{const geometry\+\_\+msgs\+::msg\+::\+Transform\+Stamped \&}]{tf }\end{DoxyParamCaption})\hspace{0.3cm}{\ttfamily [inline]}, {\ttfamily [protected]}}
+
+
+
+Вспомогательная функция для добавления статической трансформации через Static\+Transform\+Broadcaster. 
+
+
+\begin{DoxyParams}{Parameters}
+{\em tf} & Сообщение Transform\+Stamped для публикации. \\
+\hline
+\end{DoxyParams}
+\begin{DoxyReturn}{Returns}
+Указатель на созданный Static\+Transform\+Broadcaster. 
+\end{DoxyReturn}
+\Hypertarget{classTestCoordinateTransformer_a4b339f8fca1c7b9c4b79f429cd471e45}\label{classTestCoordinateTransformer_a4b339f8fca1c7b9c4b79f429cd471e45} 
+\index{TestCoordinateTransformer@{TestCoordinateTransformer}!add\_tf\_to\_buffer\_direct@{add\_tf\_to\_buffer\_direct}}
+\index{add\_tf\_to\_buffer\_direct@{add\_tf\_to\_buffer\_direct}!TestCoordinateTransformer@{TestCoordinateTransformer}}
+\doxysubsubsection{\texorpdfstring{add\_tf\_to\_buffer\_direct()}{add\_tf\_to\_buffer\_direct()}}
+{\footnotesize\ttfamily void Test\+Coordinate\+Transformer\+::add\+\_\+tf\+\_\+to\+\_\+buffer\+\_\+direct (\begin{DoxyParamCaption}\item[{const std\+::string \&}]{parent,  }\item[{const std\+::string \&}]{child,  }\item[{double}]{x,  }\item[{double}]{y,  }\item[{double}]{z,  }\item[{double}]{qx = {\ttfamily 0},  }\item[{double}]{qy = {\ttfamily 0},  }\item[{double}]{qz = {\ttfamily 0},  }\item[{double}]{qw = {\ttfamily 1},  }\item[{bool}]{is\+\_\+static = {\ttfamily false} }\end{DoxyParamCaption})\hspace{0.3cm}{\ttfamily [inline]}, {\ttfamily [protected]}}
+
+
+
+Добавляет трансформацию непосредственно в тестовый буфер TF2. 
+
+
+\begin{DoxyParams}{Parameters}
+{\em parent} & Родительская система координат. \\
+\hline
+{\em child} & Дочерняя система координат. \\
+\hline
+{\em x} & Смещение по X. \\
+\hline
+{\em y} & Смещение по Y. \\
+\hline
+{\em z} & Смещение по Z. \\
+\hline
+{\em qx} & Компонента X кватерниона ориентации. \\
+\hline
+{\em qy} & Компонента Y кватерниона ориентации. \\
+\hline
+{\em qz} & Компонента Z кватерниона ориентации. \\
+\hline
+{\em qw} & Компонента W кватерниона ориентации. \\
+\hline
+{\em is\+\_\+static} & Флаг статической трансформации. \\
+\hline
+\end{DoxyParams}
+\Hypertarget{classTestCoordinateTransformer_a664487d7eb3d63b47e0bb0d565280622}\label{classTestCoordinateTransformer_a664487d7eb3d63b47e0bb0d565280622} 
+\index{TestCoordinateTransformer@{TestCoordinateTransformer}!check\_conversion\_status@{check\_conversion\_status}}
+\index{check\_conversion\_status@{check\_conversion\_status}!TestCoordinateTransformer@{TestCoordinateTransformer}}
+\doxysubsubsection{\texorpdfstring{check\_conversion\_status()}{check\_conversion\_status()}}
+{\footnotesize\ttfamily void Test\+Coordinate\+Transformer\+::check\+\_\+conversion\+\_\+status (\begin{DoxyParamCaption}\item[{const std\+::string \&}]{source\+\_\+frame,  }\item[{const geometry\+\_\+msgs\+::msg\+::\+Point \&}]{source\+\_\+point,  }\item[{const std\+::string \&}]{target\+\_\+frame,  }\item[{\mbox{\hyperlink{namespacecoordinate__transformer_a13795b8dd04726424a3ead73c6f551c1}{coordinate\+\_\+transformer\+::\+Result\+Status}}}]{expected\+\_\+status,  }\item[{const std\+::string \&}]{message = {\ttfamily "{}"{}} }\end{DoxyParamCaption})\hspace{0.3cm}{\ttfamily [inline]}, {\ttfamily [protected]}}
+
+
+
+Проверяет результат операции преобразования координат. 
+
+Выполняет преобразование из {\ttfamily source\+\_\+frame} в {\ttfamily target\+\_\+frame} для {\ttfamily source\+\_\+point} и сравнивает полученный статус с {\ttfamily expected\+\_\+status}. Использует Time\+Point\+Zero для временной метки запроса преобразования, чтобы избежать ошибок экстраполяции.
+
+
+\begin{DoxyParams}{Parameters}
+{\em source\+\_\+frame} & Исходная система координат. \\
+\hline
+{\em source\+\_\+point} & Точка в исходной системе координат. \\
+\hline
+{\em target\+\_\+frame} & Целевая система координат. \\
+\hline
+{\em expected\+\_\+status} & Ожидаемый статус результата преобразования. \\
+\hline
+{\em message} & Дополнительное сообщение для вывода в случае ошибки теста. \\
+\hline
+\end{DoxyParams}
+\Hypertarget{classTestCoordinateTransformer_a7eeb01ed3cf4ca1a1a34a9c53b31006f}\label{classTestCoordinateTransformer_a7eeb01ed3cf4ca1a1a34a9c53b31006f} 
+\index{TestCoordinateTransformer@{TestCoordinateTransformer}!InitializeTransformer@{InitializeTransformer}}
+\index{InitializeTransformer@{InitializeTransformer}!TestCoordinateTransformer@{TestCoordinateTransformer}}
+\doxysubsubsection{\texorpdfstring{InitializeTransformer()}{InitializeTransformer()}}
+{\footnotesize\ttfamily void Test\+Coordinate\+Transformer\+::\+Initialize\+Transformer (\begin{DoxyParamCaption}\item[{bool}]{provide\+\_\+external\+\_\+buffer }\end{DoxyParamCaption})\hspace{0.3cm}{\ttfamily [inline]}, {\ttfamily [protected]}}
+
+
+
+Инициализирует ресурсы для теста. 
+
+Создает узел ROS2, временную директорию, тестовый буфер TF2 и слушатель TF. Инициализирует Coordinate\+Transformer либо с внутренним, либо с внешним буфером TF2. 
+\begin{DoxyParams}{Parameters}
+{\em provide\+\_\+external\+\_\+buffer} & Если true, transformer будет использовать предоставленный внешний {\ttfamily tf\+\_\+buffer}. Иначе создаст собственный. \\
+\hline
+\end{DoxyParams}
+\Hypertarget{classTestCoordinateTransformer_a9b07a33aec690377a6e996f9c14d63ec}\label{classTestCoordinateTransformer_a9b07a33aec690377a6e996f9c14d63ec} 
+\index{TestCoordinateTransformer@{TestCoordinateTransformer}!publish\_static\_tf@{publish\_static\_tf}}
+\index{publish\_static\_tf@{publish\_static\_tf}!TestCoordinateTransformer@{TestCoordinateTransformer}}
+\doxysubsubsection{\texorpdfstring{publish\_static\_tf()}{publish\_static\_tf()}}
+{\footnotesize\ttfamily void Test\+Coordinate\+Transformer\+::publish\+\_\+static\+\_\+tf (\begin{DoxyParamCaption}\item[{const std\+::string \&}]{parent,  }\item[{const std\+::string \&}]{child,  }\item[{double}]{x,  }\item[{double}]{y,  }\item[{double}]{z,  }\item[{double}]{qx = {\ttfamily 0},  }\item[{double}]{qy = {\ttfamily 0},  }\item[{double}]{qz = {\ttfamily 0},  }\item[{double}]{qw = {\ttfamily 1} }\end{DoxyParamCaption})\hspace{0.3cm}{\ttfamily [inline]}, {\ttfamily [protected]}}
+
+
+
+Публикует статическую трансформацию с использованием Static\+Transform\+Broadcaster. 
+
+
+\begin{DoxyParams}{Parameters}
+{\em parent} & Родительская система координат. \\
+\hline
+{\em child} & Дочерняя система координат. \\
+\hline
+{\em x} & Смещение по X. \\
+\hline
+{\em y} & Смещение по Y. \\
+\hline
+{\em z} & Смещение по Z. \\
+\hline
+{\em qx} & Компонента X кватерниона ориентации. \\
+\hline
+{\em qy} & Компонента Y кватерниона ориентации. \\
+\hline
+{\em qz} & Компонента Z кватерниона ориентации. \\
+\hline
+{\em qw} & Компонента W кватерниона ориентации. \\
+\hline
+\end{DoxyParams}
+\Hypertarget{classTestCoordinateTransformer_ab452bab016415e7e713427b4cd4c735e}\label{classTestCoordinateTransformer_ab452bab016415e7e713427b4cd4c735e} 
+\index{TestCoordinateTransformer@{TestCoordinateTransformer}!SetUp@{SetUp}}
+\index{SetUp@{SetUp}!TestCoordinateTransformer@{TestCoordinateTransformer}}
+\doxysubsubsection{\texorpdfstring{SetUp()}{SetUp()}}
+{\footnotesize\ttfamily void Test\+Coordinate\+Transformer\+::\+Set\+Up (\begin{DoxyParamCaption}{ }\end{DoxyParamCaption})\hspace{0.3cm}{\ttfamily [inline]}, {\ttfamily [override]}, {\ttfamily [protected]}}
+
+
+
+Метод настройки, выполняемый перед каждым тестом GTest. 
+
+Инициализирует ROS и вызывает Initialize\+Transformer для настройки тестового окружения. По умолчанию используется внешний буфер. \Hypertarget{classTestCoordinateTransformer_ad791a254eed8f6337606787dfc08b70b}\label{classTestCoordinateTransformer_ad791a254eed8f6337606787dfc08b70b} 
+\index{TestCoordinateTransformer@{TestCoordinateTransformer}!TearDown@{TearDown}}
+\index{TearDown@{TearDown}!TestCoordinateTransformer@{TestCoordinateTransformer}}
+\doxysubsubsection{\texorpdfstring{TearDown()}{TearDown()}}
+{\footnotesize\ttfamily void Test\+Coordinate\+Transformer\+::\+Tear\+Down (\begin{DoxyParamCaption}{ }\end{DoxyParamCaption})\hspace{0.3cm}{\ttfamily [inline]}, {\ttfamily [override]}, {\ttfamily [protected]}}
+
+
+
+Метод очистки, выполняемый после каждого теста GTest. 
+
+Освобождает ресурсы, созданные в Set\+Up и Initialize\+Transformer, останавливает узел ROS и удаляет временную директорию. 
+
+\doxysubsection{Member Data Documentation}
+\Hypertarget{classTestCoordinateTransformer_a0f5fdaae3dcf47d323c8eaf3005ba5e3}\label{classTestCoordinateTransformer_a0f5fdaae3dcf47d323c8eaf3005ba5e3} 
+\index{TestCoordinateTransformer@{TestCoordinateTransformer}!external\_buffer\_provided@{external\_buffer\_provided}}
+\index{external\_buffer\_provided@{external\_buffer\_provided}!TestCoordinateTransformer@{TestCoordinateTransformer}}
+\doxysubsubsection{\texorpdfstring{external\_buffer\_provided}{external\_buffer\_provided}}
+{\footnotesize\ttfamily bool Test\+Coordinate\+Transformer\+::external\+\_\+buffer\+\_\+provided = false\hspace{0.3cm}{\ttfamily [protected]}}
+
+
+
+Флаг, указывающий, был ли предоставлен внешний буфер. 
+
+\Hypertarget{classTestCoordinateTransformer_a508bb458b61cdcb2314aa62b147526f7}\label{classTestCoordinateTransformer_a508bb458b61cdcb2314aa62b147526f7} 
+\index{TestCoordinateTransformer@{TestCoordinateTransformer}!node@{node}}
+\index{node@{node}!TestCoordinateTransformer@{TestCoordinateTransformer}}
+\doxysubsubsection{\texorpdfstring{node}{node}}
+{\footnotesize\ttfamily rclcpp\+::\+Node\+::\+Shared\+Ptr Test\+Coordinate\+Transformer\+::node\hspace{0.3cm}{\ttfamily [protected]}}
+
+
+
+Указатель на тестовый узел ROS2. 
+
+\Hypertarget{classTestCoordinateTransformer_ac4131de1196f4f83750055c37ffbeb4b}\label{classTestCoordinateTransformer_ac4131de1196f4f83750055c37ffbeb4b} 
+\index{TestCoordinateTransformer@{TestCoordinateTransformer}!test\_dir@{test\_dir}}
+\index{test\_dir@{test\_dir}!TestCoordinateTransformer@{TestCoordinateTransformer}}
+\doxysubsubsection{\texorpdfstring{test\_dir}{test\_dir}}
+{\footnotesize\ttfamily std\+::filesystem\+::path Test\+Coordinate\+Transformer\+::test\+\_\+dir\hspace{0.3cm}{\ttfamily [protected]}}
+
+
+
+Путь к временной директории для тестов. 
+
+\Hypertarget{classTestCoordinateTransformer_abbbc4168a5f7782428d3cf458218505b}\label{classTestCoordinateTransformer_abbbc4168a5f7782428d3cf458218505b} 
+\index{TestCoordinateTransformer@{TestCoordinateTransformer}!test\_tf\_listener\_@{test\_tf\_listener\_}}
+\index{test\_tf\_listener\_@{test\_tf\_listener\_}!TestCoordinateTransformer@{TestCoordinateTransformer}}
+\doxysubsubsection{\texorpdfstring{test\_tf\_listener\_}{test\_tf\_listener\_}}
+{\footnotesize\ttfamily std\+::shared\+\_\+ptr$<$tf2\+\_\+ros\+::\+Transform\+Listener$>$ Test\+Coordinate\+Transformer\+::test\+\_\+tf\+\_\+listener\+\_\+\hspace{0.3cm}{\ttfamily [protected]}}
+
+
+
+Слушатель TF для {\itshape тестового} буфера. 
+
+\Hypertarget{classTestCoordinateTransformer_aaffea925d5218b54dc7f546299921438}\label{classTestCoordinateTransformer_aaffea925d5218b54dc7f546299921438} 
+\index{TestCoordinateTransformer@{TestCoordinateTransformer}!tf\_buffer@{tf\_buffer}}
+\index{tf\_buffer@{tf\_buffer}!TestCoordinateTransformer@{TestCoordinateTransformer}}
+\doxysubsubsection{\texorpdfstring{tf\_buffer}{tf\_buffer}}
+{\footnotesize\ttfamily std\+::shared\+\_\+ptr$<$tf2\+\_\+ros\+::\+Buffer$>$ Test\+Coordinate\+Transformer\+::tf\+\_\+buffer\hspace{0.3cm}{\ttfamily [protected]}}
+
+
+
+Буфер TF2, используемый для {\itshape тестирования}. 
+
+\Hypertarget{classTestCoordinateTransformer_a63cd23aa2b7bb2aead8dbf3e004bf0d9}\label{classTestCoordinateTransformer_a63cd23aa2b7bb2aead8dbf3e004bf0d9} 
+\index{TestCoordinateTransformer@{TestCoordinateTransformer}!transformer@{transformer}}
+\index{transformer@{transformer}!TestCoordinateTransformer@{TestCoordinateTransformer}}
+\doxysubsubsection{\texorpdfstring{transformer}{transformer}}
+{\footnotesize\ttfamily std\+::unique\+\_\+ptr$<$\mbox{\hyperlink{classcoordinate__transformer_1_1CoordinateTransformer}{coordinate\+\_\+transformer\+::\+Coordinate\+Transformer}}$>$ Test\+Coordinate\+Transformer\+::transformer\hspace{0.3cm}{\ttfamily [protected]}}
+
+
+
+Экземпляр тестируемого класса. 
+
+
+
+The documentation for this class was generated from the following file\+:\begin{DoxyCompactItemize}
+\item 
+test/unit/\mbox{\hyperlink{test__transformer__logic_8cpp}{test\+\_\+transformer\+\_\+logic.\+cpp}}\end{DoxyCompactItemize}
