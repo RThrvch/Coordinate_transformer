@@ -110,4 +110,41 @@
 \end{DoxyCode}
 
 
-Это позволяет библиотеке/узлу {\ttfamily \doxylink{namespacecoordinate__transformer}{coordinate\+\_\+transformer}} проверять, находятся ли точки или позы в пределах определенных пространственных ограничений для конкретных систем координат. 
+Это позволяет библиотеке/узлу {\ttfamily \doxylink{namespacecoordinate__transformer}{coordinate\+\_\+transformer}} проверять, находятся ли точки или позы в пределах определенных пространственных ограничений для конкретных систем координат.\hypertarget{index_autotoc_md9}{}\doxysubsection{\texorpdfstring{Пример использования}{Пример использования}}\label{index_autotoc_md9}
+
+\begin{DoxyCode}{0}
+\DoxyCodeLine{\textcolor{keyword}{auto}\ transformer\ =\ std::make\_shared<CoordinateTransformer>(node);}
+\DoxyCodeLine{}
+\DoxyCodeLine{\textcolor{comment}{//\ Загрузка\ трансформаций\ из\ YAML}}
+\DoxyCodeLine{transformer-\/>loadConfig(\textcolor{stringliteral}{"{}config.yaml"{}});}
+\DoxyCodeLine{}
+\DoxyCodeLine{\textcolor{comment}{//\ Установка\ границ\ для\ системы\ "{}robot\_base"{}}}
+\DoxyCodeLine{\textcolor{comment}{//\ Замените\ min\_point\ и\ max\_point\ на\ ваши\ реальные\ значения\ geometry\_msgs::msg::Point}}
+\DoxyCodeLine{geometry\_msgs::msg::Point\ min\_point;\ }
+\DoxyCodeLine{min\_point.x\ =\ -\/1.0;\ min\_point.y\ =\ -\/1.0;\ min\_point.z\ =\ 0.0;\ }
+\DoxyCodeLine{geometry\_msgs::msg::Point\ max\_point;}
+\DoxyCodeLine{max\_point.x\ =\ 1.0;\ max\_point.y\ =\ 1.0;\ max\_point.z\ =\ 1.5;}
+\DoxyCodeLine{transformer-\/>setBounds(\textcolor{stringliteral}{"{}robot\_base"{}},\ min\_point,\ max\_point);}
+\DoxyCodeLine{}
+\DoxyCodeLine{\textcolor{comment}{//\ Преобразование\ координаты}}
+\DoxyCodeLine{geometry\_msgs::msg::PoseStamped\ input,\ output;}
+\DoxyCodeLine{\textcolor{comment}{//\ Задайте\ входные\ данные\ input.header.frame\_id,\ input.pose\ и\ т.д.}}
+\DoxyCodeLine{input.header.frame\_id\ =\ \textcolor{stringliteral}{"{}some\_frame"{}};\ \textcolor{comment}{//\ Пример}}
+\DoxyCodeLine{input.pose.position.x\ =\ 0.5;\ \textcolor{comment}{//\ Пример}}
+\DoxyCodeLine{input.pose.position.y\ =\ 0.5;\ \textcolor{comment}{//\ Пример}}
+\DoxyCodeLine{input.pose.position.z\ =\ 0.5;\ \textcolor{comment}{//\ Пример}}
+\DoxyCodeLine{input.pose.orientation.w\ =\ 1.0;\ \textcolor{comment}{//\ Пример}}
+\DoxyCodeLine{}
+\DoxyCodeLine{\textcolor{keyword}{auto}\ status\ =\ transformer-\/>convert(input,\ output,\ \textcolor{stringliteral}{"{}world"{}});}
+\DoxyCodeLine{}
+\DoxyCodeLine{\textcolor{keywordflow}{if}\ (status\ ==\ ResultStatus::SUCCESS)\ \{}
+\DoxyCodeLine{\ \textcolor{comment}{//\ Обработка\ результата}}
+\DoxyCodeLine{\ \textcolor{comment}{//\ output\ будет\ содержать\ преобразованную\ позу\ в\ системе\ координат\ "{}world"{}}}
+\DoxyCodeLine{\ RCLCPP\_INFO(node-\/>get\_logger(),\ \textcolor{stringliteral}{"{}Conversion\ successful!"{}});}
+\DoxyCodeLine{\}\ \textcolor{keywordflow}{else}\ \{}
+\DoxyCodeLine{\ \textcolor{comment}{//\ Обработка\ ошибки}}
+\DoxyCodeLine{\ RCLCPP\_ERROR(node-\/>get\_logger(),\ \textcolor{stringliteral}{"{}Conversion\ failed\ with\ status:\ \%d"{}},\ \textcolor{keyword}{static\_cast<}\textcolor{keywordtype}{int}\textcolor{keyword}{>}(status));}
+\DoxyCodeLine{\}}
+
+\end{DoxyCode}
+ 

@@ -169,8 +169,42 @@ $(function() {
 <div class="line">  robot_workspace: # Граница для гипотетической системы координат &#39;robot_workspace&#39;</div>
 <div class="line">     min: { x: -1.0, y: -1.0, z: 0.0 }</div>
 <div class="line">     max: { x: 1.0, y: 1.0, z: 1.5 }</div>
-</div><!-- fragment --><p>Это позволяет библиотеке/узлу <code><a class="el" href="namespacecoordinate__transformer.html">coordinate_transformer</a></code> проверять, находятся ли точки или позы в пределах определенных пространственных ограничений для конкретных систем координат. </p>
-</div></div><!-- PageDoc -->
+</div><!-- fragment --><p>Это позволяет библиотеке/узлу <code><a class="el" href="namespacecoordinate__transformer.html">coordinate_transformer</a></code> проверять, находятся ли точки или позы в пределах определенных пространственных ограничений для конкретных систем координат.</p>
+<h2><a class="anchor" id="autotoc_md9"></a>
+Пример использования</h2>
+<div class="fragment"><div class="line"><span class="keyword">auto</span> transformer = std::make_shared&lt;CoordinateTransformer&gt;(node);</div>
+<div class="line"> </div>
+<div class="line"><span class="comment">// Загрузка трансформаций из YAML</span></div>
+<div class="line">transformer-&gt;loadConfig(<span class="stringliteral">&quot;config.yaml&quot;</span>);</div>
+<div class="line"> </div>
+<div class="line"><span class="comment">// Установка границ для системы &quot;robot_base&quot;</span></div>
+<div class="line"><span class="comment">// Замените min_point и max_point на ваши реальные значения geometry_msgs::msg::Point</span></div>
+<div class="line">geometry_msgs::msg::Point min_point; </div>
+<div class="line">min_point.x = -1.0; min_point.y = -1.0; min_point.z = 0.0; </div>
+<div class="line">geometry_msgs::msg::Point max_point;</div>
+<div class="line">max_point.x = 1.0; max_point.y = 1.0; max_point.z = 1.5;</div>
+<div class="line">transformer-&gt;setBounds(<span class="stringliteral">&quot;robot_base&quot;</span>, min_point, max_point);</div>
+<div class="line"> </div>
+<div class="line"><span class="comment">// Преобразование координаты</span></div>
+<div class="line">geometry_msgs::msg::PoseStamped input, output;</div>
+<div class="line"><span class="comment">// Задайте входные данные input.header.frame_id, input.pose и т.д.</span></div>
+<div class="line">input.header.frame_id = <span class="stringliteral">&quot;some_frame&quot;</span>; <span class="comment">// Пример</span></div>
+<div class="line">input.pose.position.x = 0.5; <span class="comment">// Пример</span></div>
+<div class="line">input.pose.position.y = 0.5; <span class="comment">// Пример</span></div>
+<div class="line">input.pose.position.z = 0.5; <span class="comment">// Пример</span></div>
+<div class="line">input.pose.orientation.w = 1.0; <span class="comment">// Пример</span></div>
+<div class="line"> </div>
+<div class="line"><span class="keyword">auto</span> status = transformer-&gt;convert(input, output, <span class="stringliteral">&quot;world&quot;</span>);</div>
+<div class="line"> </div>
+<div class="line"><span class="keywordflow">if</span> (status == ResultStatus::SUCCESS) {</div>
+<div class="line"> <span class="comment">// Обработка результата</span></div>
+<div class="line"> <span class="comment">// output будет содержать преобразованную позу в системе координат &quot;world&quot;</span></div>
+<div class="line"> RCLCPP_INFO(node-&gt;get_logger(), <span class="stringliteral">&quot;Conversion successful!&quot;</span>);</div>
+<div class="line">} <span class="keywordflow">else</span> {</div>
+<div class="line"> <span class="comment">// Обработка ошибки</span></div>
+<div class="line"> RCLCPP_ERROR(node-&gt;get_logger(), <span class="stringliteral">&quot;Conversion failed with status: %d&quot;</span>, <span class="keyword">static_cast&lt;</span><span class="keywordtype">int</span><span class="keyword">&gt;</span>(status));</div>
+<div class="line">}</div>
+</div><!-- fragment --> </div></div><!-- PageDoc -->
 </div><!-- contents -->
 <!-- start footer part -->
 <hr class="footer"/><address class="footer"><small>
