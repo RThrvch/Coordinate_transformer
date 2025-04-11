@@ -11,8 +11,6 @@
 \begin{DoxyCompactList}\small\item\em Конструктор по умолчанию. \end{DoxyCompactList}\item 
 \mbox{\hyperlink{classcoordinate__transformer_1_1CoordinateTransformer_a54de011a1217998f7628de81e0338b51}{Coordinate\+Transformer}} (rclcpp\+::\+Node\+::\+Shared\+Ptr node, std\+::shared\+\_\+ptr$<$ tf2\+\_\+ros\+::\+Buffer $>$ tf\+\_\+buffer)
 \begin{DoxyCompactList}\small\item\em Конструктор для юнит-\/тестирования с инъекцией зависимостей. \end{DoxyCompactList}\item 
-\mbox{\hyperlink{namespacecoordinate__transformer_a13795b8dd04726424a3ead73c6f551c1}{Result\+Status}} \mbox{\hyperlink{classcoordinate__transformer_1_1CoordinateTransformer_a272e9aa4347ef50ebee0bdcb0889c76d}{load\+Config}} (const std\+::string \&yaml\+\_\+path)
-\begin{DoxyCompactList}\small\item\em Загружает конфигурацию из YAML-\/файла. \end{DoxyCompactList}\item 
 void \mbox{\hyperlink{classcoordinate__transformer_1_1CoordinateTransformer_a62277306a6b9230b9b6fd196a00a5ace}{add\+Transform}} (const geometry\+\_\+msgs\+::msg\+::\+Transform\+Stamped \&transform)
 \begin{DoxyCompactList}\small\item\em Добавляет и публикует единичную статическую трансформацию. \end{DoxyCompactList}\item 
 void \mbox{\hyperlink{classcoordinate__transformer_1_1CoordinateTransformer_a1be44e4fc4907e30a681df867caf3f14}{set\+Bounds}} (const std\+::string \&frame\+\_\+id, const geometry\+\_\+msgs\+::msg\+::\+Point \&min, const geometry\+\_\+msgs\+::msg\+::\+Point \&max)
@@ -149,24 +147,6 @@ class \mbox{\hyperlink{classcoordinate__transformer_1_1CoordinateTransformer_a10
 \end{DoxyParams}
 \begin{DoxyReturn}{Returns}
 Статус операции\+: SUCCESS, OUT\+\_\+\+OF\+\_\+\+BOUNDS, TRANSFORM\+\_\+\+NOT\+\_\+\+FOUND, INVALID\+\_\+\+INPUT или CONFIGURATION\+\_\+\+ERROR. 
-\end{DoxyReturn}
-\Hypertarget{classcoordinate__transformer_1_1CoordinateTransformer_a272e9aa4347ef50ebee0bdcb0889c76d}\label{classcoordinate__transformer_1_1CoordinateTransformer_a272e9aa4347ef50ebee0bdcb0889c76d} 
-\index{coordinate\_transformer::CoordinateTransformer@{coordinate\_transformer::CoordinateTransformer}!loadConfig@{loadConfig}}
-\index{loadConfig@{loadConfig}!coordinate\_transformer::CoordinateTransformer@{coordinate\_transformer::CoordinateTransformer}}
-\doxysubsubsection{\texorpdfstring{loadConfig()}{loadConfig()}}
-{\footnotesize\ttfamily \mbox{\hyperlink{namespacecoordinate__transformer_a13795b8dd04726424a3ead73c6f551c1}{Result\+Status}} coordinate\+\_\+transformer\+::\+Coordinate\+Transformer\+::load\+Config (\begin{DoxyParamCaption}\item[{const std\+::string \&}]{yaml\+\_\+path }\end{DoxyParamCaption})}
-
-
-
-Загружает конфигурацию из YAML-\/файла. 
-
-Загружает статические трансформации и определения границ из указанного файла. Загруженные статические трансформации публикуются через Static\+Transform\+Broadcaster. Загруженные границы сохраняются внутри объекта и объявляются/устанавливаются как ROS-\/параметры. 
-\begin{DoxyParams}{Parameters}
-{\em yaml\+\_\+path} & Путь к файлу конфигурации в формате YAML. \\
-\hline
-\end{DoxyParams}
-\begin{DoxyReturn}{Returns}
-Статус операции\+: SUCCESS в случае успеха, CONFIGURATION\+\_\+\+ERROR при ошибке. 
 \end{DoxyReturn}
 \Hypertarget{classcoordinate__transformer_1_1CoordinateTransformer_aee50996de8804216a710b7a33d747f28}\label{classcoordinate__transformer_1_1CoordinateTransformer_aee50996de8804216a710b7a33d747f28} 
 \index{coordinate\_transformer::CoordinateTransformer@{coordinate\_transformer::CoordinateTransformer}!removeBounds@{removeBounds}}

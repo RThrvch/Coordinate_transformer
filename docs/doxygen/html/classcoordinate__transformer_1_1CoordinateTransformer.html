@@ -91,9 +91,6 @@ Public Member Functions</h2></td></tr>
 <tr class="memitem:a54de011a1217998f7628de81e0338b51" id="r_a54de011a1217998f7628de81e0338b51"><td class="memItemLeft" align="right" valign="top">&#160;</td><td class="memItemRight" valign="bottom"><a class="el" href="classcoordinate__transformer_1_1CoordinateTransformer.html#a54de011a1217998f7628de81e0338b51">CoordinateTransformer</a> (rclcpp::Node::SharedPtr node, std::shared_ptr&lt; tf2_ros::Buffer &gt; tf_buffer)</td></tr>
 <tr class="memdesc:a54de011a1217998f7628de81e0338b51"><td class="mdescLeft">&#160;</td><td class="mdescRight">Конструктор для юнит-тестирования с инъекцией зависимостей.  <br /></td></tr>
 <tr class="separator:a54de011a1217998f7628de81e0338b51"><td class="memSeparator" colspan="2">&#160;</td></tr>
-<tr class="memitem:a272e9aa4347ef50ebee0bdcb0889c76d" id="r_a272e9aa4347ef50ebee0bdcb0889c76d"><td class="memItemLeft" align="right" valign="top"><a class="el" href="namespacecoordinate__transformer.html#a13795b8dd04726424a3ead73c6f551c1">ResultStatus</a>&#160;</td><td class="memItemRight" valign="bottom"><a class="el" href="classcoordinate__transformer_1_1CoordinateTransformer.html#a272e9aa4347ef50ebee0bdcb0889c76d">loadConfig</a> (const std::string &amp;yaml_path)</td></tr>
-<tr class="memdesc:a272e9aa4347ef50ebee0bdcb0889c76d"><td class="mdescLeft">&#160;</td><td class="mdescRight">Загружает конфигурацию из YAML-файла.  <br /></td></tr>
-<tr class="separator:a272e9aa4347ef50ebee0bdcb0889c76d"><td class="memSeparator" colspan="2">&#160;</td></tr>
 <tr class="memitem:a62277306a6b9230b9b6fd196a00a5ace" id="r_a62277306a6b9230b9b6fd196a00a5ace"><td class="memItemLeft" align="right" valign="top">void&#160;</td><td class="memItemRight" valign="bottom"><a class="el" href="classcoordinate__transformer_1_1CoordinateTransformer.html#a62277306a6b9230b9b6fd196a00a5ace">addTransform</a> (const geometry_msgs::msg::TransformStamped &amp;transform)</td></tr>
 <tr class="memdesc:a62277306a6b9230b9b6fd196a00a5ace"><td class="mdescLeft">&#160;</td><td class="mdescRight">Добавляет и публикует единичную статическую трансформацию.  <br /></td></tr>
 <tr class="separator:a62277306a6b9230b9b6fd196a00a5ace"><td class="memSeparator" colspan="2">&#160;</td></tr>
@@ -336,33 +333,6 @@ Friends</h2></td></tr>
   </dd>
 </dl>
 <dl class="section return"><dt>Returns</dt><dd>Статус операции: SUCCESS, OUT_OF_BOUNDS, TRANSFORM_NOT_FOUND, INVALID_INPUT или CONFIGURATION_ERROR. </dd></dl>
-
-</div>
-</div>
-<a id="a272e9aa4347ef50ebee0bdcb0889c76d" name="a272e9aa4347ef50ebee0bdcb0889c76d"></a>
-<h2 class="memtitle"><span class="permalink"><a href="#a272e9aa4347ef50ebee0bdcb0889c76d">&#9670;&#160;</a></span>loadConfig()</h2>
-
-<div class="memitem">
-<div class="memproto">
-      <table class="memname">
-        <tr>
-          <td class="memname"><a class="el" href="namespacecoordinate__transformer.html#a13795b8dd04726424a3ead73c6f551c1">ResultStatus</a> coordinate_transformer::CoordinateTransformer::loadConfig </td>
-          <td>(</td>
-          <td class="paramtype">const std::string &amp;&#160;</td>
-          <td class="paramname"><em>yaml_path</em></td><td>)</td>
-          <td></td>
-        </tr>
-      </table>
-</div><div class="memdoc">
-
-<p>Загружает конфигурацию из YAML-файла. </p>
-<p>Загружает статические трансформации и определения границ из указанного файла. Загруженные статические трансформации публикуются через StaticTransformBroadcaster. Загруженные границы сохраняются внутри объекта и объявляются/устанавливаются как ROS-параметры. </p><dl class="params"><dt>Parameters</dt><dd>
-  <table class="params">
-    <tr><td class="paramname">yaml_path</td><td>Путь к файлу конфигурации в формате YAML. </td></tr>
-  </table>
-  </dd>
-</dl>
-<dl class="section return"><dt>Returns</dt><dd>Статус операции: SUCCESS в случае успеха, CONFIGURATION_ERROR при ошибке. </dd></dl>
 
 </div>
 </div>

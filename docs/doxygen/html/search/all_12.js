@@ -1,5 +1,4 @@
 var searchData=
 [
-  ['использование_0',['Использование',['../index.html#autotoc_md5',1,'']]],
-  ['использования_1',['Пример использования',['../index.html#autotoc_md9',1,'']]]
+  ['конфигурации_20tt_20config_20yaml_20tt_0',['Параметры конфигурации (&lt;tt&gt;config.yaml&lt;/tt&gt;)',['../index.html#autotoc_md7',1,'']]]
 ];

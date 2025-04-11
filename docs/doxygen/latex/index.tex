@@ -31,86 +31,114 @@
 \item {\bfseries{Запустите узел\+:}} {\ttfamily bash ros2 run \doxylink{namespacecoordinate__transformer}{coordinate\+\_\+transformer} test\+\_\+transformer\+\_\+node -\/-\/ros-\/args -\/-\/params-\/file /path/to/your/config.yaml } Замените {\ttfamily /path/to/your/config.yaml} на фактический путь к вашему файлу конфигурации.
 
 {\itshape Примечание\+:} Основное предназначение может заключаться в использовании библиотеки {\ttfamily \doxylink{namespacecoordinate__transformer}{coordinate\+\_\+transformer}} в других узлах C++. Обратитесь к заголовочным файлам в директории {\ttfamily include/} для получения информации об API.
-\end{DoxyEnumerate}\hypertarget{index_autotoc_md6}{}\doxysubsection{\texorpdfstring{Параметры конфигурации ($<$tt$>$config.\+yaml$<$/tt$>$)}{Параметры конфигурации (<tt>config.yaml</tt>)}}\label{index_autotoc_md6}
-Узел требует файл конфигурации YAML, указанный с помощью аргумента {\ttfamily -\/-\/params-\/file}.
-
-Файл конфигурации имеет два основных раздела\+: {\ttfamily transforms} и {\ttfamily boundaries}.\hypertarget{index_autotoc_md7}{}\doxysubsubsection{\texorpdfstring{$<$tt$>$transforms$<$/tt$>$}{<tt>transforms</tt>}}\label{index_autotoc_md7}
-Этот раздел определяет список статических преобразований для публикации. Каждая запись преобразования требует\+:
-
-
-\begin{DoxyItemize}
-\item {\ttfamily parent\+\_\+frame}\+: (string) Имя родительской системы координат.
-\item {\ttfamily child\+\_\+frame}\+: (string) Имя дочерней системы координат.
-\item {\ttfamily translation}\+: (object) Компонент смещения преобразования.
-\begin{DoxyItemize}
-\item {\ttfamily x}\+: (double) Смещение по оси x.
-\item {\ttfamily y}\+: (double) Смещение по оси y.
-\item {\ttfamily z}\+: (double) Смещение по оси z.
-\end{DoxyItemize}
-\item {\ttfamily rotation}\+: (object) Компонент вращения преобразования, представленный кватернионом.
-\begin{DoxyItemize}
-\item {\ttfamily x}\+: (double) Компонент x кватерниона.
-\item {\ttfamily y}\+: (double) Компонент y кватерниона.
-\item {\ttfamily z}\+: (double) Компонент z кватерниона.
-\item {\ttfamily w}\+: (double) Компонент w кватерниона.
-\end{DoxyItemize}
-\end{DoxyItemize}
-
-{\bfseries{Пример\+:}}
+\end{DoxyEnumerate}\hypertarget{index_autotoc_md6}{}\doxysubsection{\texorpdfstring{Тестирование}{Тестирование}}\label{index_autotoc_md6}
+Для запуска тестов, определенных в пакете, используйте следующую команду из корневой директории вашей рабочей области ({\ttfamily \texorpdfstring{$\sim$}{\string~}/ros2\+\_\+ws})\+:
 
 
 \begin{DoxyCode}{0}
-\DoxyCodeLine{transforms:}
-\DoxyCodeLine{\ \ -\/\ parent\_frame:\ "{}map"{}}
-\DoxyCodeLine{\ \ \ \ child\_frame:\ "{}odom"{}}
-\DoxyCodeLine{\ \ \ \ translation:\ \{\ x:\ 0.0,\ y:\ 0.0,\ z:\ 0.0\ \}}
-\DoxyCodeLine{\ \ \ \ rotation:\ \{\ x:\ 0.0,\ y:\ 0.0,\ z:\ 0.0,\ w:\ 1.0\ \}}
-\DoxyCodeLine{}
-\DoxyCodeLine{\ \ -\/\ parent\_frame:\ "{}odom"{}}
-\DoxyCodeLine{\ \ \ \ child\_frame:\ "{}base\_link"{}}
-\DoxyCodeLine{\ \ \ \ translation:\ \{\ x:\ 1.0,\ y:\ 0.5,\ z:\ 0.1\ \}}
-\DoxyCodeLine{\ \ \ \ rotation:\ \{\ x:\ 0.0,\ y:\ 0.0,\ z:\ 0.707,\ w:\ 0.707\ \}\ \#\ Поворот\ на\ 90\ градусов\ вокруг\ Z}
-
-\end{DoxyCode}
-\hypertarget{index_autotoc_md8}{}\doxysubsubsection{\texorpdfstring{$<$tt$>$boundaries$<$/tt$>$}{<tt>boundaries</tt>}}\label{index_autotoc_md8}
-Этот раздел определяет именованные границы, связанные с конкретными системами координат. Каждая граница определяется своими минимальной и максимальной угловыми точками.
-
-
-\begin{DoxyItemize}
-\item {\ttfamily \texorpdfstring{$<$}{<}frame\+\_\+name\texorpdfstring{$>$}{>}}\+: (string) Имя системы координат, к которой применяется граница (например, {\ttfamily map}, {\ttfamily robot\+\_\+workspace}). Должно совпадать с системой координат, определенной в вашей системе (либо через раздел {\ttfamily transforms}, либо иным образом).
-\begin{DoxyItemize}
-\item {\ttfamily min}\+: (object) Минимальный угол ограничивающего параллелепипеда, выровненного по осям.
-\begin{DoxyItemize}
-\item {\ttfamily x}\+: (double) Минимальная координата x.
-\item {\ttfamily y}\+: (double) Минимальная координата y.
-\item {\ttfamily z}\+: (double) Минимальная координата z.
-\end{DoxyItemize}
-\item {\ttfamily max}\+: (object) Максимальный угол ограничивающего параллелепипеда, выровненного по осям.
-\begin{DoxyItemize}
-\item {\ttfamily x}\+: (double) Максимальная координата x.
-\item {\ttfamily y}\+: (double) Максимальная координата y.
-\item {\ttfamily z}\+: (double) Максимальная координата z.
-\end{DoxyItemize}
-\end{DoxyItemize}
-\end{DoxyItemize}
-
-{\bfseries{Пример\+:}}
-
-
-\begin{DoxyCode}{0}
-\DoxyCodeLine{boundaries:}
-\DoxyCodeLine{\ \ map:\ \#\ Граница\ для\ системы\ координат\ 'map'}
-\DoxyCodeLine{\ \ \ \ min:\ \{\ x:\ -\/50.0,\ y:\ -\/50.0,\ z:\ -\/1.0\ \}}
-\DoxyCodeLine{\ \ \ \ max:\ \{\ x:\ 50.0,\ y:\ 50.0,\ z:\ 5.0\ \}}
-\DoxyCodeLine{}
-\DoxyCodeLine{\ \ robot\_workspace:\ \#\ Граница\ для\ гипотетической\ системы\ координат\ 'robot\_workspace'}
-\DoxyCodeLine{\ \ \ \ \ min:\ \{\ x:\ -\/1.0,\ y:\ -\/1.0,\ z:\ 0.0\ \}}
-\DoxyCodeLine{\ \ \ \ \ max:\ \{\ x:\ 1.0,\ y:\ 1.0,\ z:\ 1.5\ \}}
+\DoxyCodeLine{colcon\ test\ -\/-\/packages-\/select\ coordinate\_transformer}
 
 \end{DoxyCode}
 
 
-Это позволяет библиотеке/узлу {\ttfamily \doxylink{namespacecoordinate__transformer}{coordinate\+\_\+transformer}} проверять, находятся ли точки или позы в пределах определенных пространственных ограничений для конкретных систем координат.\hypertarget{index_autotoc_md9}{}\doxysubsection{\texorpdfstring{Пример использования}{Пример использования}}\label{index_autotoc_md9}
+После завершения выполнения тестов, вы можете просмотреть результаты\+:
+
+
+\begin{DoxyCode}{0}
+\DoxyCodeLine{colcon\ test-\/result\ -\/-\/all}
+
+\end{DoxyCode}
+
+
+Для более подробного вывода\+:
+
+
+\begin{DoxyCode}{0}
+\DoxyCodeLine{colcon\ test-\/result\ -\/-\/verbose}
+
+\end{DoxyCode}
+\hypertarget{index_autotoc_md7}{}\doxysubsection{\texorpdfstring{Параметры конфигурации ($<$tt$>$config.\+yaml$<$/tt$>$)}{Параметры конфигурации (<tt>config.yaml</tt>)}}\label{index_autotoc_md7}
+Узел требует файл конфигурации YAML, указанный с помощью аргумента {\ttfamily -\/-\/params-\/file}. Файл должен соответствовать формату параметров ROS 2.
+
+Все параметры узла должны находиться внутри структуры {\ttfamily \texorpdfstring{$<$}{<}имя\+\_\+вашего\+\_\+узла\texorpdfstring{$>$}{>}\+:} -\/\texorpdfstring{$>$}{>} {\ttfamily ros\+\_\+\+\_\+parameters\+:}.
+
+
+\begin{DoxyCode}{0}
+\DoxyCodeLine{\#\ Замените\ 'test\_transformer\_node'\ на\ имя\ вашего\ узла,\ если\ оно\ отличается}
+\DoxyCodeLine{test\_transformer\_node:}
+\DoxyCodeLine{\ \ ros\_\_parameters:}
+\DoxyCodeLine{\ \ \ \ \#\ -\/-\/-\/\ Статические\ трансформации\ -\/-\/-\/}
+\DoxyCodeLine{}
+\DoxyCodeLine{\ \ \ \ \#\ Список\ имен\ статических\ преобразований\ для\ загрузки\ и\ публикации.}
+\DoxyCodeLine{\ \ \ \ static\_transform\_names:\ ["{}map\_to\_odom"{},\ "{}odom\_to\_base"{}]}
+\DoxyCodeLine{}
+\DoxyCodeLine{\ \ \ \ \#\ Словарь,\ определяющий\ детали\ каждого\ статического\ преобразования.}
+\DoxyCodeLine{\ \ \ \ \#\ Ключи\ должны\ совпадать\ с\ именами\ в\ 'static\_transform\_names'.}
+\DoxyCodeLine{\ \ \ \ static\_transforms:}
+\DoxyCodeLine{\ \ \ \ \ \ map\_to\_odom:\ \#\ Имя\ из\ static\_transform\_names}
+\DoxyCodeLine{\ \ \ \ \ \ \ \ parent\_frame:\ "{}map"{}\ \ \ \ \ \ \ \#\ Родительский\ фрейм}
+\DoxyCodeLine{\ \ \ \ \ \ \ \ child\_frame:\ "{}odom"{}\ \ \ \ \ \ \ \ \#\ Дочерний\ фрейм}
+\DoxyCodeLine{\ \ \ \ \ \ \ \ translation:\ \{\ x:\ 0.1,\ y:\ 0.2,\ z:\ 0.0\ \}\ \#\ Смещение\ \{x,\ y,\ z\}}
+\DoxyCodeLine{\ \ \ \ \ \ \ \ rotation:\ \{\ x:\ 0.0,\ y:\ 0.0,\ z:\ 0.0,\ w:\ 1.0\ \}\ \#\ Поворот\ (кватернион)\ \{x,\ y,\ z,\ w\}}
+\DoxyCodeLine{\ \ \ \ \ \ odom\_to\_base:\ \#\ Имя\ из\ static\_transform\_names}
+\DoxyCodeLine{\ \ \ \ \ \ \ \ parent\_frame:\ "{}odom"{}}
+\DoxyCodeLine{\ \ \ \ \ \ \ \ child\_frame:\ "{}base\_link"{}}
+\DoxyCodeLine{\ \ \ \ \ \ \ \ translation:\ \{\ x:\ 0.5,\ y:\ 0.0,\ z:\ 0.1\ \}}
+\DoxyCodeLine{\ \ \ \ \ \ \ \ rotation:\ \{\ x:\ 0.0,\ y:\ 0.0,\ z:\ 0.0,\ w:\ 1.0\ \}}
+\DoxyCodeLine{}
+\DoxyCodeLine{\ \ \ \ \#\ -\/-\/-\/\ Границы\ фреймов\ -\/-\/-\/}
+\DoxyCodeLine{}
+\DoxyCodeLine{\ \ \ \ \#\ Список\ имен\ фреймов,\ для\ которых\ определены\ границы.}
+\DoxyCodeLine{\ \ \ \ boundary\_frame\_names:\ ["{}map"{},\ "{}base\_link"{}]}
+\DoxyCodeLine{}
+\DoxyCodeLine{\ \ \ \ \#\ Словарь,\ определяющий\ границы\ для\ каждого\ фрейма.}
+\DoxyCodeLine{\ \ \ \ \#\ Ключи\ должны\ совпадать\ с\ именами\ в\ 'boundary\_frame\_names'.}
+\DoxyCodeLine{\ \ \ \ boundaries:}
+\DoxyCodeLine{\ \ \ \ \ \ map:\ \#\ Имя\ из\ boundary\_frame\_names}
+\DoxyCodeLine{\ \ \ \ \ \ \ \ \#\ Минимальные\ координаты\ ограничивающего\ параллелепипеда}
+\DoxyCodeLine{\ \ \ \ \ \ \ \ min\_x:\ -\/50.0}
+\DoxyCodeLine{\ \ \ \ \ \ \ \ min\_y:\ -\/50.0}
+\DoxyCodeLine{\ \ \ \ \ \ \ \ min\_z:\ -\/5.0}
+\DoxyCodeLine{\ \ \ \ \ \ \ \ \#\ Максимальные\ координаты\ ограничивающего\ параллелепипеда}
+\DoxyCodeLine{\ \ \ \ \ \ \ \ max\_x:\ 50.0}
+\DoxyCodeLine{\ \ \ \ \ \ \ \ max\_y:\ 50.0}
+\DoxyCodeLine{\ \ \ \ \ \ \ \ max\_z:\ 5.0}
+\DoxyCodeLine{\ \ \ \ \ \ base\_link:\ \#\ Имя\ из\ boundary\_frame\_names}
+\DoxyCodeLine{\ \ \ \ \ \ \ \ min\_x:\ -\/2.0}
+\DoxyCodeLine{\ \ \ \ \ \ \ \ min\_y:\ -\/2.0}
+\DoxyCodeLine{\ \ \ \ \ \ \ \ min\_z:\ -\/0.5}
+\DoxyCodeLine{\ \ \ \ \ \ \ \ max\_x:\ 2.0}
+\DoxyCodeLine{\ \ \ \ \ \ \ \ max\_y:\ 2.0}
+\DoxyCodeLine{\ \ \ \ \ \ \ \ max\_z:\ 2.0}
+\DoxyCodeLine{}
+\DoxyCodeLine{\ \ \ \ \#\ -\/-\/-\/\ Другие\ параметры\ (пример)\ -\/-\/-\/}
+\DoxyCodeLine{\ \ \ \ \#\ Вы\ можете\ добавлять\ другие\ параметры,\ необходимые\ вашему\ узлу.}
+\DoxyCodeLine{\ \ \ \ target\_frame:\ "{}map"{}}
+
+\end{DoxyCode}
+
+
+{\bfseries{Описание ключевых параметров\+:}}
+
+
+\begin{DoxyItemize}
+\item {\ttfamily static\+\_\+transform\+\_\+names}\+: (list of string) Список имен статических преобразований.
+\item {\ttfamily static\+\_\+transforms}\+: (map) Словарь, где каждый ключ -\/ это имя из {\ttfamily static\+\_\+transform\+\_\+names}. Значение содержит\+:
+\begin{DoxyItemize}
+\item {\ttfamily parent\+\_\+frame}\+: (string) Родительский фрейм.
+\item {\ttfamily child\+\_\+frame}\+: (string) Дочерний фрейм.
+\item {\ttfamily translation}\+: (map) Смещение с ключами {\ttfamily x}, {\ttfamily y}, {\ttfamily z}.
+\item {\ttfamily rotation}\+: (map) Кватернион поворота с ключами {\ttfamily x}, {\ttfamily y}, {\ttfamily z}, {\ttfamily w}.
+\end{DoxyItemize}
+\item {\ttfamily boundary\+\_\+frame\+\_\+names}\+: (list of string) Список имен фреймов с границами.
+\item {\ttfamily boundaries}\+: (map) Словарь, где каждый ключ -\/ это имя из {\ttfamily boundary\+\_\+frame\+\_\+names}. Значение содержит\+:
+\begin{DoxyItemize}
+\item {\ttfamily min\+\_\+x}, {\ttfamily min\+\_\+y}, {\ttfamily min\+\_\+z}\+: (double) Минимальные координаты границы.
+\item {\ttfamily max\+\_\+x}, {\ttfamily max\+\_\+y}, {\ttfamily max\+\_\+z}\+: (double) Максимальные координаты границы.
+\end{DoxyItemize}
+\end{DoxyItemize}
+
+Это позволяет библиотеке/узлу {\ttfamily \doxylink{namespacecoordinate__transformer}{coordinate\+\_\+transformer}} загружать конфигурацию стандартным для ROS 2 способом и проверять, находятся ли точки или позы в пределах определенных пространственных ограничений для конкретных систем координат.\hypertarget{index_autotoc_md8}{}\doxysubsection{\texorpdfstring{Пример использования}{Пример использования}}\label{index_autotoc_md8}
 
 \begin{DoxyCode}{0}
 \DoxyCodeLine{\textcolor{keyword}{auto}\ transformer\ =\ std::make\_shared<CoordinateTransformer>(node);}
@@ -120,8 +148,8 @@
 \DoxyCodeLine{}
 \DoxyCodeLine{\textcolor{comment}{//\ Установка\ границ\ для\ системы\ "{}robot\_base"{}}}
 \DoxyCodeLine{\textcolor{comment}{//\ Замените\ min\_point\ и\ max\_point\ на\ ваши\ реальные\ значения\ geometry\_msgs::msg::Point}}
-\DoxyCodeLine{geometry\_msgs::msg::Point\ min\_point;\ }
-\DoxyCodeLine{min\_point.x\ =\ -\/1.0;\ min\_point.y\ =\ -\/1.0;\ min\_point.z\ =\ 0.0;\ }
+\DoxyCodeLine{geometry\_msgs::msg::Point\ min\_point;}
+\DoxyCodeLine{min\_point.x\ =\ -\/1.0;\ min\_point.y\ =\ -\/1.0;\ min\_point.z\ =\ 0.0;}
 \DoxyCodeLine{geometry\_msgs::msg::Point\ max\_point;}
 \DoxyCodeLine{max\_point.x\ =\ 1.0;\ max\_point.y\ =\ 1.0;\ max\_point.z\ =\ 1.5;}
 \DoxyCodeLine{transformer-\/>setBounds(\textcolor{stringliteral}{"{}robot\_base"{}},\ min\_point,\ max\_point);}

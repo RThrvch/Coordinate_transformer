@@ -1,4 +1,4 @@
 var searchData=
 [
-  ['publish_5fstatic_5ftf_0',['publish_static_tf',['../classTestCoordinateTransformer.html#a9b07a33aec690377a6e996f9c14d63ec',1,'TestCoordinateTransformer']]]
+  ['removebounds_0',['removeBounds',['../classcoordinate__transformer_1_1CoordinateTransformer.html#aee50996de8804216a710b7a33d747f28',1,'coordinate_transformer::CoordinateTransformer']]]
 ];

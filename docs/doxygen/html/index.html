@@ -106,71 +106,86 @@ $(function() {
 </li>
 </ol>
 <h2><a class="anchor" id="autotoc_md6"></a>
+Тестирование</h2>
+<p>Для запуска тестов, определенных в пакете, используйте следующую команду из корневой директории вашей рабочей области (<code>~/ros2_ws</code>):</p>
+<div class="fragment"><div class="line">colcon test --packages-select coordinate_transformer</div>
+</div><!-- fragment --><p>После завершения выполнения тестов, вы можете просмотреть результаты:</p>
+<div class="fragment"><div class="line">colcon test-result --all</div>
+</div><!-- fragment --><p>Для более подробного вывода:</p>
+<div class="fragment"><div class="line">colcon test-result --verbose</div>
+</div><!-- fragment --><h2><a class="anchor" id="autotoc_md7"></a>
 Параметры конфигурации (&lt;tt&gt;config.yaml&lt;/tt&gt;)</h2>
-<p>Узел требует файл конфигурации YAML, указанный с помощью аргумента <code>--params-file</code>.</p>
-<p>Файл конфигурации имеет два основных раздела: <code>transforms</code> и <code>boundaries</code>.</p>
-<h3><a class="anchor" id="autotoc_md7"></a>
-&lt;tt&gt;transforms&lt;/tt&gt;</h3>
-<p>Этот раздел определяет список статических преобразований для публикации. Каждая запись преобразования требует:</p>
-<ul>
-<li><code>parent_frame</code>: (string) Имя родительской системы координат.</li>
-<li><code>child_frame</code>: (string) Имя дочерней системы координат.</li>
-<li><code>translation</code>: (object) Компонент смещения преобразования.<ul>
-<li><code>x</code>: (double) Смещение по оси x.</li>
-<li><code>y</code>: (double) Смещение по оси y.</li>
-<li><code>z</code>: (double) Смещение по оси z.</li>
-</ul>
-</li>
-<li><code>rotation</code>: (object) Компонент вращения преобразования, представленный кватернионом.<ul>
-<li><code>x</code>: (double) Компонент x кватерниона.</li>
-<li><code>y</code>: (double) Компонент y кватерниона.</li>
-<li><code>z</code>: (double) Компонент z кватерниона.</li>
-<li><code>w</code>: (double) Компонент w кватерниона.</li>
-</ul>
-</li>
-</ul>
-<p><b>Пример:</b></p>
-<div class="fragment"><div class="line">transforms:</div>
-<div class="line">  - parent_frame: &quot;map&quot;</div>
-<div class="line">    child_frame: &quot;odom&quot;</div>
-<div class="line">    translation: { x: 0.0, y: 0.0, z: 0.0 }</div>
-<div class="line">    rotation: { x: 0.0, y: 0.0, z: 0.0, w: 1.0 }</div>
+<p>Узел требует файл конфигурации YAML, указанный с помощью аргумента <code>--params-file</code>. Файл должен соответствовать формату параметров ROS 2.</p>
+<p>Все параметры узла должны находиться внутри структуры <code>&lt;имя_вашего_узла&gt;:</code> -&gt; <code>ros__parameters:</code>.</p>
+<div class="fragment"><div class="line"># Замените &#39;test_transformer_node&#39; на имя вашего узла, если оно отличается</div>
+<div class="line">test_transformer_node:</div>
+<div class="line">  ros__parameters:</div>
+<div class="line">    # --- Статические трансформации ---</div>
 <div class="line"> </div>
-<div class="line">  - parent_frame: &quot;odom&quot;</div>
-<div class="line">    child_frame: &quot;base_link&quot;</div>
-<div class="line">    translation: { x: 1.0, y: 0.5, z: 0.1 }</div>
-<div class="line">    rotation: { x: 0.0, y: 0.0, z: 0.707, w: 0.707 } # Поворот на 90 градусов вокруг Z</div>
-</div><!-- fragment --><h3><a class="anchor" id="autotoc_md8"></a>
-&lt;tt&gt;boundaries&lt;/tt&gt;</h3>
-<p>Этот раздел определяет именованные границы, связанные с конкретными системами координат. Каждая граница определяется своими минимальной и максимальной угловыми точками.</p>
-<ul>
-<li><code>&lt;frame_name&gt;</code>: (string) Имя системы координат, к которой применяется граница (например, <code>map</code>, <code>robot_workspace</code>). Должно совпадать с системой координат, определенной в вашей системе (либо через раздел <code>transforms</code>, либо иным образом).<ul>
-<li><code>min</code>: (object) Минимальный угол ограничивающего параллелепипеда, выровненного по осям.<ul>
-<li><code>x</code>: (double) Минимальная координата x.</li>
-<li><code>y</code>: (double) Минимальная координата y.</li>
-<li><code>z</code>: (double) Минимальная координата z.</li>
-</ul>
-</li>
-<li><code>max</code>: (object) Максимальный угол ограничивающего параллелепипеда, выровненного по осям.<ul>
-<li><code>x</code>: (double) Максимальная координата x.</li>
-<li><code>y</code>: (double) Максимальная координата y.</li>
-<li><code>z</code>: (double) Максимальная координата z.</li>
-</ul>
-</li>
-</ul>
-</li>
-</ul>
-<p><b>Пример:</b></p>
-<div class="fragment"><div class="line">boundaries:</div>
-<div class="line">  map: # Граница для системы координат &#39;map&#39;</div>
-<div class="line">    min: { x: -50.0, y: -50.0, z: -1.0 }</div>
-<div class="line">    max: { x: 50.0, y: 50.0, z: 5.0 }</div>
+<div class="line">    # Список имен статических преобразований для загрузки и публикации.</div>
+<div class="line">    static_transform_names: [&quot;map_to_odom&quot;, &quot;odom_to_base&quot;]</div>
 <div class="line"> </div>
-<div class="line">  robot_workspace: # Граница для гипотетической системы координат &#39;robot_workspace&#39;</div>
-<div class="line">     min: { x: -1.0, y: -1.0, z: 0.0 }</div>
-<div class="line">     max: { x: 1.0, y: 1.0, z: 1.5 }</div>
-</div><!-- fragment --><p>Это позволяет библиотеке/узлу <code><a class="el" href="namespacecoordinate__transformer.html">coordinate_transformer</a></code> проверять, находятся ли точки или позы в пределах определенных пространственных ограничений для конкретных систем координат.</p>
-<h2><a class="anchor" id="autotoc_md9"></a>
+<div class="line">    # Словарь, определяющий детали каждого статического преобразования.</div>
+<div class="line">    # Ключи должны совпадать с именами в &#39;static_transform_names&#39;.</div>
+<div class="line">    static_transforms:</div>
+<div class="line">      map_to_odom: # Имя из static_transform_names</div>
+<div class="line">        parent_frame: &quot;map&quot;       # Родительский фрейм</div>
+<div class="line">        child_frame: &quot;odom&quot;        # Дочерний фрейм</div>
+<div class="line">        translation: { x: 0.1, y: 0.2, z: 0.0 } # Смещение {x, y, z}</div>
+<div class="line">        rotation: { x: 0.0, y: 0.0, z: 0.0, w: 1.0 } # Поворот (кватернион) {x, y, z, w}</div>
+<div class="line">      odom_to_base: # Имя из static_transform_names</div>
+<div class="line">        parent_frame: &quot;odom&quot;</div>
+<div class="line">        child_frame: &quot;base_link&quot;</div>
+<div class="line">        translation: { x: 0.5, y: 0.0, z: 0.1 }</div>
+<div class="line">        rotation: { x: 0.0, y: 0.0, z: 0.0, w: 1.0 }</div>
+<div class="line"> </div>
+<div class="line">    # --- Границы фреймов ---</div>
+<div class="line"> </div>
+<div class="line">    # Список имен фреймов, для которых определены границы.</div>
+<div class="line">    boundary_frame_names: [&quot;map&quot;, &quot;base_link&quot;]</div>
+<div class="line"> </div>
+<div class="line">    # Словарь, определяющий границы для каждого фрейма.</div>
+<div class="line">    # Ключи должны совпадать с именами в &#39;boundary_frame_names&#39;.</div>
+<div class="line">    boundaries:</div>
+<div class="line">      map: # Имя из boundary_frame_names</div>
+<div class="line">        # Минимальные координаты ограничивающего параллелепипеда</div>
+<div class="line">        min_x: -50.0</div>
+<div class="line">        min_y: -50.0</div>
+<div class="line">        min_z: -5.0</div>
+<div class="line">        # Максимальные координаты ограничивающего параллелепипеда</div>
+<div class="line">        max_x: 50.0</div>
+<div class="line">        max_y: 50.0</div>
+<div class="line">        max_z: 5.0</div>
+<div class="line">      base_link: # Имя из boundary_frame_names</div>
+<div class="line">        min_x: -2.0</div>
+<div class="line">        min_y: -2.0</div>
+<div class="line">        min_z: -0.5</div>
+<div class="line">        max_x: 2.0</div>
+<div class="line">        max_y: 2.0</div>
+<div class="line">        max_z: 2.0</div>
+<div class="line"> </div>
+<div class="line">    # --- Другие параметры (пример) ---</div>
+<div class="line">    # Вы можете добавлять другие параметры, необходимые вашему узлу.</div>
+<div class="line">    target_frame: &quot;map&quot;</div>
+</div><!-- fragment --><p><b>Описание ключевых параметров:</b></p>
+<ul>
+<li><code>static_transform_names</code>: (list of string) Список имен статических преобразований.</li>
+<li><code>static_transforms</code>: (map) Словарь, где каждый ключ - это имя из <code>static_transform_names</code>. Значение содержит:<ul>
+<li><code>parent_frame</code>: (string) Родительский фрейм.</li>
+<li><code>child_frame</code>: (string) Дочерний фрейм.</li>
+<li><code>translation</code>: (map) Смещение с ключами <code>x</code>, <code>y</code>, <code>z</code>.</li>
+<li><code>rotation</code>: (map) Кватернион поворота с ключами <code>x</code>, <code>y</code>, <code>z</code>, <code>w</code>.</li>
+</ul>
+</li>
+<li><code>boundary_frame_names</code>: (list of string) Список имен фреймов с границами.</li>
+<li><code>boundaries</code>: (map) Словарь, где каждый ключ - это имя из <code>boundary_frame_names</code>. Значение содержит:<ul>
+<li><code>min_x</code>, <code>min_y</code>, <code>min_z</code>: (double) Минимальные координаты границы.</li>
+<li><code>max_x</code>, <code>max_y</code>, <code>max_z</code>: (double) Максимальные координаты границы.</li>
+</ul>
+</li>
+</ul>
+<p>Это позволяет библиотеке/узлу <code><a class="el" href="namespacecoordinate__transformer.html">coordinate_transformer</a></code> загружать конфигурацию стандартным для ROS 2 способом и проверять, находятся ли точки или позы в пределах определенных пространственных ограничений для конкретных систем координат.</p>
+<h2><a class="anchor" id="autotoc_md8"></a>
 Пример использования</h2>
 <div class="fragment"><div class="line"><span class="keyword">auto</span> transformer = std::make_shared&lt;CoordinateTransformer&gt;(node);</div>
 <div class="line"> </div>
@@ -179,8 +194,8 @@ $(function() {
 <div class="line"> </div>
 <div class="line"><span class="comment">// Установка границ для системы &quot;robot_base&quot;</span></div>
 <div class="line"><span class="comment">// Замените min_point и max_point на ваши реальные значения geometry_msgs::msg::Point</span></div>
-<div class="line">geometry_msgs::msg::Point min_point; </div>
-<div class="line">min_point.x = -1.0; min_point.y = -1.0; min_point.z = 0.0; </div>
+<div class="line">geometry_msgs::msg::Point min_point;</div>
+<div class="line">min_point.x = -1.0; min_point.y = -1.0; min_point.z = 0.0;</div>
 <div class="line">geometry_msgs::msg::Point max_point;</div>
 <div class="line">max_point.x = 1.0; max_point.y = 1.0; max_point.z = 1.5;</div>
 <div class="line">transformer-&gt;setBounds(<span class="stringliteral">&quot;robot_base&quot;</span>, min_point, max_point);</div>

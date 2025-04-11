@@ -1,50 +1,35 @@
-# @file test_integration_config.yaml
-# @brief Configuration file defining transforms and boundaries for integration tests.
-#
-# @author Ruslan Mukhametsafin
-# @date   2025-04-10
+test_transformer_node:
+  ros__parameters:
+    static_transform_names: ["map_to_odom", "odom_to_base"]
 
-transforms:
-  # Identity transform from frame_a to target_map
-  - parent_frame: target_map
-    child_frame: frame_a
-    translation:
-      x: 0.0
-      y: 0.0
-      z: 0.0
-    rotation:
-      x: 0.0
-      y: 0.0
-      z: 0.0
-      w: 1.0
+    static_transforms:
+      map_to_odom:
+        parent_frame: "map"
+        child_frame: "odom"
+        translation: { x: 0.1, y: 0.2, z: 0.0 }
+        rotation: { x: 0.0, y: 0.0, z: 0.0, w: 1.0 }
+      odom_to_base:
+        parent_frame: "odom"
+        child_frame: "base_link"
+        translation: { x: 0.5, y: 0.0, z: 0.1 }
+        rotation: { x: 0.0, y: 0.0, z: 0.0, w: 1.0 }
 
-  # Simple translation from frame_b to target_map
-  - parent_frame: target_map
-    child_frame: frame_b
-    translation:
-      x: 10.0 # Example offset
-      y: 5.0
-      z: 0.0
-    rotation:
-      x: 0.0
-      y: 0.0
-      z: 0.0
-      w: 1.0
+    boundary_frame_names: ["map", "base_link"]
 
-boundaries:
-  target_map:
-    min:
-      x: -50.0
-      y: -50.0
-      z: -10.0
-    max:
-      x: 50.0
-      y: 50.0
-      z: 10.0
+    boundaries:
+      map:
+        min_x: -50.0
+        min_y: -50.0
+        min_z: -5.0
+        max_x: 50.0
+        max_y: 50.0
+        max_z: 5.0
+      base_link:
+        min_x: -2.0
+        min_y: -2.0
+        min_z: -0.5
+        max_x: 2.0
+        max_y: 2.0
+        max_z: 2.0
 
-  # Optional: Add boundaries for other frames if needed
-  # frame_a:
-  #   min:
-  #     x: ...
-  #   max:
-  #     x: ... 
+    target_frame: "map"

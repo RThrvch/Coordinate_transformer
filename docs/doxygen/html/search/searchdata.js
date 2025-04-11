@@ -1,10 +1,10 @@
 var indexSectionsWithContent =
 {
-  0: ":abcegilmnoprstwyзикопу",
+  0: ":abcegimnoprstwyзикопту",
   1: "bct",
   2: "ct",
   3: "crst",
-  4: "acgilmprstw",
+  4: "acgimprstw",
   5: "emnpt",
   6: "r",
   7: "ciost",

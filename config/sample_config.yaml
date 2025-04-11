@@ -1,25 +1,41 @@
 # @file sample_config.yaml
-# @brief Sample configuration file demonstrating the format for transforms and boundaries.
+# @brief Пример файла конфигурации, демонстрирующий формат преобразований и границ.
 #
 # @author Ruslan Mukhametsafin
 # @date   2025-04-10
 
-transforms:
-  - parent_frame: "map"
-    child_frame: "odom"
-    translation: { x: 0.0, y: 0.0, z: 0.0 }
-    rotation: { x: 0.0, y: 0.0, z: 0.0, w: 1.0 } # Нулевой поворот
+test_transformer_node:
+  ros__parameters:
+    static_transform_names: ["map_to_odom", "odom_to_base"]
 
-  - parent_frame: "odom"
-    child_frame: "base_link"
-    translation: { x: 1.0, y: 0.5, z: 0.1 } # Смещение робота в одометрии
-    rotation: { x: 0.0, y: 0.0, z: 0.707, w: 0.707 } # Поворот на 90 градусов вокруг Z
+    static_transforms:
+      map_to_odom:
+        parent_frame: "map"
+        child_frame: "odom"
+        translation: { x: 0.1, y: 0.2, z: 0.0 }
+        rotation: { x: 0.0, y: 0.0, z: 0.0, w: 1.0 }
+      odom_to_base:
+        parent_frame: "odom"
+        child_frame: "base_link"
+        translation: { x: 0.5, y: 0.0, z: 0.1 }
+        rotation: { x: 0.0, y: 0.0, z: 0.0, w: 1.0 }
 
-boundaries:
-  map: # Границы для карты
-    min: { x: -50.0, y: -50.0, z: -1.0 }
-    max: { x: 50.0, y: 50.0, z: 5.0 }
+    boundary_frame_names: ["map", "base_link"]
 
-  robot_workspace: # Гипотетический кадр рабочего пространства
-     min: { x: -1.0, y: -1.0, z: 0.0 }
-     max: { x: 1.0, y: 1.0, z: 1.5 }
+    boundaries:
+      map:
+        min_x: -50.0
+        min_y: -50.0
+        min_z: -5.0
+        max_x: 50.0
+        max_y: 50.0
+        max_z: 5.0
+      base_link:
+        min_x: -2.0
+        min_y: -2.0
+        min_z: -0.5
+        max_x: 2.0
+        max_y: 2.0
+        max_z: 2.0
+
+    target_frame: "map"

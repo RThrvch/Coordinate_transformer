@@ -13,7 +13,8 @@ namespace coordinate_transformer
 /**
  * @brief Перечисление, представляющее статус результата операции преобразования координат.
  */
-enum class ResultStatus {
+enum class ResultStatus
+{
   SUCCESS,                //!< Операция успешно завершена.
   OUT_OF_BOUNDS,          //!< Результат преобразования вышел за установленные границы.
   TRANSFORM_NOT_FOUND,    //!< Необходимая трансформация между системами координат не найдена.

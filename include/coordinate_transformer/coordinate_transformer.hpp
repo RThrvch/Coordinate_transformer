@@ -22,7 +22,7 @@
 #include <memory>
 #include <mutex>
 
-#include "coordinate_transformer/result_status.hpp" 
+#include "coordinate_transformer/result_status.hpp"
 
 
 class TestCoordinateTransformer;
@@ -39,7 +39,7 @@ struct Bounds
 
 class CoordinateTransformer
 {
-  friend class ::TestCoordinateTransformer; 
+  friend class ::TestCoordinateTransformer;
 
 public:
   /**
@@ -64,21 +64,11 @@ public:
     std::shared_ptr<tf2_ros::Buffer> tf_buffer);
 
   /**
-   * @brief Загружает конфигурацию из YAML-файла.
-   * @details Загружает статические трансформации и определения границ из указанного файла.
-   *          Загруженные статические трансформации публикуются через StaticTransformBroadcaster.
-   *          Загруженные границы сохраняются внутри объекта и объявляются/устанавливаются как ROS-параметры.
-   * @param yaml_path Путь к файлу конфигурации в формате YAML.
-   * @return Статус операции: SUCCESS в случае успеха, CONFIGURATION_ERROR при ошибке.
-   */
-  ResultStatus loadConfig(const std::string& yaml_path);
-
-  /**
    * @brief Добавляет и публикует единичную статическую трансформацию.
    * @details Публикует переданную трансформацию через StaticTransformBroadcaster.
    * @param transform Сообщение geometry_msgs::msg::TransformStamped, содержащее трансформацию.
    */
-  void addTransform(const geometry_msgs::msg::TransformStamped& transform);
+  void addTransform(const geometry_msgs::msg::TransformStamped & transform);
 
   /**
    * @brief Устанавливает или обновляет границы для заданной системы координат.
@@ -90,9 +80,9 @@ public:
    * @param max Структура geometry_msgs::msg::Point, содержащая максимальные координаты (x, y, z).
    */
   void setBounds(
-    const std::string& frame_id,
-    const geometry_msgs::msg::Point& min,
-    const geometry_msgs::msg::Point& max);
+    const std::string & frame_id,
+    const geometry_msgs::msg::Point & min,
+    const geometry_msgs::msg::Point & max);
 
   /**
    * @brief Удаляет ранее установленные границы для указанной системы координат.
@@ -100,7 +90,7 @@ public:
    *          Соответствующие ROS-параметры не удаляются, но и не используются после вызова этого метода.
    * @param frame_id Идентификатор системы координат (TF frame ID), для которой удаляются границы.
    */
-  void removeBounds(const std::string& frame_id);
+  void removeBounds(const std::string & frame_id);
 
   /**
    * @brief Преобразует позу из исходной системы координат в целевую.
@@ -112,9 +102,9 @@ public:
    * @return Статус операции: SUCCESS, OUT_OF_BOUNDS, TRANSFORM_NOT_FOUND, INVALID_INPUT или CONFIGURATION_ERROR.
    */
   ResultStatus convert(
-    const geometry_msgs::msg::PoseStamped& input,
-    geometry_msgs::msg::PoseStamped& output,
-    const std::string& target_frame) const; 
+    const geometry_msgs::msg::PoseStamped & input,
+    geometry_msgs::msg::PoseStamped & output,
+    const std::string & target_frame) const;
 
   /**
    * @brief Преобразует позу из текущей системы координат в заданную исходную систему.
@@ -126,18 +116,31 @@ public:
    * @return Статус операции: SUCCESS, OUT_OF_BOUNDS, TRANSFORM_NOT_FOUND, INVALID_INPUT или CONFIGURATION_ERROR.
    */
   ResultStatus inverseConvert(
-    const geometry_msgs::msg::PoseStamped& input,
-    geometry_msgs::msg::PoseStamped& output,
-    const std::string& source_frame) const; 
+    const geometry_msgs::msg::PoseStamped & input,
+    geometry_msgs::msg::PoseStamped & output,
+    const std::string & source_frame) const;
 
   /**
    * @brief Возвращает логгер узла.
    * @details Предоставляет доступ к логгеру, используемому объектом CoordinateTransformer, для вывода сообщений.
    * @return Константная ссылка на объект rclcpp::Logger.
    */
-  const rclcpp::Logger & getLogger() const; 
+  const rclcpp::Logger & getLogger() const;
 
 private:
+  /**
+   * @brief Internal helper to set bounds without parameter declaration/setting.
+   * @details Validates min <= max and updates the internal bounds_ map. Used by initialize and setBounds.
+   * @param frame_id Frame ID to set bounds for.
+   * @param min Minimum point.
+   * @param max Maximum point.
+   * @return true if bounds were valid and stored, false otherwise.
+   */
+  bool setBoundsInternal(
+    const std::string & frame_id,
+    const geometry_msgs::msg::Point & min,
+    const geometry_msgs::msg::Point & max);
+
   /**
    * @brief Внутренний метод для инициализации общих компонентов.
    * @details Вызывается из обоих конструкторов. Инициализирует логгер, буфер TF2 (если не предоставлен),
@@ -155,7 +158,7 @@ private:
    * @return `true`, если точка находится внутри установленных границ или если границы для данной системы координат не заданы.
    *         `false`, если точка находится вне установленных границ.
    */
-  bool checkBounds(const geometry_msgs::msg::Point& point, const std::string& frame_id) const; 
+  bool checkBounds(const geometry_msgs::msg::Point & point, const std::string & frame_id) const;
 
   /**
    * @brief Колбэк для обработки изменений ROS-параметров.
@@ -165,17 +168,17 @@ private:
    * @return Структура SetParametersResult, указывающая на успех или неудачу применения изменений.
    */
   rcl_interfaces::msg::SetParametersResult parametersCallback(
-    const std::vector<rclcpp::Parameter>& parameters);
+    const std::vector<rclcpp::Parameter> & parameters);
 
-  rclcpp::Node::SharedPtr node_; 
-  rclcpp::Logger logger_;      
-  std::shared_ptr<tf2_ros::Buffer> tf_buffer_; 
-  std::shared_ptr<tf2_ros::TransformListener> tf_listener_; 
-  std::shared_ptr<tf2_ros::StaticTransformBroadcaster> static_tf_broadcaster_; 
+  rclcpp::Node::SharedPtr node_;
+  rclcpp::Logger logger_;
+  std::shared_ptr<tf2_ros::Buffer> tf_buffer_;
+  std::shared_ptr<tf2_ros::TransformListener> tf_listener_;
+  std::shared_ptr<tf2_ros::StaticTransformBroadcaster> static_tf_broadcaster_;
 
   std::map<std::string, Bounds> bounds_;
-  
-  mutable std::mutex bounds_mutex_; 
+
+  mutable std::mutex bounds_mutex_;
 
   rclcpp::node_interfaces::OnSetParametersCallbackHandle::SharedPtr param_callback_handle_;
 

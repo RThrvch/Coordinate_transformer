@@ -1,27 +1,28 @@
 cmake_minimum_required(VERSION 3.8)
 project(coordinate_transformer LANGUAGES CXX)
 
+set(CMAKE_CXX_STANDARD 17)
+set(CMAKE_CXX_STANDARD_REQUIRED True)
+
 if(CMAKE_COMPILER_IS_GNUCXX OR CMAKE_CXX_COMPILER_ID MATCHES "Clang")
   add_compile_options(-Wall -Wextra -Wpedantic)
 endif()
 
 find_package(ament_cmake REQUIRED)
 find_package(rclcpp REQUIRED)
-find_package(tf2 REQUIRED)
-find_package(tf2_geometry_msgs REQUIRED)
 find_package(tf2_ros REQUIRED)
+find_package(tf2_geometry_msgs REQUIRED)
 find_package(geometry_msgs REQUIRED)
-find_package(yaml-cpp REQUIRED)
+find_package(rcl_interfaces REQUIRED)
 
 set(THIS_PACKAGE_AMENT_DEPENDENCIES
     rclcpp
-    tf2
-    tf2_geometry_msgs
     tf2_ros
+    tf2_geometry_msgs
     geometry_msgs
+    rcl_interfaces
 )
 set(THIS_PACKAGE_EXTERNAL_DEPENDENCIES
-    yaml-cpp
 )
 set(THIS_PACKAGE_ALL_DEPENDENCIES
     ${THIS_PACKAGE_AMENT_DEPENDENCIES}
@@ -35,13 +36,12 @@ add_library(${PROJECT_NAME} SHARED
 target_include_directories(${PROJECT_NAME} PUBLIC
   $<BUILD_INTERFACE:${CMAKE_CURRENT_SOURCE_DIR}/include>
   $<INSTALL_INTERFACE:include>
+  $<BUILD_INTERFACE:${rclcpp_INCLUDE_DIRS}>
 )
 
 ament_target_dependencies(${PROJECT_NAME}
     ${THIS_PACKAGE_AMENT_DEPENDENCIES}
 )
-
-target_link_libraries(${PROJECT_NAME} yaml-cpp::yaml-cpp)
 
 install(TARGETS ${PROJECT_NAME}
   EXPORT export_${PROJECT_NAME} 

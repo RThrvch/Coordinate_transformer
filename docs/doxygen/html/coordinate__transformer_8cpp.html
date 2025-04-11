@@ -89,56 +89,65 @@ $(function() {
 <code>#include &lt;chrono&gt;</code><br />
 <code>#include &lt;stdexcept&gt;</code><br />
 <code>#include &lt;set&gt;</code><br />
+<code>#include &lt;vector&gt;</code><br />
+<code>#include &lt;string&gt;</code><br />
+<code>#include &lt;map&gt;</code><br />
+<code>#include &lt;cmath&gt;</code><br />
 </div><div class="textblock"><div class="dynheader">
 Include dependency graph for coordinate_transformer.cpp:</div>
 <div class="dyncontent">
 <div class="center"><img src="coordinate__transformer_8cpp__incl.png" border="0" usemap="#asrc_2coordinate__transformer_8cpp" alt=""/></div>
 <map name="asrc_2coordinate__transformer_8cpp" id="asrc_2coordinate__transformer_8cpp">
-<area shape="rect" title="Файл реализации для класса CoordinateTransformer." alt="" coords="1894,5,2118,31"/>
-<area shape="rect" href="coordinate__transformer_8hpp.html" title="Заголовочный файл для класса CoordinateTransformer, отвечающего за преобразования координат и управле..." alt="" coords="1331,79,1537,119"/>
-<area shape="poly" title=" " alt="" coords="1913,33,1551,81,1551,76,1912,28"/>
-<area shape="rect" title=" " alt="" coords="1561,79,1736,119"/>
-<area shape="poly" title=" " alt="" coords="1955,33,1748,78,1747,73,1953,28"/>
-<area shape="rect" title=" " alt="" coords="1760,86,1892,111"/>
-<area shape="poly" title=" " alt="" coords="1981,33,1866,83,1864,78,1979,28"/>
-<area shape="rect" title=" " alt="" coords="1916,86,1989,111"/>
-<area shape="poly" title=" " alt="" coords="2000,32,1971,76,1966,73,1996,29"/>
-<area shape="rect" title=" " alt="" coords="2014,86,2105,111"/>
-<area shape="poly" title=" " alt="" coords="2016,29,2046,73,2041,76,2012,32"/>
-<area shape="rect" title=" " alt="" coords="2129,86,2195,111"/>
-<area shape="poly" title=" " alt="" coords="2030,28,2128,78,2126,82,2027,33"/>
-<area shape="rect" title=" " alt="" coords="2220,86,2307,111"/>
-<area shape="poly" title=" " alt="" coords="2047,28,2208,76,2217,79,2216,84,2207,81,2045,33"/>
-<area shape="rect" title=" " alt="" coords="2331,86,2374,111"/>
-<area shape="poly" title=" " alt="" coords="2112,28,2214,46,2320,76,2324,78,2322,83,2318,81,2213,51,2111,33"/>
-<area shape="rect" title=" " alt="" coords="5,174,137,199"/>
-<area shape="poly" title=" " alt="" coords="1331,102,1115,103,822,112,488,132,317,148,150,169,127,174,126,168,150,164,317,143,487,127,821,107,1115,98,1331,96"/>
-<area shape="rect" title=" " alt="" coords="162,174,282,199"/>
-<area shape="poly" title=" " alt="" coords="1330,102,1137,104,879,113,588,134,439,149,294,169,274,173,273,168,294,164,439,144,587,128,879,108,1137,99,1330,97"/>
-<area shape="rect" title=" " alt="" coords="306,174,509,199"/>
-<area shape="poly" title=" " alt="" coords="1331,107,972,128,747,146,521,169,484,174,483,169,520,164,747,141,972,123,1330,102"/>
-<area shape="rect" title=" " alt="" coords="533,167,711,207"/>
-<area shape="poly" title=" " alt="" coords="1330,110,1060,132,895,148,725,169,724,164,894,143,1060,126,1330,104"/>
-<area shape="rect" title=" " alt="" coords="735,167,930,207"/>
-<area shape="poly" title=" " alt="" coords="1331,116,944,169,943,164,1330,110"/>
-<area shape="rect" title=" " alt="" coords="954,167,1181,207"/>
-<area shape="poly" title=" " alt="" coords="1354,121,1161,166,1160,161,1353,116"/>
-<area shape="rect" title=" " alt="" coords="1205,174,1429,199"/>
-<area shape="poly" title=" " alt="" coords="1410,121,1345,168,1342,164,1406,117"/>
-<area shape="rect" title=" " alt="" coords="1453,167,1653,207"/>
-<area shape="poly" title=" " alt="" coords="1462,117,1517,156,1514,161,1459,121"/>
-<area shape="rect" title=" " alt="" coords="1677,174,1735,199"/>
-<area shape="poly" title=" " alt="" coords="1509,116,1585,138,1666,164,1671,166,1669,171,1664,169,1584,143,1508,121"/>
-<area shape="rect" title=" " alt="" coords="1760,174,1823,199"/>
-<area shape="poly" title=" " alt="" coords="1538,114,1640,135,1748,164,1755,166,1753,171,1747,169,1639,140,1537,119"/>
-<area shape="rect" title=" " alt="" coords="1847,174,1898,199"/>
-<area shape="poly" title=" " alt="" coords="1538,114,1836,164,1841,166,1839,171,1835,169,1537,119"/>
-<area shape="rect" title=" " alt="" coords="1922,174,1999,199"/>
-<area shape="poly" title=" " alt="" coords="1538,114,1550,116,1652,128,1731,134,1811,143,1911,164,1921,167,1919,172,1909,169,1810,149,1731,140,1651,133,1550,121,1537,119"/>
-<area shape="rect" title=" " alt="" coords="2023,174,2087,199"/>
-<area shape="poly" title=" " alt="" coords="1538,114,1550,116,1680,128,1783,131,1884,139,1943,148,2012,164,2020,166,2018,172,2011,169,1942,154,1883,144,1782,136,1680,133,1550,121,1537,120"/>
-<area shape="rect" href="result__status_8hpp.html" title="Определяет перечисление ResultStatus, используемое для указания результата операций преобразования." alt="" coords="2112,167,2287,207"/>
-<area shape="poly" title=" " alt="" coords="1538,114,1550,116,1702,131,1822,139,1944,147,2099,164,2098,169,1943,152,1822,144,1702,137,1550,121,1537,120"/>
+<area shape="rect" title="Файл реализации для класса CoordinateTransformer." alt="" coords="2475,5,2699,31"/>
+<area shape="rect" href="coordinate__transformer_8hpp.html" title="Заголовочный файл для класса CoordinateTransformer, отвечающего за преобразования координат и управле..." alt="" coords="1251,79,1458,119"/>
+<area shape="poly" title=" " alt="" coords="2475,29,1472,93,1472,87,2474,24"/>
+<area shape="rect" title=" " alt="" coords="2065,174,2124,199"/>
+<area shape="poly" title=" " alt="" coords="2475,31,2315,50,2244,64,2195,81,2168,99,2145,120,2111,164,2107,161,2141,117,2165,95,2192,76,2243,59,2314,45,2474,25"/>
+<area shape="rect" title=" " alt="" coords="2149,174,2211,199"/>
+<area shape="poly" title=" " alt="" coords="2475,29,2333,48,2273,62,2232,81,2215,98,2203,119,2187,161,2182,160,2198,117,2211,95,2229,76,2271,57,2333,42,2474,24"/>
+<area shape="rect" title=" " alt="" coords="2236,174,2287,199"/>
+<area shape="poly" title=" " alt="" coords="2475,27,2407,33,2340,43,2284,59,2264,69,2250,80,2241,99,2240,119,2252,161,2247,162,2235,120,2236,97,2246,77,2261,65,2282,54,2339,38,2406,28,2474,21"/>
+<area shape="rect" title=" " alt="" coords="2259,79,2434,119"/>
+<area shape="poly" title=" " alt="" coords="2553,33,2418,77,2416,72,2551,28"/>
+<area shape="rect" title=" " alt="" coords="2458,86,2590,111"/>
+<area shape="poly" title=" " alt="" coords="2579,33,2544,77,2540,74,2575,29"/>
+<area shape="rect" title=" " alt="" coords="2614,86,2687,111"/>
+<area shape="poly" title=" " alt="" coords="2598,29,2635,74,2630,77,2594,33"/>
+<area shape="rect" title=" " alt="" coords="2712,86,2803,111"/>
+<area shape="poly" title=" " alt="" coords="2613,28,2721,78,2719,83,2610,33"/>
+<area shape="rect" title=" " alt="" coords="2827,86,2893,111"/>
+<area shape="poly" title=" " alt="" coords="2639,28,2722,49,2815,76,2822,78,2820,83,2814,81,2721,54,2638,33"/>
+<area shape="rect" title=" " alt="" coords="2918,86,3005,111"/>
+<area shape="poly" title=" " alt="" coords="2665,28,2779,48,2906,76,2917,79,2916,84,2905,81,2778,53,2664,33"/>
+<area shape="rect" title=" " alt="" coords="3029,86,3072,111"/>
+<area shape="poly" title=" " alt="" coords="2699,21,2853,37,2937,53,3018,76,3022,77,3020,82,3017,81,2935,59,2852,43,2699,26"/>
+<area shape="rect" title=" " alt="" coords="3097,86,3159,111"/>
+<area shape="poly" title=" " alt="" coords="2699,21,2882,38,2984,54,3085,76,3093,79,3091,84,3083,81,2983,59,2881,43,2699,26"/>
+<area shape="rect" title=" " alt="" coords="293,174,425,199"/>
+<area shape="poly" title=" " alt="" coords="1251,105,1093,111,890,122,664,141,438,169,415,174,414,168,437,164,664,136,890,117,1093,105,1251,99"/>
+<area shape="rect" title=" " alt="" coords="449,174,569,199"/>
+<area shape="poly" title=" " alt="" coords="1251,106,949,125,765,143,582,169,562,173,561,168,581,164,765,138,949,119,1251,101"/>
+<area shape="rect" title=" " alt="" coords="593,174,796,199"/>
+<area shape="poly" title=" " alt="" coords="1252,114,1046,138,808,169,775,174,774,169,808,164,1046,133,1251,109"/>
+<area shape="rect" title=" " alt="" coords="820,167,999,207"/>
+<area shape="poly" title=" " alt="" coords="1257,121,1013,168,1012,163,1256,116"/>
+<area shape="rect" title=" " alt="" coords="1023,167,1217,207"/>
+<area shape="poly" title=" " alt="" coords="1304,121,1185,164,1183,159,1302,116"/>
+<area shape="rect" title=" " alt="" coords="1241,167,1468,207"/>
+<area shape="poly" title=" " alt="" coords="1357,119,1357,153,1352,153,1352,119"/>
+<area shape="rect" title=" " alt="" coords="1492,174,1716,199"/>
+<area shape="poly" title=" " alt="" coords="1410,116,1559,167,1557,172,1409,121"/>
+<area shape="rect" title=" " alt="" coords="1740,167,1940,207"/>
+<area shape="poly" title=" " alt="" coords="1459,116,1727,163,1726,168,1458,121"/>
+<area shape="poly" title=" " alt="" coords="1458,97,1581,100,1731,110,1893,131,1975,146,2054,164,2061,166,2059,171,2053,169,1974,151,1892,136,1730,116,1580,105,1458,102"/>
+<area shape="poly" title=" " alt="" coords="1458,102,1819,125,2003,142,2079,153,2137,164,2145,166,2143,172,2135,169,2078,158,2002,148,1818,130,1458,107"/>
+<area shape="poly" title=" " alt="" coords="1458,100,1642,107,1862,120,2073,138,2159,150,2225,164,2231,166,2229,171,2223,169,2158,156,2072,144,1862,125,1641,113,1458,106"/>
+<area shape="rect" title=" " alt="" coords="1964,174,2041,199"/>
+<area shape="poly" title=" " alt="" coords="1459,101,1563,108,1687,120,1820,138,1953,164,1963,167,1962,172,1951,169,1820,143,1686,125,1562,113,1458,107"/>
+<area shape="rect" title=" " alt="" coords="5,174,69,199"/>
+<area shape="poly" title=" " alt="" coords="1251,103,989,108,651,118,321,138,185,152,82,169,73,172,72,167,81,164,184,147,320,133,651,113,989,102,1251,98"/>
+<area shape="rect" href="result__status_8hpp.html" title="Определяет перечисление ResultStatus, используемое для указания результата операций преобразования." alt="" coords="94,167,269,207"/>
+<area shape="poly" title=" " alt="" coords="1251,105,1071,111,832,122,560,141,283,169,282,164,560,136,832,117,1071,105,1251,99"/>
 </map>
 </div>
 </div><table class="memberdecls">

@@ -16,38 +16,42 @@
 #include <chrono>
 #include <stdexcept>
 #include <set>
+#include <vector>
+#include <string>
+#include <map>
+#include <cmath>
 
 namespace coordinate_transformer
 {
 
 // --- Конструкторы ---
 CoordinateTransformer::CoordinateTransformer(rclcpp::Node::SharedPtr node)
-  : node_(node),
-    logger_(node ? node->get_logger() : rclcpp::get_logger("CoordinateTransformerDefault"))
+: node_(node),
+  logger_(node ? node->get_logger() : rclcpp::get_logger("CoordinateTransformerDefault"))
 {
-    if (!node_) {
-         RCLCPP_FATAL(logger_, "Node pointer cannot be null!");
-         throw std::invalid_argument("Node pointer cannot be null!");
-    }
-    initialize(nullptr);
+  if (!node_) {
+    RCLCPP_FATAL(logger_, "Node pointer cannot be null!");
+    throw std::invalid_argument("Node pointer cannot be null!");
+  }
+  initialize(nullptr);
 }
 
 CoordinateTransformer::CoordinateTransformer(
-    rclcpp::Node::SharedPtr node,
-    std::shared_ptr<tf2_ros::Buffer> tf_buffer)
-  : node_(node),
-    logger_(node ? node->get_logger() : rclcpp::get_logger("CoordinateTransformerDefault")),
-    tf_buffer_(tf_buffer)
+  rclcpp::Node::SharedPtr node,
+  std::shared_ptr<tf2_ros::Buffer> tf_buffer)
+: node_(node),
+  logger_(node ? node->get_logger() : rclcpp::get_logger("CoordinateTransformerDefault")),
+  tf_buffer_(tf_buffer)
 {
-     if (!node_) {
-         RCLCPP_FATAL(logger_, "Node pointer cannot be null!");
-         throw std::invalid_argument("Node pointer cannot be null!");
-    }
-     if (!tf_buffer_) {
-         RCLCPP_FATAL(logger_, "TF Buffer pointer cannot be null for this constructor!");
-         throw std::invalid_argument("TF Buffer pointer cannot be null for this constructor!");
-     }
-    initialize(tf_buffer_);
+  if (!node_) {
+    RCLCPP_FATAL(logger_, "Node pointer cannot be null!");
+    throw std::invalid_argument("Node pointer cannot be null!");
+  }
+  if (!tf_buffer_) {
+    RCLCPP_FATAL(logger_, "TF Buffer pointer cannot be null for this constructor!");
+    throw std::invalid_argument("TF Buffer pointer cannot be null for this constructor!");
+  }
+  initialize(tf_buffer_);
 }
 
 // --- Метод инициализации ---
@@ -55,418 +59,790 @@ CoordinateTransformer::CoordinateTransformer(
 void CoordinateTransformer::initialize(
   std::shared_ptr<tf2_ros::Buffer> tf_buffer)
 {
-  RCLCPP_INFO(logger_, "Initializing CoordinateTransformer internals...");
+  RCLCPP_INFO(logger_, "Initializing CoordinateTransformer internals using ROS parameters...");
 
   if (tf_buffer) {
-      tf_buffer_ = tf_buffer;
-      RCLCPP_INFO(logger_, "Using provided TF2 buffer.");
+    tf_buffer_ = tf_buffer;
+    RCLCPP_INFO(logger_, "Using provided TF2 buffer.");
   } else {
-      if (!tf_buffer_) {
-           tf_buffer_ = std::make_shared<tf2_ros::Buffer>(node_->get_clock());
-           tf_buffer_->setUsingDedicatedThread(true);
-           RCLCPP_INFO(logger_, "Created internal TF2 buffer.");
-      } else {
-           RCLCPP_INFO(logger_, "Using internal TF2 buffer (likely from test constructor).");
-      }
-      try {
-        tf_listener_ = std::make_shared<tf2_ros::TransformListener>(*tf_buffer_, node_, false);
-        RCLCPP_INFO(logger_, "Created TF2 listener for internal buffer.");
-      } catch (const std::runtime_error& e) {
-         RCLCPP_ERROR(logger_, "Failed to create internal TransformListener: %s", e.what());
-         tf_buffer_.reset();
-         throw;
-      }
+    if (!tf_buffer_) {
+      tf_buffer_ = std::make_shared<tf2_ros::Buffer>(node_->get_clock());
+      tf_buffer_->setUsingDedicatedThread(true);
+      RCLCPP_INFO(logger_, "Created internal TF2 buffer.");
+    } else {
+      RCLCPP_WARN(logger_, "Using pre-existing internal TF2 buffer (unexpected scenario?).");
+    }
+    try {
+      tf_listener_ = std::make_shared<tf2_ros::TransformListener>(*tf_buffer_, node_, false);
+      RCLCPP_INFO(logger_, "Created TF2 listener for internal buffer.");
+    } catch (const std::runtime_error & e) {
+      RCLCPP_ERROR(logger_, "Failed to create internal TransformListener: %s", e.what());
+      tf_buffer_.reset();
+      throw;
+    }
   }
 
   static_tf_broadcaster_ = std::make_shared<tf2_ros::StaticTransformBroadcaster>(node_);
+
   try {
-    if (!node_->has_parameter("boundaries.initialized")) {
-        node_->declare_parameter<bool>("boundaries.initialized", false, rcl_interfaces::msg::ParameterDescriptor());
-    }
-  } catch (const rclcpp::exceptions::ParameterAlreadyDeclaredException &e) {
-      RCLCPP_WARN(logger_, "Parameter 'boundaries.initialized' was already declared: %s", e.what());
+      // Declare core list parameters
+    auto static_tf_desc = rcl_interfaces::msg::ParameterDescriptor();
+    static_tf_desc.description =
+      "List of symbolic names for static transforms defined under 'static_transforms.<name>'.";
+    node_->declare_parameter<std::vector<std::string>>("static_transform_names",
+        std::vector<std::string>{}, static_tf_desc);
+
+    auto boundary_frames_desc = rcl_interfaces::msg::ParameterDescriptor();
+    boundary_frames_desc.description =
+      "List of frame_ids for which boundaries are defined under 'boundaries.<frame_id>.";
+    node_->declare_parameter<std::vector<std::string>>("boundary_frame_names",
+        std::vector<std::string>{}, boundary_frames_desc);
+
+      // Declare the initialization status parameter
+    auto initialized_desc = rcl_interfaces::msg::ParameterDescriptor();
+    initialized_desc.description =
+      "Indicates if boundaries have been successfully loaded or set at least once.";
+    initialized_desc.read_only = true;   // Should only be set internally? Or maybe allow user set? Let's start read-only.
+    node_->declare_parameter<bool>("boundaries.initialized", false, initialized_desc);
+
+    RCLCPP_INFO(logger_, "Declared core configuration parameters.");
+  } catch (const rclcpp::exceptions::ParameterAlreadyDeclaredException & e) {
+    RCLCPP_WARN(logger_, "Core parameters were already declared: %s", e.what());
+  } catch (const std::exception & e) {
+    RCLCPP_ERROR(logger_, "Error declaring core parameters: %s", e.what());
+    throw;
   }
 
-  auto callback = [this](const std::vector<rclcpp::Parameter>& parameters) -> rcl_interfaces::msg::SetParametersResult
-  {
-      return this->parametersCallback(parameters);
-  };
-  param_callback_handle_ = node_->add_on_set_parameters_callback(callback);
+  try {
+    std::vector<std::string> transform_names =
+      node_->get_parameter("static_transform_names").as_string_array();
 
-  RCLCPP_INFO(logger_, "CoordinateTransformer initialized successfully.");
+    if (!transform_names.empty()) {
+      std::vector<geometry_msgs::msg::TransformStamped> static_transforms;
+      RCLCPP_INFO(logger_, "Processing %zu static transforms from parameters...",
+          transform_names.size());
+
+      for (const auto & name : transform_names) {
+        std::string prefix = "static_transforms." + name + ".";
+        try {
+          rcl_interfaces::msg::ParameterDescriptor transform_param_desc;
+          transform_param_desc.description = "Parameter for static transform '" + name + "'.";
+          transform_param_desc.dynamic_typing = true;
+
+          node_->declare_parameter<std::string>(prefix + "parent_frame", "", transform_param_desc);
+          node_->declare_parameter<std::string>(prefix + "child_frame", "", transform_param_desc);
+          node_->declare_parameter<double>(prefix + "translation.x", 0.0, transform_param_desc);
+          node_->declare_parameter<double>(prefix + "translation.y", 0.0, transform_param_desc);
+          node_->declare_parameter<double>(prefix + "translation.z", 0.0, transform_param_desc);
+          node_->declare_parameter<double>(prefix + "rotation.x", 0.0, transform_param_desc);
+          node_->declare_parameter<double>(prefix + "rotation.y", 0.0, transform_param_desc);
+          node_->declare_parameter<double>(prefix + "rotation.z", 0.0, transform_param_desc);
+          node_->declare_parameter<double>(prefix + "rotation.w", 1.0, transform_param_desc);
+
+          std::string parent_frame = node_->get_parameter(prefix + "parent_frame").as_string();
+          std::string child_frame = node_->get_parameter(prefix + "child_frame").as_string();
+
+          if (parent_frame.empty() || child_frame.empty()) {
+            RCLCPP_WARN(logger_,
+                "Skipping static transform '%s': parent_frame or child_frame is empty.",
+                name.c_str());
+            continue;
+          }
+          if (parent_frame == child_frame) {
+            RCLCPP_WARN(logger_,
+                "Skipping static transform '%s': parent_frame and child_frame are the same ('%s').",
+                name.c_str(), parent_frame.c_str());
+            continue;
+          }
+
+          geometry_msgs::msg::TransformStamped tf;
+          tf.header.frame_id = parent_frame;
+          tf.child_frame_id = child_frame;
+          tf.transform.translation.x = node_->get_parameter(prefix + "translation.x").as_double();
+          tf.transform.translation.y = node_->get_parameter(prefix + "translation.y").as_double();
+          tf.transform.translation.z = node_->get_parameter(prefix + "translation.z").as_double();
+          tf.transform.rotation.x = node_->get_parameter(prefix + "rotation.x").as_double();
+          tf.transform.rotation.y = node_->get_parameter(prefix + "rotation.y").as_double();
+          tf.transform.rotation.z = node_->get_parameter(prefix + "rotation.z").as_double();
+          tf.transform.rotation.w = node_->get_parameter(prefix + "rotation.w").as_double();
+
+          tf2::Quaternion q(tf.transform.rotation.x, tf.transform.rotation.y,
+            tf.transform.rotation.z, tf.transform.rotation.w);
+          if (std::abs(q.length2() - 1.0) > 1e-3) {
+            RCLCPP_WARN(logger_,
+                "Quaternion for static transform '%s' (%s -> %s) is not normalized (length^2=%.4f). Normalizing.",
+                                   name.c_str(), parent_frame.c_str(), child_frame.c_str(),
+                q.length2());
+            q.normalize();
+            tf.transform.rotation = tf2::toMsg(q);
+          }
+
+          static_transforms.push_back(tf);
+          RCLCPP_DEBUG(logger_, "Loaded static transform '%s': %s -> %s", name.c_str(),
+              tf.header.frame_id.c_str(), tf.child_frame_id.c_str());
+
+        } catch (const rclcpp::exceptions::ParameterAlreadyDeclaredException & e) {
+          RCLCPP_INFO(logger_,
+              "Parameters for static transform '%s' already declared, attempting to read: %s",
+              name.c_str(), e.what());
+          try {
+            std::string parent_frame = node_->get_parameter(prefix + "parent_frame").as_string();
+            std::string child_frame = node_->get_parameter(prefix + "child_frame").as_string();
+            if (parent_frame.empty() || child_frame.empty()) {
+              RCLCPP_WARN(logger_,
+                  "Skipping already declared static transform '%s': parent or child frame is empty.",
+                  name.c_str());
+              continue;
+            }
+            if (parent_frame == child_frame) {
+              RCLCPP_WARN(logger_,
+                  "Skipping already declared static transform '%s': parent and child frame are the same ('%s').",
+                  name.c_str(), parent_frame.c_str());
+              continue;
+            }
+            geometry_msgs::msg::TransformStamped tf;
+            tf.header.frame_id = parent_frame;
+            tf.child_frame_id = child_frame;
+            tf.transform.translation.x = node_->get_parameter(prefix + "translation.x").as_double();
+            tf.transform.translation.y = node_->get_parameter(prefix + "translation.y").as_double();
+            tf.transform.translation.z = node_->get_parameter(prefix + "translation.z").as_double();
+            tf.transform.rotation.x = node_->get_parameter(prefix + "rotation.x").as_double();
+            tf.transform.rotation.y = node_->get_parameter(prefix + "rotation.y").as_double();
+            tf.transform.rotation.z = node_->get_parameter(prefix + "rotation.z").as_double();
+            tf.transform.rotation.w = node_->get_parameter(prefix + "rotation.w").as_double();
+            tf2::Quaternion q(tf.transform.rotation.x, tf.transform.rotation.y,
+              tf.transform.rotation.z, tf.transform.rotation.w);
+            if (std::abs(q.length2() - 1.0) > 1e-3) {
+              RCLCPP_WARN(logger_,
+                  "Quaternion for already declared static transform '%s' (%s -> %s) is not normalized (length^2=%.4f). Normalizing.",
+                                   name.c_str(), parent_frame.c_str(), child_frame.c_str(),
+                  q.length2());
+              q.normalize();
+              tf.transform.rotation = tf2::toMsg(q);
+            }
+            static_transforms.push_back(tf);
+            RCLCPP_DEBUG(logger_, "Loaded already declared static transform '%s': %s -> %s",
+                name.c_str(), tf.header.frame_id.c_str(), tf.child_frame_id.c_str());
+
+          } catch (const rclcpp::exceptions::ParameterNotDeclaredException & get_e) {
+            RCLCPP_ERROR(logger_,
+                "Error getting parameters for already declared static transform '%s': %s",
+                name.c_str(), get_e.what());
+          } catch (const std::exception & get_e) {
+            RCLCPP_ERROR(logger_,
+                "Unexpected error getting parameters for already declared static transform '%s': %s",
+                name.c_str(), get_e.what());
+          }
+
+        } catch (const rclcpp::exceptions::ParameterNotDeclaredException & e) {
+          RCLCPP_ERROR(logger_, "Error processing parameters for static transform '%s': %s",
+              name.c_str(), e.what());
+        } catch (const std::exception & e) {
+          RCLCPP_ERROR(logger_, "Unexpected error processing static transform '%s': %s",
+              name.c_str(), e.what());
+        }
+      }
+
+      if (!static_transforms.empty()) {
+        static_tf_broadcaster_->sendTransform(static_transforms);
+        RCLCPP_INFO(logger_, "Published %zu static transforms from parameters.",
+            static_transforms.size());
+      } else {
+        RCLCPP_INFO(logger_, "No valid static transforms loaded from parameters.");
+      }
+    } else {
+      RCLCPP_INFO(logger_,
+          "No static transforms defined in parameters (checked 'static_transform_names').");
+    }
+
+  } catch (const rclcpp::exceptions::ParameterNotDeclaredException & e) {
+    RCLCPP_WARN(logger_,
+        "Could not retrieve 'static_transform_names' parameter (maybe not provided?): %s",
+        e.what());
+  } catch (const std::exception & e) {
+    RCLCPP_ERROR(logger_,
+        "An unexpected error occurred during static transform parameter processing: %s", e.what());
+  }
+
+  // --- Process initial boundary definitions ---
+  try {
+    std::vector<std::string> initial_boundary_frames =
+      node_->get_parameter("boundary_frame_names").as_string_array();
+    if (!initial_boundary_frames.empty()) {
+      RCLCPP_INFO(logger_,
+          "Processing initial boundaries for %zu frames specified in 'boundary_frame_names' parameter...",
+          initial_boundary_frames.size());
+      for (const auto & frame_id : initial_boundary_frames) {
+        if (frame_id.empty()) {
+          RCLCPP_WARN(logger_, "Skipping empty frame_id found in initial 'boundary_frame_names'.");
+          continue;
+        }
+        std::string prefix = "boundaries." + frame_id + ".";
+        try {
+                  // Declare the parameters for this frame if they don't exist yet.
+                  // Use NaN as default to clearly indicate if a value wasn't provided.
+          rcl_interfaces::msg::ParameterDescriptor bounds_param_desc;
+          bounds_param_desc.description = "Boundary limit for frame '" + frame_id + "'.";
+          bounds_param_desc.read_only = false;         // Must match callback declaration
+          double default_val = std::numeric_limits<double>::quiet_NaN();
+
+                  // Use try-declare pattern
+          if (!node_->has_parameter(prefix + "min_x")) {
+            node_->declare_parameter(prefix + "min_x", default_val, bounds_param_desc);
+          }
+          if (!node_->has_parameter(prefix + "min_y")) {
+            node_->declare_parameter(prefix + "min_y", default_val, bounds_param_desc);
+          }
+          if (!node_->has_parameter(prefix + "min_z")) {
+            node_->declare_parameter(prefix + "min_z", default_val, bounds_param_desc);
+          }
+          if (!node_->has_parameter(prefix + "max_x")) {
+            node_->declare_parameter(prefix + "max_x", default_val, bounds_param_desc);
+          }
+          if (!node_->has_parameter(prefix + "max_y")) {
+            node_->declare_parameter(prefix + "max_y", default_val, bounds_param_desc);
+          }
+          if (!node_->has_parameter(prefix + "max_z")) {
+            node_->declare_parameter(prefix + "max_z", default_val, bounds_param_desc);
+          }
+
+                  // Now get the initial values
+          geometry_msgs::msg::Point min_p, max_p;
+          min_p.x = node_->get_parameter(prefix + "min_x").as_double();
+          min_p.y = node_->get_parameter(prefix + "min_y").as_double();
+          min_p.z = node_->get_parameter(prefix + "min_z").as_double();
+          max_p.x = node_->get_parameter(prefix + "max_x").as_double();
+          max_p.y = node_->get_parameter(prefix + "max_y").as_double();
+          max_p.z = node_->get_parameter(prefix + "max_z").as_double();
+
+          RCLCPP_INFO(logger_, "Applying initial bounds for frame '%s' from parameters.",
+              frame_id.c_str());
+          setBoundsInternal(frame_id, min_p, max_p);         // Validate and store internally
+
+        } catch (const rclcpp::exceptions::ParameterAlreadyDeclaredException & e) {
+          RCLCPP_WARN(logger_,
+              "Parameters for initial boundary frame '%s' were already declared (unexpected): %s",
+              frame_id.c_str(), e.what());
+                   // Attempt to read values anyway
+          try {
+            geometry_msgs::msg::Point min_p, max_p;
+            min_p.x = node_->get_parameter(prefix + "min_x").as_double();
+            min_p.y = node_->get_parameter(prefix + "min_y").as_double();
+            min_p.z = node_->get_parameter(prefix + "min_z").as_double();
+            max_p.x = node_->get_parameter(prefix + "max_x").as_double();
+            max_p.y = node_->get_parameter(prefix + "max_y").as_double();
+            max_p.z = node_->get_parameter(prefix + "max_z").as_double();
+            RCLCPP_INFO(logger_,
+                "Applying initial bounds for already declared frame '%s' from parameters.",
+                frame_id.c_str());
+            setBoundsInternal(frame_id, min_p, max_p);
+          } catch (const std::exception & get_e) {
+            RCLCPP_ERROR(logger_,
+                "Error getting parameters for already declared initial boundary frame '%s': %s",
+                frame_id.c_str(), get_e.what());
+          }
+        } catch (const rclcpp::exceptions::ParameterNotDeclaredException & e) {
+          RCLCPP_ERROR(logger_,
+              "Error declaring/getting initial boundary parameters for frame '%s': %s. Bounds may not be set.",
+              frame_id.c_str(), e.what());
+        } catch (const rclcpp::exceptions::InvalidParameterTypeException & e) {
+          RCLCPP_ERROR(logger_,
+              "Invalid parameter type for initial boundary frame '%s': %s. Bounds may not be set.",
+              frame_id.c_str(), e.what());
+        } catch (const std::exception & e) {
+          RCLCPP_ERROR(logger_, "Unexpected error processing initial boundaries for frame '%s': %s",
+              frame_id.c_str(), e.what());
+        }
+      }
+    } else {
+      RCLCPP_INFO(logger_,
+          "No initial boundary frames defined in 'boundary_frame_names' parameter.");
+    }
+  } catch (const rclcpp::exceptions::ParameterNotDeclaredException & e) {
+    RCLCPP_WARN(logger_,
+        "Could not retrieve initial 'boundary_frame_names' parameter (maybe not provided?): %s",
+        e.what());
+  } catch (const std::exception & e) {
+    RCLCPP_ERROR(logger_,
+        "An unexpected error occurred during initial boundary parameter processing: %s", e.what());
+  }
+
+  param_callback_handle_ = node_->add_on_set_parameters_callback(
+    std::bind(&CoordinateTransformer::parametersCallback, this, std::placeholders::_1));
+
+  RCLCPP_INFO(logger_, "CoordinateTransformer initialized successfully using ROS parameters.");
 }
 
 
 // --- Публичные методы ---
 
-ResultStatus CoordinateTransformer::loadConfig(const std::string& yaml_path)
+void CoordinateTransformer::addTransform(const geometry_msgs::msg::TransformStamped & transform)
 {
-    RCLCPP_INFO(logger_, "Loading configuration from: %s", yaml_path.c_str());
-
-    if (!std::filesystem::exists(yaml_path)) {
-        RCLCPP_ERROR(logger_, "Configuration file not found: %s", yaml_path.c_str());
-        return ResultStatus::CONFIGURATION_ERROR;
-    }
-
-    try {
-        YAML::Node config = YAML::LoadFile(yaml_path);
-
-        if (config["transforms"] && config["transforms"].IsSequence()) {
-           std::vector<geometry_msgs::msg::TransformStamped> static_transforms;
-            for (const auto& tf_node : config["transforms"]) {
-                geometry_msgs::msg::TransformStamped tf;
-                if (!tf_node["parent_frame"] || !tf_node["child_frame"] || !tf_node["translation"] || !tf_node["rotation"]) {
-                     RCLCPP_WARN(logger_, "Skipping invalid transform entry in YAML: missing required fields.");
-                     continue;
-                }
-                tf.header.stamp = node_->get_clock()->now();
-                tf.header.frame_id = tf_node["parent_frame"].as<std::string>();
-                tf.child_frame_id = tf_node["child_frame"].as<std::string>();
-
-                if (tf_node["translation"]["x"] && tf_node["translation"]["y"] && tf_node["translation"]["z"] ) {
-                    tf.transform.translation.x = tf_node["translation"]["x"].as<double>();
-                    tf.transform.translation.y = tf_node["translation"]["y"].as<double>();
-                    tf.transform.translation.z = tf_node["translation"]["z"].as<double>();
-                } else {
-                    RCLCPP_WARN(logger_, "Skipping transform for '%s' -> '%s': invalid translation format.", tf.header.frame_id.c_str(), tf.child_frame_id.c_str());
-                    continue;
-                }
-
-                 if (tf_node["rotation"]["x"] && tf_node["rotation"]["y"] && tf_node["rotation"]["z"] && tf_node["rotation"]["w"]) {
-                    tf.transform.rotation.x = tf_node["rotation"]["x"].as<double>();
-                    tf.transform.rotation.y = tf_node["rotation"]["y"].as<double>();
-                    tf.transform.rotation.z = tf_node["rotation"]["z"].as<double>();
-                    tf.transform.rotation.w = tf_node["rotation"]["w"].as<double>();
-                } else {
-                     RCLCPP_WARN(logger_, "Skipping transform for '%s' -> '%s': invalid rotation format.", tf.header.frame_id.c_str(), tf.child_frame_id.c_str());
-                     continue;
-                }
-                static_transforms.push_back(tf);
-                RCLCPP_DEBUG(logger_, "Loaded static transform: %s -> %s", tf.header.frame_id.c_str(), tf.child_frame_id.c_str());
-            }
-            if (!static_transforms.empty()) {
-                static_tf_broadcaster_->sendTransform(static_transforms);
-                RCLCPP_INFO(logger_, "Published %zu static transforms.", static_transforms.size());
-            }
-        }
-
-        if (config["boundaries"] && config["boundaries"].IsMap()) {
-            bool bounds_loaded = false;
-            for (const auto& bound_pair : config["boundaries"]) {
-                std::string frame_id = bound_pair.first.as<std::string>();
-                YAML::Node bound_node = bound_pair.second;
-
-                if (bound_node["min"] && bound_node["max"] &&
-                    bound_node["min"].IsMap() && bound_node["max"].IsMap() &&
-                    bound_node["min"]["x"] && bound_node["min"]["y"] && bound_node["min"]["z"] &&
-                    bound_node["max"]["x"] && bound_node["max"]["y"] && bound_node["max"]["z"])
-                {
-                    geometry_msgs::msg::Point min_p, max_p;
-                    min_p.x = bound_node["min"]["x"].as<double>();
-                    min_p.y = bound_node["min"]["y"].as<double>();
-                    min_p.z = bound_node["min"]["z"].as<double>();
-                    max_p.x = bound_node["max"]["x"].as<double>();
-                    max_p.y = bound_node["max"]["y"].as<double>();
-                    max_p.z = bound_node["max"]["z"].as<double>();
-
-                    setBounds(frame_id, min_p, max_p);
-                    bounds_loaded = true;
-
-                } else {
-                    RCLCPP_WARN(logger_, "Skipping invalid boundaries entry for frame '%s': incorrect format.", frame_id.c_str());
-                }
-            }
-             if(bounds_loaded) {
-                try {
-                  node_->set_parameter(rclcpp::Parameter("boundaries.initialized", true));
-                } catch (const rclcpp::exceptions::ParameterNotDeclaredException &e) {
-                  RCLCPP_ERROR(logger_, "Failed to set 'boundaries.initialized' parameter: %s", e.what());
-                }
-             }
-        }
-
-    } catch (const YAML::Exception& e) {
-        RCLCPP_ERROR(logger_, "Failed to parse YAML configuration: %s. Error: %s", yaml_path.c_str(), e.what());
-        return ResultStatus::CONFIGURATION_ERROR;
-    } catch (const std::exception& e) {
-        RCLCPP_ERROR(logger_, "An unexpected error occurred during configuration loading: %s", e.what());
-        return ResultStatus::CONFIGURATION_ERROR;
-    }
-
-    RCLCPP_INFO(logger_, "Configuration loaded successfully.");
-    return ResultStatus::SUCCESS;
-}
-
-void CoordinateTransformer::addTransform(const geometry_msgs::msg::TransformStamped& transform)
-{
-    if (static_tf_broadcaster_) {
-      static_tf_broadcaster_->sendTransform(transform);
-      RCLCPP_DEBUG(logger_, "Published provided static transform: %s -> %s", transform.header.frame_id.c_str(), transform.child_frame_id.c_str());
-    } else {
-      RCLCPP_ERROR(logger_, "StaticTransformBroadcaster is not initialized. Cannot add transform.");
-    }
+  if (transform.header.frame_id.empty() || transform.child_frame_id.empty()) {
+    RCLCPP_WARN(logger_, "addTransform: Skipping transform with empty parent or child frame_id.");
+    return;
+  }
+  if (transform.header.frame_id == transform.child_frame_id) {
+    RCLCPP_WARN(logger_,
+        "addTransform: Skipping transform where parent ('%s') and child ('%s') frame_id are the same.",
+                   transform.header.frame_id.c_str(), transform.child_frame_id.c_str());
+    return;
+  }
+  tf2::Quaternion q;
+  tf2::fromMsg(transform.transform.rotation, q);
+  if (std::abs(q.length2() - 1.0) > 1e-3) {
+    RCLCPP_WARN(logger_,
+        "addTransform: Quaternion for transform %s -> %s is not normalized (length^2=%.4f). Normalizing before publishing.",
+            transform.header.frame_id.c_str(), transform.child_frame_id.c_str(), q.length2());
+    q.normalize();
+    geometry_msgs::msg::TransformStamped normalized_transform = transform;
+    normalized_transform.transform.rotation = tf2::toMsg(q);
+    static_tf_broadcaster_->sendTransform(normalized_transform);
+  } else {
+    static_tf_broadcaster_->sendTransform(transform);
+  }
+  RCLCPP_DEBUG(logger_, "Published static transform via addTransform: %s -> %s",
+      transform.header.frame_id.c_str(), transform.child_frame_id.c_str());
 }
 
 void CoordinateTransformer::setBounds(
-    const std::string& frame_id,
-    const geometry_msgs::msg::Point& min,
-    const geometry_msgs::msg::Point& max)
+  const std::string & frame_id,
+  const geometry_msgs::msg::Point & min,
+  const geometry_msgs::msg::Point & max)
 {
-    if (min.x > max.x || min.y > max.y || min.z > max.z) {
-        RCLCPP_ERROR(logger_, "Invalid bounds for frame '%s': min coordinates must be less than or equal to max coordinates. Bounds not set.", frame_id.c_str());
-        return;
-    }
+  if (frame_id.empty()) {
+    RCLCPP_ERROR(logger_, "Cannot set bounds for an empty frame_id.");
+    return;
+  }
 
-    {
-      std::lock_guard<std::mutex> lock(bounds_mutex_);
-      bounds_[frame_id] = Bounds{min, max};
-       RCLCPP_INFO(logger_, "Set bounds for frame '%s': min(%.2f, %.2f, %.2f), max(%.2f, %.2f, %.2f)", frame_id.c_str(), min.x, min.y, min.z, max.x, max.y, max.z);
-    }
+  RCLCPP_INFO(logger_, "Programmatically setting bounds for frame '%s'.", frame_id.c_str());
 
+    // 1. Validate and set internal bounds
+  if (!setBoundsInternal(frame_id, min, max)) {
+        // Error already logged by setBoundsInternal
+    return;
+  }
+
+    // 2. REMOVED: Parameter declaration and setting logic.
+    // This method should focus on internal state. Parameter interaction
+    // should primarily happen via the parametersCallback. If programmatic
+    // setting should *also* update parameters, that requires careful design
+    // to avoid loops or conflicts with the callback. For now, keep it simple.
+    /*
     std::string prefix = "boundaries." + frame_id + ".";
     try {
-        std::map<std::string, double> defaults = {
-            {prefix + "min_x", min.x}, {prefix + "min_y", min.y}, {prefix + "min_z", min.z},
-            {prefix + "max_x", max.x}, {prefix + "max_y", max.y}, {prefix + "max_z", max.z}
+        // Ensure parameters are declared (might be redundant if callback already did it)
+        rcl_interfaces::msg::ParameterDescriptor bounds_param_desc;
+        bounds_param_desc.description = "Boundary limit for frame '" + frame_id + "'. Set programmatically.";
+        bounds_param_desc.read_only = false; // Allow updates
+
+        // Use try-declare pattern
+        auto try_declare = [&](const std::string& name, double default_val) {
+            if (!node_->has_parameter(name)) {
+                node_->declare_parameter(name, default_val, bounds_param_desc);
+            }
         };
-        for(const auto& pair : defaults) {
-            if (!node_->has_parameter(pair.first)) {
-                node_->declare_parameter(pair.first, pair.second);
+        try_declare(prefix + "min_x", min.x);
+        try_declare(prefix + "min_y", min.y);
+        try_declare(prefix + "min_z", min.z);
+        try_declare(prefix + "max_x", max.x);
+        try_declare(prefix + "max_y", max.y);
+        try_declare(prefix + "max_z", max.z);
+
+        // Set the parameters
+        std::vector<rclcpp::Parameter> params_to_set = {
+            rclcpp::Parameter(prefix + "min_x", min.x),
+            rclcpp::Parameter(prefix + "min_y", min.y),
+            rclcpp::Parameter(prefix + "min_z", min.z),
+            rclcpp::Parameter(prefix + "max_x", max.x),
+            rclcpp::Parameter(prefix + "max_y", max.y),
+            rclcpp::Parameter(prefix + "max_z", max.z)
+        };
+        // Also add to boundary_frame_names list if not present
+        if (node_->has_parameter("boundary_frame_names")) {
+             std::vector<std::string> current_frames = node_->get_parameter("boundary_frame_names").as_string_array();
+             if (std::find(current_frames.begin(), current_frames.end(), frame_id) == current_frames.end()) {
+                 current_frames.push_back(frame_id);
+                 params_to_set.push_back(rclcpp::Parameter("boundary_frame_names", current_frames));
+             }
+        } else {
+             RCLCPP_WARN(logger_, "Parameter 'boundary_frame_names' not declared when setting bounds programmatically for '%s'. List parameter won't be updated.", frame_id.c_str());
+        }
+
+
+        if (!params_to_set.empty()) {
+            rcl_interfaces::msg::SetParametersResult result = node_->set_parameters_atomically(params_to_set);
+            if (!result.successful) {
+                RCLCPP_ERROR(logger_, "Failed to set ROS parameters after programmatically setting bounds for '%s': %s", frame_id.c_str(), result.reason.c_str());
+            } else {
+                 RCLCPP_INFO(logger_, "Updated ROS parameters for frame '%s' bounds.", frame_id.c_str());
+                 // Maybe set boundaries.initialized here?
+                 if (node_->has_parameter("boundaries.initialized") && !node_->get_parameter("boundaries.initialized").as_bool()) {
+                      try {
+                           node_->set_parameters_atomically({rclcpp::Parameter("boundaries.initialized", true)});
+                      } catch(...) {} // Ignore failure to set read-only param if applicable
+                 }
             }
         }
 
-        std::vector<rclcpp::Parameter> params_to_set;
-        for(const auto& pair : defaults) {
-            params_to_set.emplace_back(pair.first, pair.second);
-        }
-        node_->set_parameters(params_to_set);
-
-    } catch (const rclcpp::exceptions::ParameterAlreadyDeclaredException &e) {
-        RCLCPP_WARN(logger_, "Parameters for frame '%s' already declared, setting values directly: %s", frame_id.c_str(), e.what());
-         try {
-             std::vector<rclcpp::Parameter> params_to_set;
-             std::map<std::string, double> current_values;
-             current_values[prefix + "min_x"] = min.x; current_values[prefix + "min_y"] = min.y; current_values[prefix + "min_z"] = min.z;
-             current_values[prefix + "max_x"] = max.x; current_values[prefix + "max_y"] = max.y; current_values[prefix + "max_z"] = max.z;
-             for(const auto& pair : current_values) {
-                 params_to_set.emplace_back(pair.first, pair.second);
-             }
-             node_->set_parameters(params_to_set);
-         } catch (const std::exception& set_e) {
-             RCLCPP_ERROR(logger_, "Failed to set parameters for frame '%s' after declaration issue: %s", frame_id.c_str(), set_e.what());
-         }
-    } catch (const std::exception& e) {
-        RCLCPP_ERROR(logger_, "Failed to declare/set parameters for frame '%s': %s", frame_id.c_str(), e.what());
+    } catch (const std::exception &e) {
+        RCLCPP_ERROR(logger_, "Exception while declaring/setting parameters in setBounds for frame '%s': %s", frame_id.c_str(), e.what());
     }
+    */
 }
 
-void CoordinateTransformer::removeBounds(const std::string& frame_id)
+void CoordinateTransformer::removeBounds(const std::string & frame_id)
 {
-  bool removed = false;
-  {
-    std::lock_guard<std::mutex> lock(bounds_mutex_);
-    auto it = bounds_.find(frame_id);
-    if (it != bounds_.end()) {
-      bounds_.erase(it);
-      removed = true;
-    }
+  if (frame_id.empty()) {
+    RCLCPP_WARN(logger_, "Attempted to remove bounds for an empty frame_id.");
+    return;
   }
 
-  if (removed) {
+  std::lock_guard<std::mutex> lock(bounds_mutex_);
+  if (bounds_.erase(frame_id) > 0) {
     RCLCPP_INFO(logger_, "Removed bounds for frame '%s'.", frame_id.c_str());
   } else {
-      RCLCPP_WARN(logger_, "Attempted to remove bounds for frame '%s', but no bounds were set.", frame_id.c_str());
+    RCLCPP_DEBUG(logger_, "No bounds were set for frame '%s', removal request ignored.",
+        frame_id.c_str());
+  }
+    // Note: Parameters associated with this frame are NOT removed here.
+    // Removing parameters dynamically is complex and generally discouraged.
+    // The parameter callback should handle ignoring frames removed from the list.
+}
+
+ResultStatus CoordinateTransformer::convert(
+  const geometry_msgs::msg::PoseStamped & input,
+  geometry_msgs::msg::PoseStamped & output,
+  const std::string & target_frame) const
+{
+  RCLCPP_INFO(logger_, "CONVERT: Input frame='%s', Target frame='%s'",
+      input.header.frame_id.c_str(), target_frame.c_str());
+  if (input.header.frame_id.empty() || target_frame.empty()) {
+    RCLCPP_ERROR(logger_, "Invalid input: Input frame_id ('%s') or target_frame ('%s') is empty.",
+                     input.header.frame_id.c_str(), target_frame.c_str());
+    return ResultStatus::INVALID_INPUT;
+  }
+  if (!tf_buffer_) {
+    RCLCPP_ERROR(logger_, "TF Buffer is not initialized. Cannot perform conversion.");
+    return ResultStatus::CONFIGURATION_ERROR;
+  }
+
+  try {
+    output = tf_buffer_->transform(input, target_frame,
+        tf2::Duration(std::chrono::milliseconds(100)));
+
+    if (!checkBounds(output.pose.position, output.header.frame_id)) {
+      RCLCPP_WARN(logger_,
+          "Conversion result for frame '%s' is out of bounds. Input: (%s), Output: (%s)",
+                         output.header.frame_id.c_str(), input.header.frame_id.c_str(),
+          output.header.frame_id.c_str());
+      return ResultStatus::OUT_OF_BOUNDS;
+    }
+
+    return ResultStatus::SUCCESS;
+
+  } catch (const tf2::TransformException & ex) {
+    RCLCPP_ERROR(logger_, "Could not transform '%s' to '%s': %s",
+                     input.header.frame_id.c_str(), target_frame.c_str(), ex.what());
+    return ResultStatus::TRANSFORM_NOT_FOUND;
+  } catch (const std::exception & ex) {
+    RCLCPP_ERROR(logger_, "Unexpected exception during transform from '%s' to '%s': %s",
+                     input.header.frame_id.c_str(), target_frame.c_str(), ex.what());
+    return ResultStatus::CONFIGURATION_ERROR;
   }
 }
 
-
-ResultStatus CoordinateTransformer::convert(
-    const geometry_msgs::msg::PoseStamped& input,
-    geometry_msgs::msg::PoseStamped& output,
-    const std::string& target_frame) const
-{
-  RCLCPP_INFO(logger_, "CONVERT: Input frame='%s', Target frame='%s'", input.header.frame_id.c_str(), target_frame.c_str());
-    if (input.header.frame_id.empty()) {
-        RCLCPP_ERROR(logger_, "Conversion failed: Input pose has empty frame_id.");
-        return ResultStatus::INVALID_INPUT;
-    }
-    if (target_frame.empty()) {
-        RCLCPP_ERROR(logger_, "Conversion failed: Target frame is empty.");
-        return ResultStatus::INVALID_INPUT;
-    }
-    if (!tf_buffer_) {
-        RCLCPP_ERROR(logger_, "Conversion failed: TF buffer is not initialized.");
-        return ResultStatus::CONFIGURATION_ERROR;
-    }
-
-    try {
-        output = tf_buffer_->transform(input, target_frame, tf2::durationFromSec(0.1));
-    } catch (const tf2::TransformException &ex) {
-        RCLCPP_ERROR(logger_, "Could not transform '%s' to '%s': %s", input.header.frame_id.c_str(), target_frame.c_str(), ex.what());
-        return ResultStatus::TRANSFORM_NOT_FOUND;
-    } catch (const std::exception& e) {
-        RCLCPP_ERROR(logger_, "An unexpected error occurred during TF transformation: %s", e.what());
-        return ResultStatus::CONFIGURATION_ERROR;
-    }
-
-    if (!checkBounds(output.pose.position, target_frame)) {
-        RCLCPP_WARN(logger_, "Transformed point in frame '%s' (%.2f, %.2f, %.2f) is out of defined bounds.", target_frame.c_str(), output.pose.position.x, output.pose.position.y, output.pose.position.z);
-        return ResultStatus::OUT_OF_BOUNDS;
-    }
-
-    return ResultStatus::SUCCESS;
-}
-
-
 ResultStatus CoordinateTransformer::inverseConvert(
-    const geometry_msgs::msg::PoseStamped& input,
-    geometry_msgs::msg::PoseStamped& output,
-    const std::string& source_frame) const
+  const geometry_msgs::msg::PoseStamped & input,
+  geometry_msgs::msg::PoseStamped & output,
+  const std::string & source_frame) const
 {
-    if (input.header.frame_id.empty()) {
-        RCLCPP_ERROR(logger_, "Inverse conversion failed: Input pose has empty frame_id.");
-        return ResultStatus::INVALID_INPUT;
-    }
-    if (source_frame.empty()) {
-        RCLCPP_ERROR(logger_, "Inverse conversion failed: Target source frame is empty.");
-        return ResultStatus::INVALID_INPUT;
-    }
-     if (!tf_buffer_) {
-        RCLCPP_ERROR(logger_, "Inverse conversion failed: TF buffer is not initialized.");
-        return ResultStatus::CONFIGURATION_ERROR;
-    }
-
-    try {
-        output = tf_buffer_->transform(input, source_frame, tf2::durationFromSec(0.1));
-    } catch (const tf2::TransformException &ex) {
-        RCLCPP_ERROR(logger_, "Could not perform inverse transform from '%s' to '%s': %s", input.header.frame_id.c_str(), source_frame.c_str(), ex.what());
-        return ResultStatus::TRANSFORM_NOT_FOUND;
-    } catch (const std::exception& e) {
-        RCLCPP_ERROR(logger_, "An unexpected error occurred during inverse TF transformation: %s", e.what());
-        return ResultStatus::CONFIGURATION_ERROR;
-    }
-
-    if (!checkBounds(output.pose.position, source_frame)) {
-         RCLCPP_WARN(logger_, "Inverse transformed point in frame '%s' (%.2f, %.2f, %.2f) is out of defined bounds.", source_frame.c_str(), output.pose.position.x, output.pose.position.y, output.pose.position.z);
-        return ResultStatus::OUT_OF_BOUNDS;
-    }
-
-    return ResultStatus::SUCCESS;
+  RCLCPP_DEBUG(logger_, "INVERSE CONVERT: Input frame='%s', Target (Source) frame='%s'",
+      input.header.frame_id.c_str(), source_frame.c_str());
+  return convert(input, output, source_frame);
 }
 
-const rclcpp::Logger & CoordinateTransformer::getLogger() const {
-    return logger_;
+const rclcpp::Logger & CoordinateTransformer::getLogger() const
+{
+  return logger_;
 }
 
 // --- Приватные методы ---
 
-bool CoordinateTransformer::checkBounds(const geometry_msgs::msg::Point& point, const std::string& frame_id) const
+bool CoordinateTransformer::checkBounds(
+  const geometry_msgs::msg::Point & point,
+  const std::string & frame_id) const
 {
-    Bounds current_bounds;
-    bool found = false;
-    {
-        std::lock_guard<std::mutex> lock(bounds_mutex_);
-        auto it = bounds_.find(frame_id);
-        if (it != bounds_.end()) {
-            current_bounds = it->second;
-            found = true;
-        }
-    }
+  std::lock_guard<std::mutex> lock(bounds_mutex_);
+  auto it = bounds_.find(frame_id);
+  if (it == bounds_.end()) {
+        // No bounds set for this frame, so always considered inside
+    return true;
+  }
 
-    if (!found) {
-        return true;
-    }
-
-    bool in_bounds = (point.x >= current_bounds.min.x && point.x <= current_bounds.max.x &&
-                      point.y >= current_bounds.min.y && point.y <= current_bounds.max.y &&
-                      point.z >= current_bounds.min.z && point.z <= current_bounds.max.z);
-
-    return in_bounds;
+  const auto & bounds = it->second;
+  return point.x >= bounds.min.x && point.x <= bounds.max.x &&
+         point.y >= bounds.min.y && point.y <= bounds.max.y &&
+         point.z >= bounds.min.z && point.z <= bounds.max.z;
 }
 
 rcl_interfaces::msg::SetParametersResult CoordinateTransformer::parametersCallback(
-    const std::vector<rclcpp::Parameter>& parameters)
+  const std::vector<rclcpp::Parameter> & parameters)
 {
-    rcl_interfaces::msg::SetParametersResult result;
-    result.successful = true;
+  rcl_interfaces::msg::SetParametersResult result;
+  result.successful = true;   // Assume success initially
 
-    std::map<std::string, coordinate_transformer::Bounds> pending_bounds;
-    std::set<std::string> frames_to_validate;
+    // --- Stage 1: Process list changes and declare new parameters ---
+  std::vector<std::string> previous_boundary_frames;
+  std::vector<std::string> next_boundary_frames;
+  bool boundary_list_changed = false;
 
-    // Шаг 1: Собрать изменения
+    // Keep track of frames added/removed in *this* specific callback
+  std::set<std::string> frames_added_this_call;
+  std::set<std::string> frames_removed_this_call;
+
+    // Check if boundary_frame_names is among the parameters being set
+  for (const auto & param : parameters) {
+    if (param.get_name() == "boundary_frame_names") {
+      boundary_list_changed = true;
+      try {
+        previous_boundary_frames = node_->get_parameter("boundary_frame_names").as_string_array();
+        next_boundary_frames = param.as_string_array();
+
+                // Find added frames
+        std::set<std::string> prev_set(previous_boundary_frames.begin(),
+          previous_boundary_frames.end());
+        std::set<std::string> next_set(next_boundary_frames.begin(), next_boundary_frames.end());
+
+        std::set_difference(next_set.begin(), next_set.end(),
+                                    prev_set.begin(), prev_set.end(),
+                                    std::inserter(frames_added_this_call,
+            frames_added_this_call.begin()));
+
+                // Find removed frames
+        std::set_difference(prev_set.begin(), prev_set.end(),
+                                    next_set.begin(), next_set.end(),
+                                    std::inserter(frames_removed_this_call,
+            frames_removed_this_call.begin()));
+
+      } catch (const rclcpp::exceptions::ParameterNotDeclaredException &) {
+                // Should not happen as we declare it in initialize()
+        RCLCPP_ERROR(logger_,
+            "Critical error: 'boundary_frame_names' accessed before declaration in callback.");
+        result.successful = false;
+        result.reason = "Internal error: boundary_frame_names not declared.";
+        return result;
+      } catch (const rclcpp::exceptions::InvalidParameterTypeException & e) {
+        RCLCPP_ERROR(logger_, "Invalid type for 'boundary_frame_names': %s", e.what());
+        result.successful = false;
+        result.reason = "boundary_frame_names must be a string array.";
+        return result;
+      }
+      break;       // Process only the first instance if set multiple times (unlikely)
+    }
+  }
+
+    // Declare parameters for newly added frames
+  for (const auto & frame_id : frames_added_this_call) {
+    if (frame_id.empty()) {
+      RCLCPP_WARN(logger_, "Ignoring empty frame_id added to boundary_frame_names.");
+      continue;
+    }
+    std::string prefix = "boundaries." + frame_id + ".";
+    RCLCPP_INFO(logger_, "Frame '%s' added to boundary list. Declaring parameters...",
+        frame_id.c_str());
+    try {
+      rcl_interfaces::msg::ParameterDescriptor bounds_param_desc;
+      bounds_param_desc.description = "Boundary limit for frame '" + frame_id + "'.";
+      bounds_param_desc.read_only = false;
+
+            // Use try-declare pattern: Declare only if not already present.
+            // Use NaN as default to indicate "not explicitly set". 0.0 might be a valid bound.
+      double default_val = std::numeric_limits<double>::quiet_NaN();
+      if (!node_->has_parameter(prefix + "min_x")) {
+        node_->declare_parameter(prefix + "min_x", default_val, bounds_param_desc);
+      }
+      if (!node_->has_parameter(prefix + "min_y")) {
+        node_->declare_parameter(prefix + "min_y", default_val, bounds_param_desc);
+      }
+      if (!node_->has_parameter(prefix + "min_z")) {
+        node_->declare_parameter(prefix + "min_z", default_val, bounds_param_desc);
+      }
+      if (!node_->has_parameter(prefix + "max_x")) {
+        node_->declare_parameter(prefix + "max_x", default_val, bounds_param_desc);
+      }
+      if (!node_->has_parameter(prefix + "max_y")) {
+        node_->declare_parameter(prefix + "max_y", default_val, bounds_param_desc);
+      }
+      if (!node_->has_parameter(prefix + "max_z")) {
+        node_->declare_parameter(prefix + "max_z", default_val, bounds_param_desc);
+      }
+
+    } catch (const std::exception & e) {
+      RCLCPP_ERROR(logger_, "Failed to declare parameters for newly added frame '%s': %s",
+          frame_id.c_str(), e.what());
+             // Continue processing other parameters, but maybe mark result as unsuccessful?
+             // For now, let validation catch issues if values are set without declaration.
+    }
+  }
+
+    // Process removed frames
+  for (const auto & frame_id : frames_removed_this_call) {
+    if (frame_id.empty()) {continue;}
+    RCLCPP_INFO(logger_, "Frame '%s' removed from boundary list. Clearing internal bounds.",
+        frame_id.c_str());
+    removeBounds(frame_id);      // Clears internal map entry
+         // Parameters are intentionally not undeclared here.
+  }
+
+
+    // --- Stage 2: Group proposed changes and validate ---
+  std::map<std::string, std::map<std::string, rclcpp::Parameter>> grouped_bounds_params;
+
+  for (const auto & param : parameters) {
+    const std::string & name = param.get_name();
+
+        // Group individual bounds parameters
+    if (name.rfind("boundaries.",
+        0) == 0 && name != "boundaries.initialized" && name != "boundary_frame_names")
     {
-        std::lock_guard<std::mutex> lock(bounds_mutex_);
+      size_t second_dot = name.find('.', sizeof("boundaries.") - 1);
+      if (second_dot != std::string::npos) {
+        std::string frame_id = name.substr(sizeof("boundaries.") - 1,
+            second_dot - (sizeof("boundaries.") - 1));
+        std::string suffix = name.substr(second_dot + 1);
 
-        for (const auto& param : parameters) {
-            const std::string& name = param.get_name();
-            if (name.rfind("boundaries.", 0) == 0) {
-                size_t frame_start = 11;
-                size_t frame_end = name.find('.', frame_start);
-                if (frame_end == std::string::npos || frame_end == frame_start) {
-                    RCLCPP_WARN(logger_, "Ignoring invalid boundary parameter name format: %s", name.c_str());
-                    continue;
-                }
-                std::string frame_id = name.substr(frame_start, frame_end - frame_start);
-                std::string bound_type = name.substr(frame_end + 1);
-
-                if (pending_bounds.find(frame_id) == pending_bounds.end()) {
-                    if (bounds_.count(frame_id)) {
-                        pending_bounds[frame_id] = bounds_[frame_id];
-                    } else {
-                        pending_bounds[frame_id] = Bounds{};
-                    }
-                }
-
-                if (param.get_type() != rclcpp::ParameterType::PARAMETER_DOUBLE) {
-                     RCLCPP_ERROR(logger_, "Invalid type for boundary parameter '%s'. Expected double, got %s. Update rejected.", name.c_str(), param.get_type_name().c_str());
-                    result.successful = false;
-                    result.reason = "Invalid parameter type for " + name;
-                    return result;
-                }
-
-                double value = param.as_double();
-                if (bound_type == "min_x") pending_bounds[frame_id].min.x = value;
-                else if (bound_type == "min_y") pending_bounds[frame_id].min.y = value;
-                else if (bound_type == "min_z") pending_bounds[frame_id].min.z = value;
-                else if (bound_type == "max_x") pending_bounds[frame_id].max.x = value;
-                else if (bound_type == "max_y") pending_bounds[frame_id].max.y = value;
-                else if (bound_type == "max_z") pending_bounds[frame_id].max.z = value;
-                else {
-                    RCLCPP_WARN(logger_, "Ignoring unknown boundary parameter suffix: %s", name.c_str());
-                    continue;
-                }
-                frames_to_validate.insert(frame_id);
-            }
-        }
-    }
-
-    // Шаг 2: Проверить логику
-    for (const auto& frame_id : frames_to_validate) {
-        const auto& current_pending = pending_bounds[frame_id];
-        if (current_pending.min.x > current_pending.max.x ||
-            current_pending.min.y > current_pending.max.y ||
-            current_pending.min.z > current_pending.max.z)
+        if (!frame_id.empty() &&
+          (suffix == "min_x" || suffix == "min_y" || suffix == "min_z" ||
+          suffix == "max_x" || suffix == "max_y" || suffix == "max_z"))
         {
-            RCLCPP_ERROR(logger_, "Invalid bounds logic for frame '%s' after parameter update: min > max. Update rejected.", frame_id.c_str());
-            result.successful = false;
-            result.reason = "Invalid bounds logic (min > max) for frame " + frame_id;
-            return result;
-        }
-    }
-
-    // Шаг 3: Применить изменения
-    if (result.successful) {
-        std::lock_guard<std::mutex> lock(bounds_mutex_);
-        for (const auto& pair : pending_bounds) {
-            const std::string& frame_id = pair.first;
-            if (frames_to_validate.count(frame_id)) {
-                 bounds_[frame_id] = pair.second;
-                 RCLCPP_INFO(logger_, "Updated bounds for frame '%s' via parameters.", frame_id.c_str());
+                     // Only process frames currently in the list (or added in this call)
+                     // Get the *effective* list of frames after this call completes.
+          const auto & effective_frames_list =
+            boundary_list_changed ? next_boundary_frames :
+            node_->get_parameter("boundary_frame_names").as_string_array();
+          if (std::find(effective_frames_list.begin(), effective_frames_list.end(),
+              frame_id) != effective_frames_list.end())
+          {
+                           // Ensure the parameter type is double
+            if (param.get_type() != rclcpp::ParameterType::PARAMETER_DOUBLE) {
+              result.successful = false;
+              result.reason = "Parameter " + name + " must be a double.";
+              RCLCPP_ERROR(logger_, "%s", result.reason.c_str());
+              return result;                   // Fail fast on type error
             }
+            grouped_bounds_params[frame_id][suffix] = param;
+          } else {
+            RCLCPP_WARN(logger_,
+                "Ignoring parameter '%s' because frame '%s' is not in the effective 'boundary_frame_names' list.",
+                name.c_str(), frame_id.c_str());
+          }
+
+        } else {
+          RCLCPP_WARN(logger_, "Ignoring unrecognized parameter format under 'boundaries.': %s",
+              name.c_str());
         }
+      }
+    } else if (param.get_name() == "boundaries.initialized") {
+      RCLCPP_WARN(logger_, "Attempt to set read-only parameter 'boundaries.initialized' ignored.");
+             // Or handle differently if it becomes writable
+    }
+        // Ignore boundary_frame_names here, already processed
+        // Ignore static_transform parameters too
+  }
+
+    // --- Stage 3: Validate and apply grouped changes ---
+  for (auto const & [frame_id, param_map] : grouped_bounds_params) {
+    geometry_msgs::msg::Point current_min, current_max;
+    bool current_bounds_found = false;
+         // Get current bounds safely
+    {
+      std::lock_guard<std::mutex> lock(bounds_mutex_);
+      auto it = bounds_.find(frame_id);
+      if (it != bounds_.end()) {
+        current_min = it->second.min;
+        current_max = it->second.max;
+        current_bounds_found = true;
+      } else {
+                 // Frame is new or bounds were previously removed/invalid. Use defaults.
+                 // Use NaN to indicate "not explicitly set" yet.
+        double default_val = std::numeric_limits<double>::quiet_NaN();
+        current_min.x = current_min.y = current_min.z = default_val;
+        current_max.x = current_max.y = current_max.z = default_val;
+      }
     }
 
-    return result;
+         // Create proposed bounds based on current + changes
+    geometry_msgs::msg::Point proposed_min = current_min;
+    geometry_msgs::msg::Point proposed_max = current_max;
+
+    for (auto const & [suffix, param] : param_map) {
+      double value = param.as_double();
+      if (suffix == "min_x") {proposed_min.x = value;} else if (suffix == "min_y") {
+        proposed_min.y = value;
+      } else if (suffix == "min_z") {proposed_min.z = value;} else if (suffix == "max_x") {
+        proposed_max.x = value;
+      } else if (suffix == "max_y") {proposed_max.y = value;} else if (suffix == "max_z") {
+        proposed_max.z = value;
+      }
+    }
+
+         // Handle potential NaNs from defaults - if a value wasn't proposed, keep it NaN
+         // OR replace NaNs with values from the *other* bound if only one is set?
+         // Let's require all 6 values to be set for validation to pass unless bounds already exist.
+         // The setBoundsInternal handles NaN checks.
+
+    RCLCPP_DEBUG(logger_, "Validating proposed bounds for frame '%s': min(%f,%f,%f) max(%f,%f,%f)",
+                     frame_id.c_str(), proposed_min.x, proposed_min.y, proposed_min.z,
+        proposed_max.x, proposed_max.y, proposed_max.z);
+
+         // Validate the complete proposed bounds for this frame
+    if (!setBoundsInternal(frame_id, proposed_min, proposed_max)) {
+      result.successful = false;
+      result.reason = "Invalid bounds proposed for frame '" + frame_id +
+        "': min must be <= max for all axes, and values cannot be NaN unless explicitly handled.";
+      RCLCPP_ERROR(logger_, "%s", result.reason.c_str());
+              // Important: Stop processing further frames on first failure
+              // to maintain transactional behavior for the atomic set request.
+      return result;
+    }
+  }
+
+
+    // If we reach here, all checks passed
+  RCLCPP_DEBUG(logger_, "Parameter changes approved and applied.");
+  return result;
+}
+
+bool CoordinateTransformer::setBoundsInternal(
+  const std::string & frame_id,
+  const geometry_msgs::msg::Point & min,
+  const geometry_msgs::msg::Point & max)
+{
+    // Basic validation
+  if (min.x > max.x || min.y > max.y || min.z > max.z) {
+    RCLCPP_ERROR(logger_, "Invalid bounds for frame '%s': min(%f, %f, %f) > max(%f, %f, %f)",
+                     frame_id.c_str(), min.x, min.y, min.z, max.x, max.y, max.z);
+    return false;
+  }
+  if (std::isnan(min.x) || std::isnan(min.y) || std::isnan(min.z) ||
+    std::isnan(max.x) || std::isnan(max.y) || std::isnan(max.z))
+  {
+    RCLCPP_ERROR(logger_, "Invalid bounds for frame '%s': NaN detected in min/max values.",
+        frame_id.c_str());
+    return false;
+  }
+
+    // Store the bounds
+  {
+    std::lock_guard<std::mutex> lock(bounds_mutex_);
+    bounds_[frame_id] = {min, max};
+  }
+  RCLCPP_DEBUG(logger_,
+      "Successfully set/updated internal bounds for frame '%s': min(%f,%f,%f) max(%f,%f,%f)",
+                 frame_id.c_str(), min.x, min.y, min.z, max.x, max.y, max.z);
+
+  return true;
 }
 
 } // namespace coordinate_transformer

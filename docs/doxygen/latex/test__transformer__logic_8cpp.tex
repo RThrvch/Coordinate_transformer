@@ -13,7 +13,6 @@ Unit tests для валидации логики класса Coordinate\+Trans
 {\ttfamily \#include $<$tf2\+\_\+geometry\+\_\+msgs/tf2\+\_\+geometry\+\_\+msgs.\+hpp$>$}\newline
 {\ttfamily \#include $<$geometry\+\_\+msgs/msg/pose\+\_\+stamped.\+hpp$>$}\newline
 {\ttfamily \#include $<$geometry\+\_\+msgs/msg/point.\+hpp$>$}\newline
-{\ttfamily \#include $<$yaml-\/cpp/yaml.\+h$>$}\newline
 {\ttfamily \#include $<$memory$>$}\newline
 {\ttfamily \#include $<$string$>$}\newline
 {\ttfamily \#include $<$vector$>$}\newline
@@ -21,7 +20,8 @@ Unit tests для валидации логики класса Coordinate\+Trans
 {\ttfamily \#include $<$filesystem$>$}\newline
 {\ttfamily \#include $<$chrono$>$}\newline
 {\ttfamily \#include $<$thread$>$}\newline
-Include dependency graph for test\+\_\+transformer\+\_\+logic.\+cpp\+:\nopagebreak
+Include dependency graph for test\+\_\+transformer\+\_\+logic.\+cpp\+:
+\nopagebreak
 \begin{figure}[H]
 \begin{center}
 \leavevmode
@@ -32,7 +32,7 @@ Include dependency graph for test\+\_\+transformer\+\_\+logic.\+cpp\+:\nopagebre
 \begin{DoxyCompactItemize}
 \item 
 class \mbox{\hyperlink{classTestCoordinateTransformer}{Test\+Coordinate\+Transformer}}
-\begin{DoxyCompactList}\small\item\em Тестовый класс для Coordinate\+Transformer. \end{DoxyCompactList}\end{DoxyCompactItemize}
+\end{DoxyCompactItemize}
 \doxysubsubsection*{Functions}
 \begin{DoxyCompactItemize}
 \item 
@@ -40,42 +40,28 @@ geometry\+\_\+msgs\+::msg\+::\+Pose\+Stamped \mbox{\hyperlink{test__transformer_
 \begin{DoxyCompactList}\small\item\em Создает объект Pose\+Stamped с заданной позицией и единичной ориентацией. \end{DoxyCompactList}\item 
 geometry\+\_\+msgs\+::msg\+::\+Point \mbox{\hyperlink{test__transformer__logic_8cpp_adb5fd92208e36f2153e7c8bbb4603f3d}{create\+\_\+point}} (double x, double y, double z)
 \begin{DoxyCompactList}\small\item\em Создает объект Point с заданными координатами. \end{DoxyCompactList}\item 
-std\+::string \mbox{\hyperlink{test__transformer__logic_8cpp_ac9d35ae7f417cb523c365edd24f37763}{create\+\_\+temp\+\_\+yaml}} (const std\+::string \&content, const std\+::filesystem\+::path \&dir, const std\+::string \&filename="{}temp\+\_\+test\+\_\+config.\+yaml"{})
-\begin{DoxyCompactList}\small\item\em Создает временный YAML-\/файл с указанным содержимым. \end{DoxyCompactList}\item 
 bool \mbox{\hyperlink{test__transformer__logic_8cpp_a40ca5a33766250739156bafb464ae870}{wait\+\_\+for\+\_\+transform}} (const std\+::shared\+\_\+ptr$<$ tf2\+\_\+ros\+::\+Buffer $>$ \&buffer, const std\+::string \&target\+\_\+frame, const std\+::string \&source\+\_\+frame, const tf2\+::\+Time\+Point \&time, const std\+::chrono\+::duration$<$ double $>$ \&timeout, const rclcpp\+::\+Node\+::\+Shared\+Ptr \&node\+\_\+to\+\_\+spin=nullptr)
 \begin{DoxyCompactList}\small\item\em Ожидает доступности трансформации между двумя системами координат в буфере TF2. \end{DoxyCompactList}\item 
 \mbox{\hyperlink{test__transformer__logic_8cpp_a49e192ea9aaf69afdad81b70bcbae2d5}{TEST\+\_\+F}} (\mbox{\hyperlink{classTestCoordinateTransformer}{Test\+Coordinate\+Transformer}}, Constructor\+With\+Node\+Only)
-\begin{DoxyCompactList}\small\item\em Тестирует конструктор Coordinate\+Transformer только с узлом ROS2. \end{DoxyCompactList}\item 
+\item 
 \mbox{\hyperlink{test__transformer__logic_8cpp_a121c68fe1608b03b26596189282f9de4}{TEST\+\_\+F}} (\mbox{\hyperlink{classTestCoordinateTransformer}{Test\+Coordinate\+Transformer}}, Constructor\+With\+Node\+And\+Buffer)
-\begin{DoxyCompactList}\small\item\em Тестирует конструктор Coordinate\+Transformer с узлом ROS2 и внешним буфером TF2. \end{DoxyCompactList}\item 
+\item 
 \mbox{\hyperlink{test__transformer__logic_8cpp_a2d17b5aa2e847441ce634f61742c0349}{TEST\+\_\+F}} (\mbox{\hyperlink{classTestCoordinateTransformer}{Test\+Coordinate\+Transformer}}, Parameter\+Initialization)
-\begin{DoxyCompactList}\small\item\em Тестирует инициализацию параметров Coordinate\+Transformer. \end{DoxyCompactList}\item 
+\item 
 \mbox{\hyperlink{test__transformer__logic_8cpp_a00d9d156c06e2c25fcf42a40d7990753}{TEST\+\_\+F}} (\mbox{\hyperlink{classTestCoordinateTransformer}{Test\+Coordinate\+Transformer}}, Set\+And\+Check\+Bounds\+Via\+Convert)
-\begin{DoxyCompactList}\small\item\em Тестирует установку и проверку границ с помощью функции convert. \end{DoxyCompactList}\item 
+\item 
 \mbox{\hyperlink{test__transformer__logic_8cpp_a2e7f49da0e1a5c6d9766f5e2202af4bd}{TEST\+\_\+F}} (\mbox{\hyperlink{classTestCoordinateTransformer}{Test\+Coordinate\+Transformer}}, Set\+Invalid\+Bounds)
-\begin{DoxyCompactList}\small\item\em Тестирует установку недопустимых границ. \end{DoxyCompactList}\item 
+\item 
 \mbox{\hyperlink{test__transformer__logic_8cpp_a0f5f9b2a16cc6dcc2fcedcd8db477bb0}{TEST\+\_\+F}} (\mbox{\hyperlink{classTestCoordinateTransformer}{Test\+Coordinate\+Transformer}}, Remove\+Bounds)
-\begin{DoxyCompactList}\small\item\em Тестирует удаление ранее установленных границ. \end{DoxyCompactList}\item 
-\mbox{\hyperlink{test__transformer__logic_8cpp_a264eeea6fe9b16b105665f29710b5e4c}{TEST\+\_\+F}} (\mbox{\hyperlink{classTestCoordinateTransformer}{Test\+Coordinate\+Transformer}}, Load\+Config\+Success)
-\begin{DoxyCompactList}\small\item\em Тестирует успешную загрузку конфигурации из YAML-\/файла. \end{DoxyCompactList}\item 
-\mbox{\hyperlink{test__transformer__logic_8cpp_a2b9a1f3f8879028fc6b5102224d8155f}{TEST\+\_\+F}} (\mbox{\hyperlink{classTestCoordinateTransformer}{Test\+Coordinate\+Transformer}}, Load\+Config\+Only\+Transforms)
-\begin{DoxyCompactList}\small\item\em Тестирует загрузку конфигурации, содержащей только трансформации. \end{DoxyCompactList}\item 
-\mbox{\hyperlink{test__transformer__logic_8cpp_a61da15d0e141b67a2525ef8e21c803bc}{TEST\+\_\+F}} (\mbox{\hyperlink{classTestCoordinateTransformer}{Test\+Coordinate\+Transformer}}, Load\+Config\+Only\+Boundaries)
-\begin{DoxyCompactList}\small\item\em Тестирует загрузку конфигурации, содержащей только границы. \end{DoxyCompactList}\item 
-\mbox{\hyperlink{test__transformer__logic_8cpp_a47163d7f611a45c59216588d6862c1ff}{TEST\+\_\+F}} (\mbox{\hyperlink{classTestCoordinateTransformer}{Test\+Coordinate\+Transformer}}, Load\+Config\+File\+Not\+Found)
-\begin{DoxyCompactList}\small\item\em Тестирует поведение при попытке загрузить несуществующий файл конфигурации. \end{DoxyCompactList}\item 
-\mbox{\hyperlink{test__transformer__logic_8cpp_a99507eae3d88b48bd1548783b0754b84}{TEST\+\_\+F}} (\mbox{\hyperlink{classTestCoordinateTransformer}{Test\+Coordinate\+Transformer}}, Load\+Config\+Invalid\+Yaml)
-\begin{DoxyCompactList}\small\item\em Тестирует поведение при попытке загрузить некорректный YAML-\/файл. \end{DoxyCompactList}\item 
-\mbox{\hyperlink{test__transformer__logic_8cpp_a865ee8e9ebc91b0d66e6ea7845c17ed0}{TEST\+\_\+F}} (\mbox{\hyperlink{classTestCoordinateTransformer}{Test\+Coordinate\+Transformer}}, Load\+Config\+Skip\+Invalid\+Entries)
-\begin{DoxyCompactList}\small\item\em Тестирует пропуск некорректных записей при загрузке конфигурации. \end{DoxyCompactList}\item 
+\item 
 \mbox{\hyperlink{test__transformer__logic_8cpp_a76b593008ddac6c25b840037d99d00b8}{TEST\+\_\+F}} (\mbox{\hyperlink{classTestCoordinateTransformer}{Test\+Coordinate\+Transformer}}, Convert\+Success\+With\+Tf)
-\begin{DoxyCompactList}\small\item\em Тестирует успешное преобразование координат при наличии необходимых TF. \end{DoxyCompactList}\item 
+\item 
 \mbox{\hyperlink{test__transformer__logic_8cpp_a32a5fd4f98a1a3d1186a1d7f7f2f48aa}{TEST\+\_\+F}} (\mbox{\hyperlink{classTestCoordinateTransformer}{Test\+Coordinate\+Transformer}}, Convert\+Tf\+Error\+Lookup)
-\begin{DoxyCompactList}\small\item\em Тестирует ошибку преобразования из-\/за отсутствия TF (Lookup Error). \end{DoxyCompactList}\item 
+\item 
 \mbox{\hyperlink{test__transformer__logic_8cpp_a065ac264ef39177a3f395c70e65adc3f}{TEST\+\_\+F}} (\mbox{\hyperlink{classTestCoordinateTransformer}{Test\+Coordinate\+Transformer}}, Convert\+Tf\+Error\+Extrapolation)
-\begin{DoxyCompactList}\small\item\em Тестирует ошибку преобразования из-\/за проблем с временной меткой (Extrapolation Error). \end{DoxyCompactList}\item 
+\item 
 \mbox{\hyperlink{test__transformer__logic_8cpp_aa2c6eb167871f593ea13d995002572a2}{TEST\+\_\+F}} (\mbox{\hyperlink{classTestCoordinateTransformer}{Test\+Coordinate\+Transformer}}, Add\+Transform\+Test)
-\begin{DoxyCompactList}\small\item\em Тестирует добавление трансформаций через API Coordinate\+Transformer. \end{DoxyCompactList}\item 
+\item 
 int \mbox{\hyperlink{test__transformer__logic_8cpp_a3c04138a5bfe5d72780bb7e82a18e627}{main}} (int argc, char \texorpdfstring{$\ast$}{*}\texorpdfstring{$\ast$}{*}argv)
 \begin{DoxyCompactList}\small\item\em Основная функция для запуска тестов GTest. \end{DoxyCompactList}\end{DoxyCompactItemize}
 
@@ -138,28 +124,6 @@ Ruslan Mukhametsafin
 \begin{DoxyReturn}{Returns}
 Объект Pose\+Stamped. 
 \end{DoxyReturn}
-\Hypertarget{test__transformer__logic_8cpp_ac9d35ae7f417cb523c365edd24f37763}\label{test__transformer__logic_8cpp_ac9d35ae7f417cb523c365edd24f37763} 
-\index{test\_transformer\_logic.cpp@{test\_transformer\_logic.cpp}!create\_temp\_yaml@{create\_temp\_yaml}}
-\index{create\_temp\_yaml@{create\_temp\_yaml}!test\_transformer\_logic.cpp@{test\_transformer\_logic.cpp}}
-\doxysubsubsection{\texorpdfstring{create\_temp\_yaml()}{create\_temp\_yaml()}}
-{\footnotesize\ttfamily std\+::string create\+\_\+temp\+\_\+yaml (\begin{DoxyParamCaption}\item[{const std\+::string \&}]{content,  }\item[{const std\+::filesystem\+::path \&}]{dir,  }\item[{const std\+::string \&}]{filename = {\ttfamily "{}temp\+\_\+test\+\_\+config.yaml"{}} }\end{DoxyParamCaption})}
-
-
-
-Создает временный YAML-\/файл с указанным содержимым. 
-
-
-\begin{DoxyParams}{Parameters}
-{\em content} & Строка с содержимым YAML-\/файла. \\
-\hline
-{\em dir} & Директория для создания файла. \\
-\hline
-{\em filename} & Имя создаваемого файла (по умолчанию "{}temp\+\_\+test\+\_\+config.\+yaml"{}). \\
-\hline
-\end{DoxyParams}
-\begin{DoxyReturn}{Returns}
-Полный путь к созданному файлу. 
-\end{DoxyReturn}
 \Hypertarget{test__transformer__logic_8cpp_a3c04138a5bfe5d72780bb7e82a18e627}\label{test__transformer__logic_8cpp_a3c04138a5bfe5d72780bb7e82a18e627} 
 \index{test\_transformer\_logic.cpp@{test\_transformer\_logic.cpp}!main@{main}}
 \index{main@{main}!test\_transformer\_logic.cpp@{test\_transformer\_logic.cpp}}
@@ -183,164 +147,64 @@ Ruslan Mukhametsafin
 \Hypertarget{test__transformer__logic_8cpp_aa2c6eb167871f593ea13d995002572a2}\label{test__transformer__logic_8cpp_aa2c6eb167871f593ea13d995002572a2} 
 \index{test\_transformer\_logic.cpp@{test\_transformer\_logic.cpp}!TEST\_F@{TEST\_F}}
 \index{TEST\_F@{TEST\_F}!test\_transformer\_logic.cpp@{test\_transformer\_logic.cpp}}
-\doxysubsubsection{\texorpdfstring{TEST\_F()}{TEST\_F()}\hspace{0.1cm}{\footnotesize\ttfamily [1/16]}}
+\doxysubsubsection{\texorpdfstring{TEST\_F()}{TEST\_F()}\hspace{0.1cm}{\footnotesize\ttfamily [1/10]}}
 {\footnotesize\ttfamily TEST\+\_\+F (\begin{DoxyParamCaption}\item[{\mbox{\hyperlink{classTestCoordinateTransformer}{Test\+Coordinate\+Transformer}}}]{,  }\item[{Add\+Transform\+Test}]{ }\end{DoxyParamCaption})}
 
-
-
-Тестирует добавление трансформаций через API Coordinate\+Transformer. 
-
-Проверяет, что статическая трансформация, добавленная с помощью метода {\ttfamily add\+\_\+transform}, корректно применяется при последующих вызовах {\ttfamily convert}. \Hypertarget{test__transformer__logic_8cpp_a121c68fe1608b03b26596189282f9de4}\label{test__transformer__logic_8cpp_a121c68fe1608b03b26596189282f9de4} 
+\Hypertarget{test__transformer__logic_8cpp_a121c68fe1608b03b26596189282f9de4}\label{test__transformer__logic_8cpp_a121c68fe1608b03b26596189282f9de4} 
 \index{test\_transformer\_logic.cpp@{test\_transformer\_logic.cpp}!TEST\_F@{TEST\_F}}
 \index{TEST\_F@{TEST\_F}!test\_transformer\_logic.cpp@{test\_transformer\_logic.cpp}}
-\doxysubsubsection{\texorpdfstring{TEST\_F()}{TEST\_F()}\hspace{0.1cm}{\footnotesize\ttfamily [2/16]}}
+\doxysubsubsection{\texorpdfstring{TEST\_F()}{TEST\_F()}\hspace{0.1cm}{\footnotesize\ttfamily [2/10]}}
 {\footnotesize\ttfamily TEST\+\_\+F (\begin{DoxyParamCaption}\item[{\mbox{\hyperlink{classTestCoordinateTransformer}{Test\+Coordinate\+Transformer}}}]{,  }\item[{Constructor\+With\+Node\+And\+Buffer}]{ }\end{DoxyParamCaption})}
 
-
-
-Тестирует конструктор Coordinate\+Transformer с узлом ROS2 и внешним буфером TF2. 
-
-Проверяет, что объект Coordinate\+Transformer успешно создается, когда в конструктор передается указатель на узел ROS2 и указатель на существующий буфер TF2. \Hypertarget{test__transformer__logic_8cpp_a49e192ea9aaf69afdad81b70bcbae2d5}\label{test__transformer__logic_8cpp_a49e192ea9aaf69afdad81b70bcbae2d5} 
+\Hypertarget{test__transformer__logic_8cpp_a49e192ea9aaf69afdad81b70bcbae2d5}\label{test__transformer__logic_8cpp_a49e192ea9aaf69afdad81b70bcbae2d5} 
 \index{test\_transformer\_logic.cpp@{test\_transformer\_logic.cpp}!TEST\_F@{TEST\_F}}
 \index{TEST\_F@{TEST\_F}!test\_transformer\_logic.cpp@{test\_transformer\_logic.cpp}}
-\doxysubsubsection{\texorpdfstring{TEST\_F()}{TEST\_F()}\hspace{0.1cm}{\footnotesize\ttfamily [3/16]}}
+\doxysubsubsection{\texorpdfstring{TEST\_F()}{TEST\_F()}\hspace{0.1cm}{\footnotesize\ttfamily [3/10]}}
 {\footnotesize\ttfamily TEST\+\_\+F (\begin{DoxyParamCaption}\item[{\mbox{\hyperlink{classTestCoordinateTransformer}{Test\+Coordinate\+Transformer}}}]{,  }\item[{Constructor\+With\+Node\+Only}]{ }\end{DoxyParamCaption})}
 
-
-
-Тестирует конструктор Coordinate\+Transformer только с узлом ROS2. 
-
-Проверяет, что объект Coordinate\+Transformer успешно создается, когда в конструктор передается только указатель на узел ROS2. Это подразумевает, что Coordinate\+Transformer создаст свой собственный внутренний буфер TF2. \Hypertarget{test__transformer__logic_8cpp_a76b593008ddac6c25b840037d99d00b8}\label{test__transformer__logic_8cpp_a76b593008ddac6c25b840037d99d00b8} 
+\Hypertarget{test__transformer__logic_8cpp_a76b593008ddac6c25b840037d99d00b8}\label{test__transformer__logic_8cpp_a76b593008ddac6c25b840037d99d00b8} 
 \index{test\_transformer\_logic.cpp@{test\_transformer\_logic.cpp}!TEST\_F@{TEST\_F}}
 \index{TEST\_F@{TEST\_F}!test\_transformer\_logic.cpp@{test\_transformer\_logic.cpp}}
-\doxysubsubsection{\texorpdfstring{TEST\_F()}{TEST\_F()}\hspace{0.1cm}{\footnotesize\ttfamily [4/16]}}
+\doxysubsubsection{\texorpdfstring{TEST\_F()}{TEST\_F()}\hspace{0.1cm}{\footnotesize\ttfamily [4/10]}}
 {\footnotesize\ttfamily TEST\+\_\+F (\begin{DoxyParamCaption}\item[{\mbox{\hyperlink{classTestCoordinateTransformer}{Test\+Coordinate\+Transformer}}}]{,  }\item[{Convert\+Success\+With\+Tf}]{ }\end{DoxyParamCaption})}
 
-
-
-Тестирует успешное преобразование координат при наличии необходимых TF. 
-
-Проверяет, что функция {\ttfamily convert} успешно преобразует точку из одной системы координат в другую, когда необходимая трансформация (статическая или динамическая) доступна в буфере TF2. \Hypertarget{test__transformer__logic_8cpp_a065ac264ef39177a3f395c70e65adc3f}\label{test__transformer__logic_8cpp_a065ac264ef39177a3f395c70e65adc3f} 
+\Hypertarget{test__transformer__logic_8cpp_a065ac264ef39177a3f395c70e65adc3f}\label{test__transformer__logic_8cpp_a065ac264ef39177a3f395c70e65adc3f} 
 \index{test\_transformer\_logic.cpp@{test\_transformer\_logic.cpp}!TEST\_F@{TEST\_F}}
 \index{TEST\_F@{TEST\_F}!test\_transformer\_logic.cpp@{test\_transformer\_logic.cpp}}
-\doxysubsubsection{\texorpdfstring{TEST\_F()}{TEST\_F()}\hspace{0.1cm}{\footnotesize\ttfamily [5/16]}}
+\doxysubsubsection{\texorpdfstring{TEST\_F()}{TEST\_F()}\hspace{0.1cm}{\footnotesize\ttfamily [5/10]}}
 {\footnotesize\ttfamily TEST\+\_\+F (\begin{DoxyParamCaption}\item[{\mbox{\hyperlink{classTestCoordinateTransformer}{Test\+Coordinate\+Transformer}}}]{,  }\item[{Convert\+Tf\+Error\+Extrapolation}]{ }\end{DoxyParamCaption})}
 
-
-
-Тестирует ошибку преобразования из-\/за проблем с временной меткой (Extrapolation Error). 
-
-Проверяет, что функция {\ttfamily convert} возвращает статус ошибки EXTRAPOLATION\+\_\+\+ERROR, когда трансформация существует, но недоступна для запрошенной временной метки (например, время в будущем или слишком далеком прошлом). \Hypertarget{test__transformer__logic_8cpp_a32a5fd4f98a1a3d1186a1d7f7f2f48aa}\label{test__transformer__logic_8cpp_a32a5fd4f98a1a3d1186a1d7f7f2f48aa} 
+\Hypertarget{test__transformer__logic_8cpp_a32a5fd4f98a1a3d1186a1d7f7f2f48aa}\label{test__transformer__logic_8cpp_a32a5fd4f98a1a3d1186a1d7f7f2f48aa} 
 \index{test\_transformer\_logic.cpp@{test\_transformer\_logic.cpp}!TEST\_F@{TEST\_F}}
 \index{TEST\_F@{TEST\_F}!test\_transformer\_logic.cpp@{test\_transformer\_logic.cpp}}
-\doxysubsubsection{\texorpdfstring{TEST\_F()}{TEST\_F()}\hspace{0.1cm}{\footnotesize\ttfamily [6/16]}}
+\doxysubsubsection{\texorpdfstring{TEST\_F()}{TEST\_F()}\hspace{0.1cm}{\footnotesize\ttfamily [6/10]}}
 {\footnotesize\ttfamily TEST\+\_\+F (\begin{DoxyParamCaption}\item[{\mbox{\hyperlink{classTestCoordinateTransformer}{Test\+Coordinate\+Transformer}}}]{,  }\item[{Convert\+Tf\+Error\+Lookup}]{ }\end{DoxyParamCaption})}
 
-
-
-Тестирует ошибку преобразования из-\/за отсутствия TF (Lookup Error). 
-
-Проверяет, что функция {\ttfamily convert} возвращает статус ошибки LOOKUP\+\_\+\+ERROR, когда необходимая трансформация между системами координат отсутствует в буфере TF2. \Hypertarget{test__transformer__logic_8cpp_a47163d7f611a45c59216588d6862c1ff}\label{test__transformer__logic_8cpp_a47163d7f611a45c59216588d6862c1ff} 
+\Hypertarget{test__transformer__logic_8cpp_a2d17b5aa2e847441ce634f61742c0349}\label{test__transformer__logic_8cpp_a2d17b5aa2e847441ce634f61742c0349} 
 \index{test\_transformer\_logic.cpp@{test\_transformer\_logic.cpp}!TEST\_F@{TEST\_F}}
 \index{TEST\_F@{TEST\_F}!test\_transformer\_logic.cpp@{test\_transformer\_logic.cpp}}
-\doxysubsubsection{\texorpdfstring{TEST\_F()}{TEST\_F()}\hspace{0.1cm}{\footnotesize\ttfamily [7/16]}}
-{\footnotesize\ttfamily TEST\+\_\+F (\begin{DoxyParamCaption}\item[{\mbox{\hyperlink{classTestCoordinateTransformer}{Test\+Coordinate\+Transformer}}}]{,  }\item[{Load\+Config\+File\+Not\+Found}]{ }\end{DoxyParamCaption})}
-
-
-
-Тестирует поведение при попытке загрузить несуществующий файл конфигурации. 
-
-Проверяет, что Coordinate\+Transformer корректно обрабатывает ситуацию, когда указанный файл конфигурации не найден, и не падает, возможно, логируя ошибку. \Hypertarget{test__transformer__logic_8cpp_a99507eae3d88b48bd1548783b0754b84}\label{test__transformer__logic_8cpp_a99507eae3d88b48bd1548783b0754b84} 
-\index{test\_transformer\_logic.cpp@{test\_transformer\_logic.cpp}!TEST\_F@{TEST\_F}}
-\index{TEST\_F@{TEST\_F}!test\_transformer\_logic.cpp@{test\_transformer\_logic.cpp}}
-\doxysubsubsection{\texorpdfstring{TEST\_F()}{TEST\_F()}\hspace{0.1cm}{\footnotesize\ttfamily [8/16]}}
-{\footnotesize\ttfamily TEST\+\_\+F (\begin{DoxyParamCaption}\item[{\mbox{\hyperlink{classTestCoordinateTransformer}{Test\+Coordinate\+Transformer}}}]{,  }\item[{Load\+Config\+Invalid\+Yaml}]{ }\end{DoxyParamCaption})}
-
-
-
-Тестирует поведение при попытке загрузить некорректный YAML-\/файл. 
-
-Проверяет, что Coordinate\+Transformer устойчив к синтаксическим ошибкам в YAML-\/файле конфигурации и не падает, логируя ошибку. \Hypertarget{test__transformer__logic_8cpp_a61da15d0e141b67a2525ef8e21c803bc}\label{test__transformer__logic_8cpp_a61da15d0e141b67a2525ef8e21c803bc} 
-\index{test\_transformer\_logic.cpp@{test\_transformer\_logic.cpp}!TEST\_F@{TEST\_F}}
-\index{TEST\_F@{TEST\_F}!test\_transformer\_logic.cpp@{test\_transformer\_logic.cpp}}
-\doxysubsubsection{\texorpdfstring{TEST\_F()}{TEST\_F()}\hspace{0.1cm}{\footnotesize\ttfamily [9/16]}}
-{\footnotesize\ttfamily TEST\+\_\+F (\begin{DoxyParamCaption}\item[{\mbox{\hyperlink{classTestCoordinateTransformer}{Test\+Coordinate\+Transformer}}}]{,  }\item[{Load\+Config\+Only\+Boundaries}]{ }\end{DoxyParamCaption})}
-
-
-
-Тестирует загрузку конфигурации, содержащей только границы. 
-
-Проверяет, что Coordinate\+Transformer может загрузить YAML-\/файл, содержащий только определения границ, без секции статических трансформаций. \Hypertarget{test__transformer__logic_8cpp_a2b9a1f3f8879028fc6b5102224d8155f}\label{test__transformer__logic_8cpp_a2b9a1f3f8879028fc6b5102224d8155f} 
-\index{test\_transformer\_logic.cpp@{test\_transformer\_logic.cpp}!TEST\_F@{TEST\_F}}
-\index{TEST\_F@{TEST\_F}!test\_transformer\_logic.cpp@{test\_transformer\_logic.cpp}}
-\doxysubsubsection{\texorpdfstring{TEST\_F()}{TEST\_F()}\hspace{0.1cm}{\footnotesize\ttfamily [10/16]}}
-{\footnotesize\ttfamily TEST\+\_\+F (\begin{DoxyParamCaption}\item[{\mbox{\hyperlink{classTestCoordinateTransformer}{Test\+Coordinate\+Transformer}}}]{,  }\item[{Load\+Config\+Only\+Transforms}]{ }\end{DoxyParamCaption})}
-
-
-
-Тестирует загрузку конфигурации, содержащей только трансформации. 
-
-Проверяет, что Coordinate\+Transformer может загрузить YAML-\/файл, содержащий только определения статических трансформаций, без секции границ. \Hypertarget{test__transformer__logic_8cpp_a865ee8e9ebc91b0d66e6ea7845c17ed0}\label{test__transformer__logic_8cpp_a865ee8e9ebc91b0d66e6ea7845c17ed0} 
-\index{test\_transformer\_logic.cpp@{test\_transformer\_logic.cpp}!TEST\_F@{TEST\_F}}
-\index{TEST\_F@{TEST\_F}!test\_transformer\_logic.cpp@{test\_transformer\_logic.cpp}}
-\doxysubsubsection{\texorpdfstring{TEST\_F()}{TEST\_F()}\hspace{0.1cm}{\footnotesize\ttfamily [11/16]}}
-{\footnotesize\ttfamily TEST\+\_\+F (\begin{DoxyParamCaption}\item[{\mbox{\hyperlink{classTestCoordinateTransformer}{Test\+Coordinate\+Transformer}}}]{,  }\item[{Load\+Config\+Skip\+Invalid\+Entries}]{ }\end{DoxyParamCaption})}
-
-
-
-Тестирует пропуск некорректных записей при загрузке конфигурации. 
-
-Проверяет, что Coordinate\+Transformer игнорирует некорректные или неполные записи (трансформаций или границ) в YAML-\/файле конфигурации, но успешно загружает все корректные записи. \Hypertarget{test__transformer__logic_8cpp_a264eeea6fe9b16b105665f29710b5e4c}\label{test__transformer__logic_8cpp_a264eeea6fe9b16b105665f29710b5e4c} 
-\index{test\_transformer\_logic.cpp@{test\_transformer\_logic.cpp}!TEST\_F@{TEST\_F}}
-\index{TEST\_F@{TEST\_F}!test\_transformer\_logic.cpp@{test\_transformer\_logic.cpp}}
-\doxysubsubsection{\texorpdfstring{TEST\_F()}{TEST\_F()}\hspace{0.1cm}{\footnotesize\ttfamily [12/16]}}
-{\footnotesize\ttfamily TEST\+\_\+F (\begin{DoxyParamCaption}\item[{\mbox{\hyperlink{classTestCoordinateTransformer}{Test\+Coordinate\+Transformer}}}]{,  }\item[{Load\+Config\+Success}]{ }\end{DoxyParamCaption})}
-
-
-
-Тестирует успешную загрузку конфигурации из YAML-\/файла. 
-
-Проверяет, что Coordinate\+Transformer корректно загружает статические трансформации и определения границ из правильно отформатированного YAML-\/файла конфигурации. \Hypertarget{test__transformer__logic_8cpp_a2d17b5aa2e847441ce634f61742c0349}\label{test__transformer__logic_8cpp_a2d17b5aa2e847441ce634f61742c0349} 
-\index{test\_transformer\_logic.cpp@{test\_transformer\_logic.cpp}!TEST\_F@{TEST\_F}}
-\index{TEST\_F@{TEST\_F}!test\_transformer\_logic.cpp@{test\_transformer\_logic.cpp}}
-\doxysubsubsection{\texorpdfstring{TEST\_F()}{TEST\_F()}\hspace{0.1cm}{\footnotesize\ttfamily [13/16]}}
+\doxysubsubsection{\texorpdfstring{TEST\_F()}{TEST\_F()}\hspace{0.1cm}{\footnotesize\ttfamily [7/10]}}
 {\footnotesize\ttfamily TEST\+\_\+F (\begin{DoxyParamCaption}\item[{\mbox{\hyperlink{classTestCoordinateTransformer}{Test\+Coordinate\+Transformer}}}]{,  }\item[{Parameter\+Initialization}]{ }\end{DoxyParamCaption})}
 
-
-
-Тестирует инициализацию параметров Coordinate\+Transformer. 
-
-Проверяет, что параметры по умолчанию (границы и т.\+д.) установлены корректно после создания экземпляра Coordinate\+Transformer. \Hypertarget{test__transformer__logic_8cpp_a0f5f9b2a16cc6dcc2fcedcd8db477bb0}\label{test__transformer__logic_8cpp_a0f5f9b2a16cc6dcc2fcedcd8db477bb0} 
+\Hypertarget{test__transformer__logic_8cpp_a0f5f9b2a16cc6dcc2fcedcd8db477bb0}\label{test__transformer__logic_8cpp_a0f5f9b2a16cc6dcc2fcedcd8db477bb0} 
 \index{test\_transformer\_logic.cpp@{test\_transformer\_logic.cpp}!TEST\_F@{TEST\_F}}
 \index{TEST\_F@{TEST\_F}!test\_transformer\_logic.cpp@{test\_transformer\_logic.cpp}}
-\doxysubsubsection{\texorpdfstring{TEST\_F()}{TEST\_F()}\hspace{0.1cm}{\footnotesize\ttfamily [14/16]}}
+\doxysubsubsection{\texorpdfstring{TEST\_F()}{TEST\_F()}\hspace{0.1cm}{\footnotesize\ttfamily [8/10]}}
 {\footnotesize\ttfamily TEST\+\_\+F (\begin{DoxyParamCaption}\item[{\mbox{\hyperlink{classTestCoordinateTransformer}{Test\+Coordinate\+Transformer}}}]{,  }\item[{Remove\+Bounds}]{ }\end{DoxyParamCaption})}
 
-
-
-Тестирует удаление ранее установленных границ. 
-
-Проверяет, что после вызова функции удаления границ для определенной системы координат, функция {\ttfamily convert} больше не применяет ограничения и успешно преобразует точки, которые ранее были вне границ. \Hypertarget{test__transformer__logic_8cpp_a00d9d156c06e2c25fcf42a40d7990753}\label{test__transformer__logic_8cpp_a00d9d156c06e2c25fcf42a40d7990753} 
+\Hypertarget{test__transformer__logic_8cpp_a00d9d156c06e2c25fcf42a40d7990753}\label{test__transformer__logic_8cpp_a00d9d156c06e2c25fcf42a40d7990753} 
 \index{test\_transformer\_logic.cpp@{test\_transformer\_logic.cpp}!TEST\_F@{TEST\_F}}
 \index{TEST\_F@{TEST\_F}!test\_transformer\_logic.cpp@{test\_transformer\_logic.cpp}}
-\doxysubsubsection{\texorpdfstring{TEST\_F()}{TEST\_F()}\hspace{0.1cm}{\footnotesize\ttfamily [15/16]}}
+\doxysubsubsection{\texorpdfstring{TEST\_F()}{TEST\_F()}\hspace{0.1cm}{\footnotesize\ttfamily [9/10]}}
 {\footnotesize\ttfamily TEST\+\_\+F (\begin{DoxyParamCaption}\item[{\mbox{\hyperlink{classTestCoordinateTransformer}{Test\+Coordinate\+Transformer}}}]{,  }\item[{Set\+And\+Check\+Bounds\+Via\+Convert}]{ }\end{DoxyParamCaption})}
 
-
-
-Тестирует установку и проверку границ с помощью функции convert. 
-
-Устанавливает допустимые границы для определенной системы координат, а затем проверяет, что функция {\ttfamily convert} корректно применяет эти границы, возвращая соответствующий статус (например, SUCCESS или OUT\+\_\+\+OF\+\_\+\+BOUNDS). \Hypertarget{test__transformer__logic_8cpp_a2e7f49da0e1a5c6d9766f5e2202af4bd}\label{test__transformer__logic_8cpp_a2e7f49da0e1a5c6d9766f5e2202af4bd} 
+\Hypertarget{test__transformer__logic_8cpp_a2e7f49da0e1a5c6d9766f5e2202af4bd}\label{test__transformer__logic_8cpp_a2e7f49da0e1a5c6d9766f5e2202af4bd} 
 \index{test\_transformer\_logic.cpp@{test\_transformer\_logic.cpp}!TEST\_F@{TEST\_F}}
 \index{TEST\_F@{TEST\_F}!test\_transformer\_logic.cpp@{test\_transformer\_logic.cpp}}
-\doxysubsubsection{\texorpdfstring{TEST\_F()}{TEST\_F()}\hspace{0.1cm}{\footnotesize\ttfamily [16/16]}}
+\doxysubsubsection{\texorpdfstring{TEST\_F()}{TEST\_F()}\hspace{0.1cm}{\footnotesize\ttfamily [10/10]}}
 {\footnotesize\ttfamily TEST\+\_\+F (\begin{DoxyParamCaption}\item[{\mbox{\hyperlink{classTestCoordinateTransformer}{Test\+Coordinate\+Transformer}}}]{,  }\item[{Set\+Invalid\+Bounds}]{ }\end{DoxyParamCaption})}
 
-
-
-Тестирует установку недопустимых границ. 
-
-Проверяет, что Coordinate\+Transformer обрабатывает попытку установки недопустимых границ (например, min \texorpdfstring{$>$}{>} max) и не падает, возможно, возвращая ошибку или игнорируя некорректные данные. \Hypertarget{test__transformer__logic_8cpp_a40ca5a33766250739156bafb464ae870}\label{test__transformer__logic_8cpp_a40ca5a33766250739156bafb464ae870} 
+\Hypertarget{test__transformer__logic_8cpp_a40ca5a33766250739156bafb464ae870}\label{test__transformer__logic_8cpp_a40ca5a33766250739156bafb464ae870} 
 \index{test\_transformer\_logic.cpp@{test\_transformer\_logic.cpp}!wait\_for\_transform@{wait\_for\_transform}}
 \index{wait\_for\_transform@{wait\_for\_transform}!test\_transformer\_logic.cpp@{test\_transformer\_logic.cpp}}
 \doxysubsubsection{\texorpdfstring{wait\_for\_transform()}{wait\_for\_transform()}}
