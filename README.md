@@ -14,7 +14,6 @@
 - `tf2_ros`
 - `tf2_geometry_msgs`
 - `geometry_msgs`
-- `yaml-cpp`
 - `std_msgs`
 
 ## Установка
