@@ -85,7 +85,6 @@ void CoordinateTransformer::initialize(
   static_tf_broadcaster_ = std::make_shared<tf2_ros::StaticTransformBroadcaster>(node_);
 
   try {
-      // Declare core list parameters
     auto static_tf_desc = rcl_interfaces::msg::ParameterDescriptor();
     static_tf_desc.description =
       "List of symbolic names for static transforms defined under 'static_transforms.<name>'.";
@@ -98,11 +97,10 @@ void CoordinateTransformer::initialize(
     node_->declare_parameter<std::vector<std::string>>("boundary_frame_names",
         std::vector<std::string>{}, boundary_frames_desc);
 
-      // Declare the initialization status parameter
     auto initialized_desc = rcl_interfaces::msg::ParameterDescriptor();
     initialized_desc.description =
       "Indicates if boundaries have been successfully loaded or set at least once.";
-    initialized_desc.read_only = true;   // Should only be set internally? Or maybe allow user set? Let's start read-only.
+    initialized_desc.read_only = true;
     node_->declare_parameter<bool>("boundaries.initialized", false, initialized_desc);
 
     RCLCPP_INFO(logger_, "Declared core configuration parameters.");
@@ -264,7 +262,6 @@ void CoordinateTransformer::initialize(
         "An unexpected error occurred during static transform parameter processing: %s", e.what());
   }
 
-  // --- Process initial boundary definitions ---
   try {
     std::vector<std::string> initial_boundary_frames =
       node_->get_parameter("boundary_frame_names").as_string_array();
@@ -279,14 +276,11 @@ void CoordinateTransformer::initialize(
         }
         std::string prefix = "boundaries." + frame_id + ".";
         try {
-                  // Declare the parameters for this frame if they don't exist yet.
-                  // Use NaN as default to clearly indicate if a value wasn't provided.
           rcl_interfaces::msg::ParameterDescriptor bounds_param_desc;
           bounds_param_desc.description = "Boundary limit for frame '" + frame_id + "'.";
           bounds_param_desc.read_only = false;         // Must match callback declaration
           double default_val = std::numeric_limits<double>::quiet_NaN();
 
-                  // Use try-declare pattern
           if (!node_->has_parameter(prefix + "min_x")) {
             node_->declare_parameter(prefix + "min_x", default_val, bounds_param_desc);
           }
@@ -306,7 +300,6 @@ void CoordinateTransformer::initialize(
             node_->declare_parameter(prefix + "max_z", default_val, bounds_param_desc);
           }
 
-                  // Now get the initial values
           geometry_msgs::msg::Point min_p, max_p;
           min_p.x = node_->get_parameter(prefix + "min_x").as_double();
           min_p.y = node_->get_parameter(prefix + "min_y").as_double();
@@ -323,7 +316,6 @@ void CoordinateTransformer::initialize(
           RCLCPP_WARN(logger_,
               "Parameters for initial boundary frame '%s' were already declared (unexpected): %s",
               frame_id.c_str(), e.what());
-                   // Attempt to read values anyway
           try {
             geometry_msgs::msg::Point min_p, max_p;
             min_p.x = node_->get_parameter(prefix + "min_x").as_double();
@@ -417,78 +409,9 @@ void CoordinateTransformer::setBounds(
 
   RCLCPP_INFO(logger_, "Programmatically setting bounds for frame '%s'.", frame_id.c_str());
 
-    // 1. Validate and set internal bounds
   if (!setBoundsInternal(frame_id, min, max)) {
-        // Error already logged by setBoundsInternal
     return;
   }
-
-    // 2. REMOVED: Parameter declaration and setting logic.
-    // This method should focus on internal state. Parameter interaction
-    // should primarily happen via the parametersCallback. If programmatic
-    // setting should *also* update parameters, that requires careful design
-    // to avoid loops or conflicts with the callback. For now, keep it simple.
-    /*
-    std::string prefix = "boundaries." + frame_id + ".";
-    try {
-        // Ensure parameters are declared (might be redundant if callback already did it)
-        rcl_interfaces::msg::ParameterDescriptor bounds_param_desc;
-        bounds_param_desc.description = "Boundary limit for frame '" + frame_id + "'. Set programmatically.";
-        bounds_param_desc.read_only = false; // Allow updates
-
-        // Use try-declare pattern
-        auto try_declare = [&](const std::string& name, double default_val) {
-            if (!node_->has_parameter(name)) {
-                node_->declare_parameter(name, default_val, bounds_param_desc);
-            }
-        };
-        try_declare(prefix + "min_x", min.x);
-        try_declare(prefix + "min_y", min.y);
-        try_declare(prefix + "min_z", min.z);
-        try_declare(prefix + "max_x", max.x);
-        try_declare(prefix + "max_y", max.y);
-        try_declare(prefix + "max_z", max.z);
-
-        // Set the parameters
-        std::vector<rclcpp::Parameter> params_to_set = {
-            rclcpp::Parameter(prefix + "min_x", min.x),
-            rclcpp::Parameter(prefix + "min_y", min.y),
-            rclcpp::Parameter(prefix + "min_z", min.z),
-            rclcpp::Parameter(prefix + "max_x", max.x),
-            rclcpp::Parameter(prefix + "max_y", max.y),
-            rclcpp::Parameter(prefix + "max_z", max.z)
-        };
-        // Also add to boundary_frame_names list if not present
-        if (node_->has_parameter("boundary_frame_names")) {
-             std::vector<std::string> current_frames = node_->get_parameter("boundary_frame_names").as_string_array();
-             if (std::find(current_frames.begin(), current_frames.end(), frame_id) == current_frames.end()) {
-                 current_frames.push_back(frame_id);
-                 params_to_set.push_back(rclcpp::Parameter("boundary_frame_names", current_frames));
-             }
-        } else {
-             RCLCPP_WARN(logger_, "Parameter 'boundary_frame_names' not declared when setting bounds programmatically for '%s'. List parameter won't be updated.", frame_id.c_str());
-        }
-
-
-        if (!params_to_set.empty()) {
-            rcl_interfaces::msg::SetParametersResult result = node_->set_parameters_atomically(params_to_set);
-            if (!result.successful) {
-                RCLCPP_ERROR(logger_, "Failed to set ROS parameters after programmatically setting bounds for '%s': %s", frame_id.c_str(), result.reason.c_str());
-            } else {
-                 RCLCPP_INFO(logger_, "Updated ROS parameters for frame '%s' bounds.", frame_id.c_str());
-                 // Maybe set boundaries.initialized here?
-                 if (node_->has_parameter("boundaries.initialized") && !node_->get_parameter("boundaries.initialized").as_bool()) {
-                      try {
-                           node_->set_parameters_atomically({rclcpp::Parameter("boundaries.initialized", true)});
-                      } catch(...) {} // Ignore failure to set read-only param if applicable
-                 }
-            }
-        }
-
-    } catch (const std::exception &e) {
-        RCLCPP_ERROR(logger_, "Exception while declaring/setting parameters in setBounds for frame '%s': %s", frame_id.c_str(), e.what());
-    }
-    */
 }
 
 void CoordinateTransformer::removeBounds(const std::string & frame_id)
@@ -505,9 +428,6 @@ void CoordinateTransformer::removeBounds(const std::string & frame_id)
     RCLCPP_DEBUG(logger_, "No bounds were set for frame '%s', removal request ignored.",
         frame_id.c_str());
   }
-    // Note: Parameters associated with this frame are NOT removed here.
-    // Removing parameters dynamically is complex and generally discouraged.
-    // The parameter callback should handle ignoring frames removed from the list.
 }
 
 ResultStatus CoordinateTransformer::convert(
@@ -576,7 +496,6 @@ bool CoordinateTransformer::checkBounds(
   std::lock_guard<std::mutex> lock(bounds_mutex_);
   auto it = bounds_.find(frame_id);
   if (it == bounds_.end()) {
-        // No bounds set for this frame, so always considered inside
     return true;
   }
 
@@ -590,18 +509,15 @@ rcl_interfaces::msg::SetParametersResult CoordinateTransformer::parametersCallba
   const std::vector<rclcpp::Parameter> & parameters)
 {
   rcl_interfaces::msg::SetParametersResult result;
-  result.successful = true;   // Assume success initially
+  result.successful = true;
 
-    // --- Stage 1: Process list changes and declare new parameters ---
   std::vector<std::string> previous_boundary_frames;
   std::vector<std::string> next_boundary_frames;
   bool boundary_list_changed = false;
 
-    // Keep track of frames added/removed in *this* specific callback
   std::set<std::string> frames_added_this_call;
   std::set<std::string> frames_removed_this_call;
 
-    // Check if boundary_frame_names is among the parameters being set
   for (const auto & param : parameters) {
     if (param.get_name() == "boundary_frame_names") {
       boundary_list_changed = true;
@@ -609,7 +525,6 @@ rcl_interfaces::msg::SetParametersResult CoordinateTransformer::parametersCallba
         previous_boundary_frames = node_->get_parameter("boundary_frame_names").as_string_array();
         next_boundary_frames = param.as_string_array();
 
-                // Find added frames
         std::set<std::string> prev_set(previous_boundary_frames.begin(),
           previous_boundary_frames.end());
         std::set<std::string> next_set(next_boundary_frames.begin(), next_boundary_frames.end());
@@ -619,14 +534,12 @@ rcl_interfaces::msg::SetParametersResult CoordinateTransformer::parametersCallba
                                     std::inserter(frames_added_this_call,
             frames_added_this_call.begin()));
 
-                // Find removed frames
         std::set_difference(prev_set.begin(), prev_set.end(),
                                     next_set.begin(), next_set.end(),
                                     std::inserter(frames_removed_this_call,
             frames_removed_this_call.begin()));
 
       } catch (const rclcpp::exceptions::ParameterNotDeclaredException &) {
-                // Should not happen as we declare it in initialize()
         RCLCPP_ERROR(logger_,
             "Critical error: 'boundary_frame_names' accessed before declaration in callback.");
         result.successful = false;
@@ -638,11 +551,10 @@ rcl_interfaces::msg::SetParametersResult CoordinateTransformer::parametersCallba
         result.reason = "boundary_frame_names must be a string array.";
         return result;
       }
-      break;       // Process only the first instance if set multiple times (unlikely)
+      break;
     }
   }
 
-    // Declare parameters for newly added frames
   for (const auto & frame_id : frames_added_this_call) {
     if (frame_id.empty()) {
       RCLCPP_WARN(logger_, "Ignoring empty frame_id added to boundary_frame_names.");
@@ -656,8 +568,6 @@ rcl_interfaces::msg::SetParametersResult CoordinateTransformer::parametersCallba
       bounds_param_desc.description = "Boundary limit for frame '" + frame_id + "'.";
       bounds_param_desc.read_only = false;
 
-            // Use try-declare pattern: Declare only if not already present.
-            // Use NaN as default to indicate "not explicitly set". 0.0 might be a valid bound.
       double default_val = std::numeric_limits<double>::quiet_NaN();
       if (!node_->has_parameter(prefix + "min_x")) {
         node_->declare_parameter(prefix + "min_x", default_val, bounds_param_desc);
@@ -681,28 +591,22 @@ rcl_interfaces::msg::SetParametersResult CoordinateTransformer::parametersCallba
     } catch (const std::exception & e) {
       RCLCPP_ERROR(logger_, "Failed to declare parameters for newly added frame '%s': %s",
           frame_id.c_str(), e.what());
-             // Continue processing other parameters, but maybe mark result as unsuccessful?
-             // For now, let validation catch issues if values are set without declaration.
     }
   }
 
-    // Process removed frames
   for (const auto & frame_id : frames_removed_this_call) {
     if (frame_id.empty()) {continue;}
     RCLCPP_INFO(logger_, "Frame '%s' removed from boundary list. Clearing internal bounds.",
         frame_id.c_str());
-    removeBounds(frame_id);      // Clears internal map entry
-         // Parameters are intentionally not undeclared here.
+    removeBounds(frame_id);
   }
 
 
-    // --- Stage 2: Group proposed changes and validate ---
   std::map<std::string, std::map<std::string, rclcpp::Parameter>> grouped_bounds_params;
 
   for (const auto & param : parameters) {
     const std::string & name = param.get_name();
 
-        // Group individual bounds parameters
     if (name.rfind("boundaries.",
         0) == 0 && name != "boundaries.initialized" && name != "boundary_frame_names")
     {
@@ -716,15 +620,12 @@ rcl_interfaces::msg::SetParametersResult CoordinateTransformer::parametersCallba
           (suffix == "min_x" || suffix == "min_y" || suffix == "min_z" ||
           suffix == "max_x" || suffix == "max_y" || suffix == "max_z"))
         {
-                     // Only process frames currently in the list (or added in this call)
-                     // Get the *effective* list of frames after this call completes.
           const auto & effective_frames_list =
             boundary_list_changed ? next_boundary_frames :
             node_->get_parameter("boundary_frame_names").as_string_array();
           if (std::find(effective_frames_list.begin(), effective_frames_list.end(),
               frame_id) != effective_frames_list.end())
           {
-                           // Ensure the parameter type is double
             if (param.get_type() != rclcpp::ParameterType::PARAMETER_DOUBLE) {
               result.successful = false;
               result.reason = "Parameter " + name + " must be a double.";
@@ -745,17 +646,12 @@ rcl_interfaces::msg::SetParametersResult CoordinateTransformer::parametersCallba
       }
     } else if (param.get_name() == "boundaries.initialized") {
       RCLCPP_WARN(logger_, "Attempt to set read-only parameter 'boundaries.initialized' ignored.");
-             // Or handle differently if it becomes writable
     }
-        // Ignore boundary_frame_names here, already processed
-        // Ignore static_transform parameters too
   }
 
-    // --- Stage 3: Validate and apply grouped changes ---
   for (auto const & [frame_id, param_map] : grouped_bounds_params) {
     geometry_msgs::msg::Point current_min, current_max;
     bool current_bounds_found = false;
-         // Get current bounds safely
     {
       std::lock_guard<std::mutex> lock(bounds_mutex_);
       auto it = bounds_.find(frame_id);
@@ -764,15 +660,12 @@ rcl_interfaces::msg::SetParametersResult CoordinateTransformer::parametersCallba
         current_max = it->second.max;
         current_bounds_found = true;
       } else {
-                 // Frame is new or bounds were previously removed/invalid. Use defaults.
-                 // Use NaN to indicate "not explicitly set" yet.
         double default_val = std::numeric_limits<double>::quiet_NaN();
         current_min.x = current_min.y = current_min.z = default_val;
         current_max.x = current_max.y = current_max.z = default_val;
       }
     }
 
-         // Create proposed bounds based on current + changes
     geometry_msgs::msg::Point proposed_min = current_min;
     geometry_msgs::msg::Point proposed_max = current_max;
 
@@ -787,29 +680,20 @@ rcl_interfaces::msg::SetParametersResult CoordinateTransformer::parametersCallba
       }
     }
 
-         // Handle potential NaNs from defaults - if a value wasn't proposed, keep it NaN
-         // OR replace NaNs with values from the *other* bound if only one is set?
-         // Let's require all 6 values to be set for validation to pass unless bounds already exist.
-         // The setBoundsInternal handles NaN checks.
-
     RCLCPP_DEBUG(logger_, "Validating proposed bounds for frame '%s': min(%f,%f,%f) max(%f,%f,%f)",
                      frame_id.c_str(), proposed_min.x, proposed_min.y, proposed_min.z,
         proposed_max.x, proposed_max.y, proposed_max.z);
 
-         // Validate the complete proposed bounds for this frame
     if (!setBoundsInternal(frame_id, proposed_min, proposed_max)) {
       result.successful = false;
       result.reason = "Invalid bounds proposed for frame '" + frame_id +
         "': min must be <= max for all axes, and values cannot be NaN unless explicitly handled.";
       RCLCPP_ERROR(logger_, "%s", result.reason.c_str());
-              // Important: Stop processing further frames on first failure
-              // to maintain transactional behavior for the atomic set request.
       return result;
     }
   }
 
 
-    // If we reach here, all checks passed
   RCLCPP_DEBUG(logger_, "Parameter changes approved and applied.");
   return result;
 }
@@ -819,7 +703,6 @@ bool CoordinateTransformer::setBoundsInternal(
   const geometry_msgs::msg::Point & min,
   const geometry_msgs::msg::Point & max)
 {
-    // Basic validation
   if (min.x > max.x || min.y > max.y || min.z > max.z) {
     RCLCPP_ERROR(logger_, "Invalid bounds for frame '%s': min(%f, %f, %f) > max(%f, %f, %f)",
                      frame_id.c_str(), min.x, min.y, min.z, max.x, max.y, max.z);
@@ -833,7 +716,6 @@ bool CoordinateTransformer::setBoundsInternal(
     return false;
   }
 
-    // Store the bounds
   {
     std::lock_guard<std::mutex> lock(bounds_mutex_);
     bounds_[frame_id] = {min, max};
